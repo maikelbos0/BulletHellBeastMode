@@ -12,25 +12,33 @@
         const context = canvas.getContext("2d");
         const height = parseInt(canvas.height);
         const width = parseInt(canvas.width);
-        const speed = 100;
+        const speed = 200;
+        const lineCount = 5;
+
         let previousTimestamp;
-        let linePosition = 0;
+        let linePositions = Array.from(
+            { length: lineCount },
+            (_, i) => height / lineCount * i
+        );
 
         context.globalCompositeOperation = "destination-over";
 
         function draw(timestamp) {
             context.clearRect(0, 0, width, height);
             context.strokeStyle = "rgba(0, 0, 0, 0.5)";
-            context.lineWidth = 2;
+            context.lineWidth = 1;
             context.beginPath();
-            context.moveTo(0, linePosition);
-            context.lineTo(width, linePosition);
-            context.stroke();
 
-            linePosition += (timestamp - previousTimestamp) * speed / 1000;
+            for (var i = 0; i < lineCount; i++) {
+                context.moveTo(0, linePositions[i]);
+                context.lineTo(width, linePositions[i]);
+                context.stroke();
 
-            if (linePosition > height) {
-                linePosition -= height;
+                linePositions[i] += (timestamp - previousTimestamp) * speed / 1000;
+
+                if (linePositions[i] > height) {
+                    linePositions[i] -= height;
+                }
             }
 
             previousTimestamp = timestamp;
