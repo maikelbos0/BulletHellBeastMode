@@ -1,0 +1,28 @@
+{
+  "name": "bullethellbeastmode",
+  "version": "1.0.0",
+  "description": "An experiment with Canvas, and maybe Angular?",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/maikelbos0/BulletHellBeastMode.git"
+  },
+  "author": "Maikel bos",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/maikelbos0/BulletHellBeastMode/issues"
+  },
+  "homepage": "https://github.com/maikelbos0/BulletHellBeastMode#readme",
+  "devDependencies": {
+    "@types/jest": "^29.5.3",
+    "jest": "^29.6.2",
+    "ts-jest": "^29.1.1",
+    "typescript": "^5.1.6"
+  }
+}
