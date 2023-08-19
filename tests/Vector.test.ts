@@ -1,4 +1,4 @@
-import { Vector } from '../../src/Experiments/vector';
+import { Vector } from '../src/vector';
 
 describe('Vector', () => {
     test('getSpeed', () => {

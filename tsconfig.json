@@ -3,6 +3,9 @@
       "target": "es5",
       "module": "commonjs",
       "sourceMap": true,
-      "outDir": "src/Experiments/js"
-    }
+      "outDir": "src/js"
+    },
+    "include": [
+      "src/"
+    ]
   }
