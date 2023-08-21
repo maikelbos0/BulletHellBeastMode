@@ -28,6 +28,7 @@
     "typescript": "^5.1.6"
   },
   "jest": {
-    "preset": "ts-jest"
+    "preset": "ts-jest",
+    "verbose": true
   }
 }
