@@ -1,4 +1,4 @@
-import { Vector } from './vector';
+import { Velocity } from './velocity';
 
 export class Coordinate {
     readonly x: number;
@@ -9,10 +9,10 @@ export class Coordinate {
         this.y = y;
     }
 
-    move(vector: Vector, duration: number): Coordinate {
+    move(velocity: Velocity, duration: number): Coordinate {
         return new Coordinate(
-            this.x + vector.x * duration,
-            this.y + vector.y * duration
+            this.x + velocity.x * duration,
+            this.y + velocity.y * duration
         );
     }
 }
