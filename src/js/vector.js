@@ -15,10 +15,7 @@ var Vector = /** @class */ (function () {
         if (magnitude > maximumMagnitude) {
             factor = maximumMagnitude / magnitude;
         }
-        return new Vector(this.x * factor, this.y * factor);
-    };
-    Vector.prototype.add = function (vector) {
-        return new Vector(this.x + vector.x, this.y + vector.y);
+        return new this.constructor(this.x * factor, this.y * factor);
     };
     return Vector;
 }());

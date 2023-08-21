@@ -11,7 +11,7 @@ export class Vector {
         return Math.sqrt(this.x * this.x + this.y * this.y);
     }
 
-    limitMagnitude(maximumMagnitude: number): Vector {
+    limitMagnitude(maximumMagnitude: number): this {
         const magnitude = this.getMagnitude();
         let factor = 1;
 
@@ -19,10 +19,6 @@ export class Vector {
             factor = maximumMagnitude / magnitude;
         }
 
-        return new Vector(this.x * factor, this.y * factor);
-    }
-
-    add(vector: Vector): Vector {
-        return new Vector(this.x + vector.x, this.y + vector.y);
+        return new (this.constructor as any)(this.x * factor, this.y * factor);
     }
 }
