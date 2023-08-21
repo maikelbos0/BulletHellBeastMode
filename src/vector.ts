@@ -1,6 +1,6 @@
 export class Vector {
-    x: number;
-    y: number;
+    readonly x: number;
+    readonly y: number;
     
     constructor(x: number, y: number) {
         this.x = x;
@@ -9,5 +9,16 @@ export class Vector {
     
     getMagnitude(): number {
         return Math.sqrt(this.x * this.x + this.y * this.y);
+    }
+
+    limitMagnitude(maximumMagnitude: number): Vector {
+        const magnitude = this.getMagnitude();
+        let factor = 1;
+
+        if (magnitude > maximumMagnitude){
+            factor = maximumMagnitude / magnitude;
+        }
+
+        return new Vector(this.x * factor, this.y * factor);
     }
 }
