@@ -1,9 +1,14 @@
 import { Vector } from '../src/vector';
 
 describe('Vector', () => {
-    test('getSpeed', () => {
-        const subject = new Vector(3, 4);
+    it.each([
+        [3, 4, 5],
+        [3, -4, 5],
+        [-3, 4, 5],
+        [-3, -4, 5]
+    ])('getMagnitude() x: %p, y: %p, expectedMagnitude: %p', (x: number, y: number, expectedMagnitude: number) => {
+        const subject = new Vector(x, y);
 
-        expect(subject.getSpeed()).toBe(5);
+        expect(subject.getMagnitude()).toBe(expectedMagnitude);
     });
 });

@@ -7,7 +7,7 @@ export class Vector {
         this.y = y;
     }
     
-    getSpeed(): number {
+    getMagnitude(): number {
         return Math.sqrt(this.x * this.x + this.y * this.y);
     }
 }
