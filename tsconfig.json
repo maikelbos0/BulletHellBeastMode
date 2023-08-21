@@ -3,7 +3,8 @@
       "target": "es5",
       "module": "commonjs",
       "sourceMap": true,
-      "outDir": "src/js"
+      "outDir": "src/js",
+      "strict": true
     },
     "include": [
       "src/"
