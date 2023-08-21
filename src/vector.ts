@@ -21,4 +21,8 @@ export class Vector {
 
         return new Vector(this.x * factor, this.y * factor);
     }
+
+    add(vector: Vector): Vector {
+        return new Vector(this.x + vector.x, this.y + vector.y);
+    }
 }

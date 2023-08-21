@@ -17,6 +17,9 @@ var Vector = /** @class */ (function () {
         }
         return new Vector(this.x * factor, this.y * factor);
     };
+    Vector.prototype.add = function (vector) {
+        return new Vector(this.x + vector.x, this.y + vector.y);
+    };
     return Vector;
 }());
 exports.Vector = Vector;

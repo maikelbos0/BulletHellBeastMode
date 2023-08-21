@@ -22,4 +22,16 @@ describe('Vector', () => {
         expect(result.x).toBe(expectedResult.x);
         expect(result.y).toBe(expectedResult.y);
     });
+
+    it.each([
+        [new Vector(10, 10), new Vector(3, 4), new Vector(13, 14)],
+        [new Vector(10, 10), new Vector(3, -4), new Vector(13, 6)],
+        [new Vector(10, 10), new Vector(-3, 4), new Vector(7, 14)],
+        [new Vector(10, 10), new Vector(-3, -4), new Vector(7, 6)]
+    ])('getMagnitude() subject: %p, expectedMagnitude: %p', (subject: Vector, vector: Vector, expectedResult: Vector) => {
+        const result = subject.add(vector);
+        
+        expect(result.x).toBe(expectedResult.x);
+        expect(result.y).toBe(expectedResult.y);
+    });
 });
