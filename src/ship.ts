@@ -9,11 +9,11 @@ export class Ship {
     static readonly maximumSpeed: number = 500;
 
     position: Coordinates;
-    speed: Velocity;
+    velocity: Velocity;
 
     constructor(startingPosition: Coordinates) {
         this.position = startingPosition;
-        this.speed = new Velocity(0, 0);
+        this.velocity = new Velocity(0, 0);
     }
 
     // TODO deceleration
@@ -38,8 +38,8 @@ export class Ship {
 
         acceleration = acceleration.add(customAcceleration).limitMagnitude(Ship.maximumAcceleration);
 
-        this.position = this.position.move(this.speed, duration / 2);
-        this.speed = this.speed.accelerate(acceleration, duration).limitMagnitude(Ship.maximumSpeed);
-        this.position = this.position.move(this.speed, duration / 2);
+        this.position = this.position.move(this.velocity, duration / 2);
+        this.velocity = this.velocity.accelerate(acceleration, duration).limitMagnitude(Ship.maximumSpeed);
+        this.position = this.position.move(this.velocity, duration / 2);
     }
 }

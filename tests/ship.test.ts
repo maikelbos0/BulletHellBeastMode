@@ -26,19 +26,17 @@ describe('Ship', () => {
         // Acceleration limit
         [new Coordinates(100, 100), new Velocity(50, 50), Direction.None, new Acceleration(400, 300), 1, new Velocity(130, 110), new Coordinates(190, 180)],
 
-        // Speed limit
+        // Velocity limit
         [new Coordinates(100, 100), new Velocity(360, 270), Direction.None, new Acceleration(80, 60), 1, new Velocity(400, 300), new Coordinates(480, 385)],
     ])('processFrame() startingPosition: %p, startingVelocity: %p, direction: %p, customAcceleration: %p, duration: %p, expectedVelocity: %p, expectedPosition: %p', 
             (startingPosition: Coordinates, startingVelocity: Velocity, direction: Direction, customAcceleration: Acceleration, duration: number, expectedVelocity: Velocity, expectedPosition: Coordinates) => {
         let subject = new Ship(startingPosition);
 
-        subject.speed = startingVelocity;
+        subject.velocity = startingVelocity;
 
         subject.processFrame(direction, customAcceleration, duration);
         
-        expect(subject.speed.x).toBe(expectedVelocity.x);
-        expect(subject.speed.y).toBe(expectedVelocity.y);
-        expect(subject.position.x).toBe(expectedPosition.x);
-        expect(subject.position.y).toBe(expectedPosition.y);
+        expect(subject.velocity).toEqual(expectedVelocity);
+        expect(subject.position).toEqual(expectedPosition);
     });
 });

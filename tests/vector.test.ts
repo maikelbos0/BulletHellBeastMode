@@ -19,7 +19,15 @@ describe('Vector', () => {
     ])('limitMagnitude() subject: %p, maximumMagnitude: %p, expectedResult: %p', (subject: Vector, maximumMagnitude: number, expectedResult: Vector) => {
         const result = subject.limitMagnitude(maximumMagnitude);
 
-        expect(result.x).toBe(expectedResult.x);
-        expect(result.y).toBe(expectedResult.y);
+        expect(result).toEqual(expectedResult);
+    });
+    
+    it.each([
+        [new Vector(10, 10), new Vector(3, 4), new Vector(13, 14)],
+        [new Vector(10, 10), new Vector(-3, -4), new Vector(7, 6)]
+    ])('add() subject: %p, vector: %p, expectedResult: %p', (subject: Vector, vector: Vector, expectedResult: Vector) => {
+        const result = subject.add(vector);
+  
+        expect(result).toEqual(expectedResult);
     });
 });

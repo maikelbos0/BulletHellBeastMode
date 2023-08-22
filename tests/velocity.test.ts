@@ -10,7 +10,6 @@ describe('Velocity', () => {
     ])('accelerate() subject: %p, acceleration: %p, duration: %p, expectedResult: %p', (subject: Velocity, acceleration: Acceleration, duration: number, expectedResult: Velocity) => {
         const result = subject.accelerate(acceleration, duration);
   
-        expect(result.x).toBe(expectedResult.x);
-        expect(result.y).toBe(expectedResult.y);
+        expect(result).toEqual(expectedResult);
     });
 });

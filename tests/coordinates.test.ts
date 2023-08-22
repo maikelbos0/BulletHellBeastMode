@@ -10,7 +10,6 @@ describe('Coordinate', () => {
     ])('move() subject: %p, velocity: %p, duration: %p, expectedResult: %p, ', (subject: Coordinates, velocity: Velocity, duration: number, expectedResult: Coordinates) => {
         const result = subject.move(velocity, duration);
 
-        expect(result.x).toBe(expectedResult.x);
-        expect(result.y).toBe(expectedResult.y);
+        expect(result).toEqual(expectedResult);
     });
 });
