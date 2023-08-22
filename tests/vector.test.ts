@@ -6,8 +6,8 @@ describe('Vector', () => {
         [new Vector(3, -4), 5],
         [new Vector(-3, 4), 5],
         [new Vector(-3, -4), 5]
-    ])('getMagnitude() subject: %p, expectedMagnitude: %p', (subject: Vector, expectedMagnitude: number) => {
-        expect(subject.getMagnitude()).toBe(expectedMagnitude);
+    ])('getMagnitude() subject: %p, expectedResult: %p', (subject: Vector, expectedResult: number) => {
+        expect(subject.getMagnitude()).toBe(expectedResult);
     });
 
     it.each([
