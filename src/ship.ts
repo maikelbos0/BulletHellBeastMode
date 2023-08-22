@@ -4,9 +4,9 @@ import { Direction } from './direction';
 import { Velocity } from './velocity';
 
 export class Ship {
-    static readonly directionalAcceleration: number = 50;
-    static readonly maximumAcceleration: number = 100;
     static readonly maximumSpeed: number = 500;
+    static readonly maximumAcceleration: number = 300;
+    static readonly directionalAcceleration: number = 200;
 
     position: Coordinates;
     velocity: Velocity;
