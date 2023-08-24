@@ -17,6 +17,12 @@ var Vector = /** @class */ (function () {
         }
         return new this.constructor(this.x * factor, this.y * factor);
     };
+    Vector.prototype.add = function (vector) {
+        return new this.constructor(this.x + vector.x, this.y + vector.y);
+    };
+    Vector.prototype.subtract = function (vector) {
+        return new this.constructor(this.x - vector.x, this.y - vector.y);
+    };
     return Vector;
 }());
 exports.Vector = Vector;

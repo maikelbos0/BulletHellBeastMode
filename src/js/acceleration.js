@@ -22,9 +22,6 @@ var Acceleration = /** @class */ (function (_super) {
     function Acceleration(x, y) {
         return _super.call(this, x, y) || this;
     }
-    Acceleration.prototype.add = function (value) {
-        return new Acceleration(this.x + value.x, this.y + value.y);
-    };
     return Acceleration;
 }(vector_1.Vector));
 exports.Acceleration = Acceleration;
