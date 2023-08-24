@@ -1,5 +1,5 @@
-import { Acceleration } from './acceleration';
-import { Vector } from './vector';
+import { Acceleration } from './acceleration.js';
+import { Vector } from './vector.js';
 
 export class Velocity extends Vector {
     constructor(x: number, y: number) {

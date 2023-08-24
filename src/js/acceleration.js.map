@@ -1,1 +1,1 @@
-{"version":3,"file":"acceleration.js","sourceRoot":"","sources":["../acceleration.ts"],"names":[],"mappings":";;;;;;;;;;;;;;;;;;AAAA,mCAAkC;AAElC;IAAkC,gCAAM;IACpC,sBAAY,CAAS,EAAE,CAAS;eAC5B,kBAAM,CAAC,EAAE,CAAC,CAAC;IACf,CAAC;IACL,mBAAC;AAAD,CAAC,AAJD,CAAkC,eAAM,GAIvC;AAJY,oCAAY"}
+{"version":3,"file":"acceleration.js","sourceRoot":"","sources":["../acceleration.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,MAAM,EAAE,MAAM,aAAa,CAAC;AAErC,MAAM,OAAO,YAAa,SAAQ,MAAM;IACpC,YAAY,CAAS,EAAE,CAAS;QAC5B,KAAK,CAAC,CAAC,EAAE,CAAC,CAAC,CAAC;IAChB,CAAC;CACJ"}

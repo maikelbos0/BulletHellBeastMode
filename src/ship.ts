@@ -1,7 +1,7 @@
-import { Acceleration } from './acceleration';
-import { Coordinates } from './coordinates';
-import { Direction } from './direction';
-import { Velocity } from './velocity';
+import { Acceleration } from './acceleration.js';
+import { Coordinates } from './coordinates.js';
+import { Direction } from './direction.js';
+import { Velocity } from './velocity.js';
 
 export class Ship {
     static readonly maximumSpeed: number = 500;

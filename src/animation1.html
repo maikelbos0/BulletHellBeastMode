@@ -5,21 +5,24 @@
 </head>
 
 <body>
-    <canvas id="game" height="600" width="600"></canvas>
+    <canvas id="game" height="800" width="800"></canvas>
 
-    <script>
+    <script type="module">
+        import { Ship } from './js/ship.js';
+
         const canvas = document.getElementById("game");
         const context = canvas.getContext("2d");
         const height = parseInt(canvas.height);
         const width = parseInt(canvas.width);
         const speed = 200;
         const lineCount = 5;
-
-        let previousTimestamp;
-        let linePositions = Array.from(
+        const ship = new Ship();
+        const linePositions = Array.from(
             { length: lineCount },
             (_, i) => height / lineCount * i
         );
+        
+        let previousTimestamp;
 
         context.globalCompositeOperation = "destination-over";
 
