@@ -22,7 +22,11 @@ export class Vector {
         return new (this.constructor as any)(this.x * factor, this.y * factor);
     }
 
-    add(value: Vector): this {
-        return new (this.constructor as any)(this.x + value.x, this.y + value.y);
+    add(vector: Vector): this {
+        return new (this.constructor as any)(this.x + vector.x, this.y + vector.y);
+    }
+
+    subtract(vector: Vector): this {
+        return new (this.constructor as any)(this.x - vector.x, this.y - vector.y);
     }
 }

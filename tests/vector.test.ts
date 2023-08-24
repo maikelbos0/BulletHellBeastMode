@@ -30,4 +30,13 @@ describe('Vector', () => {
   
         expect(result).toEqual(expectedResult);
     });
+    
+    it.each([
+        [new Vector(10, 10), new Vector(3, 4), new Vector(7, 6)],
+        [new Vector(10, 10), new Vector(-3, -4), new Vector(13, 14)]
+    ])('subtract() subject: %p, vector: %p, expectedResult: %p', (subject: Vector, vector: Vector, expectedResult: Vector) => {
+        const result = subject.subtract(vector);
+  
+        expect(result).toEqual(expectedResult);
+    });
 });
