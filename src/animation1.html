@@ -8,6 +8,7 @@
     <canvas id="game" height="800" width="800"></canvas>
 
     <script type="module">
+        import { Coordinates } from './js/coordinates.js';
         import { Ship } from './js/ship.js';
 
         const canvas = document.getElementById("game");
@@ -16,17 +17,20 @@
         const width = parseInt(canvas.width);
         const speed = 200;
         const lineCount = 5;
-        const ship = new Ship();
+        const ship = new Ship(new Coordinates(width * 0.5, height * 0.9));
+        const shipSize = 20;
         const linePositions = Array.from(
             { length: lineCount },
             (_, i) => height / lineCount * i
         );
-        
+
         let previousTimestamp;
 
         context.globalCompositeOperation = "destination-over";
 
         function draw(timestamp) {
+            let duration = timestamp - previousTimestamp;
+
             context.clearRect(0, 0, width, height);
             context.strokeStyle = "rgba(0, 0, 0, 0.5)";
             context.lineWidth = 1;
@@ -37,12 +41,20 @@
                 context.lineTo(width, linePositions[i]);
                 context.stroke();
 
-                linePositions[i] += (timestamp - previousTimestamp) * speed / 1000;
+                linePositions[i] += duration * speed / 1000;
 
                 if (linePositions[i] > height) {
                     linePositions[i] -= height;
                 }
             }
+
+            context.stroke();
+            context.strokeStyle = "black";
+            context.lineWidth = 3;
+            context.beginPath();
+
+            context.rect(ship.position.x - shipSize / 2, ship.position.y - shipSize / 2, shipSize, shipSize);
+            context.stroke();
 
             previousTimestamp = timestamp;
             window.requestAnimationFrame(draw);
