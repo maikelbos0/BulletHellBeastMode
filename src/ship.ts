@@ -15,6 +15,7 @@ export class Ship {
         this.position = startingPosition;
         this.velocity = new Velocity(0, 0);
     }
+
     processFrame(direction: Direction, customAcceleration: Acceleration, duration: number) {
         let isStopped = this.velocity.x == 0 && this.velocity.y == 0;
         let isAccelerating = direction != Direction.None || customAcceleration.x != 0 || customAcceleration.y != 0;
@@ -46,7 +47,7 @@ export class Ship {
             duration = Math.min(duration, this.velocity.getMagnitude() / acceleration.getMagnitude());
         }
 
-        if (!isStopped) {
+        if (isAccelerating || isDecelerating) {
             this.position = this.position.move(this.velocity, duration / 2);
             this.velocity = this.velocity.accelerate(acceleration, duration).limitMagnitude(Ship.maximumSpeed);
             this.position = this.position.move(this.velocity, duration / 2);

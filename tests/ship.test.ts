@@ -32,11 +32,13 @@ describe('Ship', () => {
         // Deceleration
         [new Coordinates(100, 100), new Velocity(400, 300), Direction.None, new Acceleration(0, 0), 1, new Velocity(160, 120), new Coordinates(380, 310)],
         [new Coordinates(100, 100), new Velocity(-400, -300), Direction.None, new Acceleration(0, 0), 1, new Velocity(-160, -120), new Coordinates(-180, -110)],
-        [new Coordinates(100, 100), new Velocity(400, 300), Direction.None, new Acceleration(0, 0), 2, new Velocity(0, 0), new Coordinates(433.33, 350)],
-        [new Coordinates(100, 100), new Velocity(60, 45), Direction.None, new Acceleration(0, 0), 0.5, new Velocity(0, 0), new Coordinates(107.5, 105.63)],
+        [new Coordinates(100, 100), new Velocity(400, 300), Direction.None, new Acceleration(0, 0), 2, new Velocity(0, 0), new Coordinates(433.3333, 350)],
+        [new Coordinates(100, 100), new Velocity(60, 45), Direction.None, new Acceleration(0, 0), 0.5, new Velocity(0, 0), new Coordinates(107.5, 105.625)],
 
         // Stopped
-        [new Coordinates(100, 100), new Velocity(0, 0), Direction.None, new Acceleration(0, 0), 0.5, new Velocity(0, 0), new Coordinates(100, 100)]
+        [new Coordinates(100, 100), new Velocity(0, 0), Direction.None, new Acceleration(0, 0), 1, new Velocity(0, 0), new Coordinates(100, 100)],
+        [new Coordinates(100, 100), new Velocity(0, 0), Direction.Up, new Acceleration(0, 0), 1, new Velocity(0, -200), new Coordinates(100, 0)],
+        [new Coordinates(100, 100), new Velocity(0, 0), Direction.None, new Acceleration(40, 60), 1, new Velocity(40, 60), new Coordinates(120, 130)]
     ])('processFrame() startingPosition: %p, startingVelocity: %p, direction: %p, customAcceleration: %p, duration: %p, expectedVelocity: %p, expectedPosition: %p', 
             (startingPosition: Coordinates, startingVelocity: Velocity, direction: Direction, customAcceleration: Acceleration, duration: number, expectedVelocity: Velocity, expectedPosition: Coordinates) => {
         let subject = new Ship(startingPosition);

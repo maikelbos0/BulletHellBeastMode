@@ -30,7 +30,7 @@ export class Ship {
             acceleration = new Acceleration(-this.velocity.x, -this.velocity.y).adjustMagnitude(Ship.maximumAcceleration);
             duration = Math.min(duration, this.velocity.getMagnitude() / acceleration.getMagnitude());
         }
-        if (!isStopped) {
+        if (isAccelerating || isDecelerating) {
             this.position = this.position.move(this.velocity, duration / 2);
             this.velocity = this.velocity.accelerate(acceleration, duration).limitMagnitude(Ship.maximumSpeed);
             this.position = this.position.move(this.velocity, duration / 2);
