@@ -23,6 +23,18 @@ describe('Vector', () => {
     });
     
     it.each([
+        [new Vector(6, 8), 5, new Vector(3, 4)],
+        [new Vector(-6, -8), 5, new Vector(-3, -4)],
+        [new Vector(6, 8), 7.5, new Vector(4.5, 6)],
+        [new Vector(6, 8), 10, new Vector(6, 8)],
+        [new Vector(6, 8), 15, new Vector(9, 12)],
+    ])('adjustMagnitude() subject: %p, newMagnitude: %p, expectedResult: %p', (subject: Vector, newMagnitude: number, expectedResult: Vector) => {
+        const result = subject.adjustMagnitude(newMagnitude);
+
+        expect(result).toEqual(expectedResult);
+    });
+    
+    it.each([
         [new Vector(10, 10), new Vector(3, 4), new Vector(13, 14)],
         [new Vector(10, 10), new Vector(-3, -4), new Vector(7, 6)]
     ])('add() subject: %p, vector: %p, expectedResult: %p', (subject: Vector, vector: Vector, expectedResult: Vector) => {

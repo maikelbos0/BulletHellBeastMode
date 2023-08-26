@@ -22,6 +22,13 @@ export class Vector {
         return new (this.constructor as any)(this.x * factor, this.y * factor);
     }
 
+    adjustMagnitude(newMagnitude: number): this {
+        const magnitude = this.getMagnitude();
+        const factor = newMagnitude / magnitude;
+
+        return new (this.constructor as any)(this.x * factor, this.y * factor);
+    }
+
     add(vector: Vector): this {
         return new (this.constructor as any)(this.x + vector.x, this.y + vector.y);
     }
