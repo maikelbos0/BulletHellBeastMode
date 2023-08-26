@@ -15,31 +15,41 @@ export class Ship {
         this.position = startingPosition;
         this.velocity = new Velocity(0, 0);
     }
-
-    // TODO deceleration
     processFrame(direction: Direction, customAcceleration: Acceleration, duration: number) {
+        let isStopped = this.velocity.x == 0 && this.velocity.y == 0;
+        let isAccelerating = direction != Direction.None || customAcceleration.x != 0 || customAcceleration.y != 0;
+        let isDecelerating = !isStopped && !isAccelerating;
         let acceleration = new Acceleration(0, 0);
 
-        if (direction & Direction.Up) {
-            acceleration = acceleration.add(new Acceleration(0, -Ship.directionalAcceleration));
+        if (isAccelerating) {
+            if (direction & Direction.Up) {
+                acceleration = acceleration.add(new Acceleration(0, -Ship.directionalAcceleration));
+            }
+
+            if (direction & Direction.Down) {
+                acceleration = acceleration.add(new Acceleration(0, Ship.directionalAcceleration));
+            }
+
+            if (direction & Direction.Left) {
+                acceleration = acceleration.add(new Acceleration(-Ship.directionalAcceleration, 0));
+            }
+
+            if (direction & Direction.Right) {
+                acceleration = acceleration.add(new Acceleration(Ship.directionalAcceleration, 0));
+            }
+
+            acceleration = acceleration.add(customAcceleration).limitMagnitude(Ship.maximumAcceleration);
+        }
+        else if (isDecelerating) {
+            acceleration = new Acceleration(-this.velocity.x, -this.velocity.y).adjustMagnitude(Ship.maximumAcceleration);
+
+            duration = Math.min(duration, this.velocity.getMagnitude() / acceleration.getMagnitude());
         }
 
-        if (direction & Direction.Down) {
-            acceleration = acceleration.add(new Acceleration(0, Ship.directionalAcceleration));
+        if (!isStopped) {
+            this.position = this.position.move(this.velocity, duration / 2);
+            this.velocity = this.velocity.accelerate(acceleration, duration).limitMagnitude(Ship.maximumSpeed);
+            this.position = this.position.move(this.velocity, duration / 2);
         }
-
-        if (direction & Direction.Left) {
-            acceleration = acceleration.add(new Acceleration(-Ship.directionalAcceleration, 0));
-        }
-
-        if (direction & Direction.Right) {
-            acceleration = acceleration.add(new Acceleration(Ship.directionalAcceleration, 0));
-        }
-
-        acceleration = acceleration.add(customAcceleration).limitMagnitude(Ship.maximumAcceleration);
-
-        this.position = this.position.move(this.velocity, duration / 2);
-        this.velocity = this.velocity.accelerate(acceleration, duration).limitMagnitude(Ship.maximumSpeed);
-        this.position = this.position.move(this.velocity, duration / 2);
     }
 }
