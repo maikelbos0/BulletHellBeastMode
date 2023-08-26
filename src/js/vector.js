@@ -29,5 +29,5 @@ export class Vector {
         return new this.constructor(this.x - vector.x, this.y - vector.y);
     }
 }
-Vector.precision = 2;
+Vector.precision = 4;
 //# sourceMappingURL=vector.js.map

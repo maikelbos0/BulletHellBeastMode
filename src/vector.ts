@@ -1,5 +1,5 @@
 export class Vector {
-    static precision: number = 2;
+    static precision: number = 4;
 
     readonly x: number;
     readonly y: number;

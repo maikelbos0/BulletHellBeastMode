@@ -3,9 +3,9 @@ import { Vector } from '../src/vector';
 describe('Vector', () => {
     it.each([
         [1, 2, 1, 2],
-        [1.15, 2.15, 1.15, 2.15],
-        [1.154, 2.154, 1.15, 2.15],
-        [1.156, 2.156, 1.16, 2.16]
+        [1.1115, 2.1115, 1.1115, 2.1115],
+        [1.11154, 2.11154, 1.1115, 2.1115],
+        [1.11156, 2.11156, 1.1116, 2.1116]
     ])('constructor() x: %p, y: %p, expectedX: %p, expectedY: %p', (x: number, y: number, expectedX: number, expectedY: number) => {
         let result = new Vector(x, y);
         
