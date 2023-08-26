@@ -36,12 +36,12 @@
 
         window.addEventListener('keydown', e => {
             if (keyMap.hasOwnProperty(e.keyCode)) {
-                direction += keyMap[e.keyCode];
+                direction |= keyMap[e.keyCode];
             }
         });
         window.addEventListener('keyup', e => {
             if (keyMap.hasOwnProperty(e.keyCode)) {
-                direction -= keyMap[e.keyCode];
+                direction &= ~keyMap[e.keyCode];
             }
         });
 
