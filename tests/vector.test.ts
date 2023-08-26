@@ -2,6 +2,18 @@ import { Vector } from '../src/vector';
 
 describe('Vector', () => {
     it.each([
+        [1, 2, 1, 2],
+        [1.15, 2.15, 1.15, 2.15],
+        [1.154, 2.154, 1.15, 2.15],
+        [1.156, 2.156, 1.16, 2.16]
+    ])('constructor() x: %p, y: %p, expectedX: %p, expectedY: %p', (x: number, y: number, expectedX: number, expectedY: number) => {
+        let result = new Vector(x, y);
+        
+        expect(result.x).toBe(expectedX);
+        expect(result.y).toBe(expectedY);
+    });
+
+    it.each([
         [new Vector(3, 4), 5],
         [new Vector(3, -4), 5],
         [new Vector(-3, 4), 5],

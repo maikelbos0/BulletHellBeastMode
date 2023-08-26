@@ -1,7 +1,10 @@
 export class Vector {
     constructor(x, y) {
-        this.x = x;
-        this.y = y;
+        this.x = this.round(x);
+        this.y = this.round(y);
+    }
+    round(value) {
+        return Math.round(value * Math.pow(10, Vector.precision)) / Math.pow(10, Vector.precision);
     }
     getMagnitude() {
         return Math.sqrt(this.x * this.x + this.y * this.y);
@@ -26,4 +29,5 @@ export class Vector {
         return new this.constructor(this.x - vector.x, this.y - vector.y);
     }
 }
+Vector.precision = 2;
 //# sourceMappingURL=vector.js.map

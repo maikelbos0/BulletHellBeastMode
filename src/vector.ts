@@ -1,12 +1,18 @@
 export class Vector {
+    static precision: number = 2;
+
     readonly x: number;
     readonly y: number;
-    
+
     constructor(x: number, y: number) {
-        this.x = x;
-        this.y = y;
+        this.x = this.round(x);
+        this.y = this.round(y);
     }
-    
+
+    round(value: number) {
+        return Math.round(value * Math.pow(10, Vector.precision)) / Math.pow(10, Vector.precision);
+    }
+
     getMagnitude(): number {
         return Math.sqrt(this.x * this.x + this.y * this.y);
     }
@@ -15,7 +21,7 @@ export class Vector {
         const magnitude = this.getMagnitude();
         let factor = 1;
 
-        if (magnitude > maximumMagnitude){
+        if (magnitude > maximumMagnitude) {
             factor = maximumMagnitude / magnitude;
         }
 
