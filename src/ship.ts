@@ -61,31 +61,13 @@ export class Ship {
     }
 
     // TODO calculate desired speed from delta using max acceleration as deceleration when approaching target, with max speed? Use that in processframe?
-    // TODO separate acceleration / deceleration for x and y axis based on direction
-    // TODO stricter enum checking by (x & enum.val) == enum.val
     processFrame(direction: Direction, customAcceleration: Acceleration, duration: number) {
         let isStopped = this.velocity.x == 0 && this.velocity.y == 0;
         let isAccelerating = direction != Direction.None || customAcceleration.x != 0 || customAcceleration.y != 0;
         let isDecelerating = !isStopped && !isAccelerating;
-        let acceleration = new Acceleration(0, 0);
+        let acceleration = this.getDirectionalAcceleration(direction, duration);
 
         if (isAccelerating) {
-            if (direction & Direction.Up) {
-                acceleration = acceleration.add(new Acceleration(0, -Ship.directionalAcceleration));
-            }
-
-            if (direction & Direction.Down) {
-                acceleration = acceleration.add(new Acceleration(0, Ship.directionalAcceleration));
-            }
-
-            if (direction & Direction.Left) {
-                acceleration = acceleration.add(new Acceleration(-Ship.directionalAcceleration, 0));
-            }
-
-            if (direction & Direction.Right) {
-                acceleration = acceleration.add(new Acceleration(Ship.directionalAcceleration, 0));
-            }
-
             acceleration = acceleration.add(customAcceleration).limitMagnitude(Ship.maximumAcceleration);
         }
         else if (isDecelerating) {

@@ -34,6 +34,7 @@ describe('Ship', () => {
         // Decelerating towards zero
         [new Velocity(150, 100), Direction.None, 1, new Acceleration(-150, -100)],
         [new Velocity(-150, -100), Direction.None, 1, new Acceleration(150, 100)],
+        [new Velocity(150, 100), Direction.None, 2, new Acceleration(-75, -50)],
     ])('getDirectionalAcceleration() directionalVelocity: %p, direction: %p, duration: %p, expectedResult: %p', (directionalVelocity: Velocity, direction: Direction, duration: number, expectedResult: Acceleration) => {
         let subject = new Ship(new Coordinates(100, 100));
         
@@ -45,15 +46,11 @@ describe('Ship', () => {
     });
 
     it.each([
-        // Direction
-        [new Coordinates(100, 100), new Velocity(50, 50), Direction.Up, new Acceleration(0, 0), 1, new Velocity(50, -150), new Coordinates(150, 50)],
+        // Directional acceleration
         [new Coordinates(100, 100), new Velocity(50, 50), Direction.Down, new Acceleration(0, 0), 1, new Velocity(50, 250), new Coordinates(150, 250)],
-        [new Coordinates(100, 100), new Velocity(50, 50), Direction.Left, new Acceleration(0, 0), 1, new Velocity(-150, 50), new Coordinates(50, 150)],
-        [new Coordinates(100, 100), new Velocity(50, 50), Direction.Right, new Acceleration(0, 0), 1, new Velocity(250, 50), new Coordinates(250, 150)],
-        [new Coordinates(100, 100), new Velocity(50, 50), Direction.Down | Direction.Right, new Acceleration(0, 0), 1, new Velocity(250, 250), new Coordinates(250, 250)],
-        [new Coordinates(100, 100), new Velocity(50, 50), Direction.Up | Direction.Left, new Acceleration(0, 0), 1, new Velocity(-150, -150), new Coordinates(50, 50)],
-        [new Coordinates(100, 100), new Velocity(50, 50), Direction.Up | Direction.Down | Direction.Left | Direction.Right, new Acceleration(0, 0), 1, new Velocity(50, 50), new Coordinates(150, 150)],
         [new Coordinates(100, 100), new Velocity(50, 50), Direction.Down, new Acceleration(0, 0), 2, new Velocity(50, 450), new Coordinates(200, 600)],
+        [new Coordinates(100, 100), new Velocity(400, 300), Direction.None, new Acceleration(0, 0), 1, new Velocity(160, 120), new Coordinates(380, 310)],
+        [new Coordinates(100, 100), new Velocity(-400, -300), Direction.None, new Acceleration(0, 0), 1, new Velocity(-160, -120), new Coordinates(-180, -110)],
 
         // Custom acceleration
         [new Coordinates(100, 100), new Velocity(50, 50), Direction.None, new Acceleration(40, 60), 1, new Velocity(90, 110), new Coordinates(170, 180)],
@@ -67,12 +64,6 @@ describe('Ship', () => {
 
         // Velocity limit
         [new Coordinates(100, 100), new Velocity(360, 270), Direction.None, new Acceleration(80, 60), 1, new Velocity(400, 300), new Coordinates(480, 385)],
-
-        // Deceleration
-        [new Coordinates(100, 100), new Velocity(400, 300), Direction.None, new Acceleration(0, 0), 1, new Velocity(160, 120), new Coordinates(380, 310)],
-        [new Coordinates(100, 100), new Velocity(-400, -300), Direction.None, new Acceleration(0, 0), 1, new Velocity(-160, -120), new Coordinates(-180, -110)],
-        [new Coordinates(100, 100), new Velocity(400, 300), Direction.None, new Acceleration(0, 0), 2, new Velocity(0, 0), new Coordinates(433.3333, 350)],
-        [new Coordinates(100, 100), new Velocity(60, 45), Direction.None, new Acceleration(0, 0), 0.5, new Velocity(0, 0), new Coordinates(107.5, 105.625)],
 
         // Stopped
         [new Coordinates(100, 100), new Velocity(0, 0), Direction.None, new Acceleration(0, 0), 1, new Velocity(0, 0), new Coordinates(100, 100)],
