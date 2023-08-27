@@ -6,6 +6,45 @@ import { Velocity } from '../src/velocity';
 
 describe('Ship', () => {
     it.each([
+        // Stopped
+        [new Velocity(0, 0), Direction.None, 5, new Acceleration(0, 0)],
+
+        // Accelerating
+        [new Velocity(0, 0), Direction.Up, 5, new Acceleration(0, -200)],
+        [new Velocity(0, 0), Direction.Down, 5, new Acceleration(0, 200)],
+        [new Velocity(0, 0), Direction.Left, 5, new Acceleration(-200, 0)],
+        [new Velocity(0, 0), Direction.Right, 5, new Acceleration(200, 0)],
+
+        // Accelerating in multiple directions
+        [new Velocity(0, 0), Direction.Up | Direction.Left, 5, new Acceleration(-200, -200)],
+        [new Velocity(0, 0), Direction.Down | Direction.Right, 5, new Acceleration(200, 200)],
+        [new Velocity(0, 0), Direction.Up | Direction.Down | Direction.Left | Direction.Right, 5, new Acceleration(0, 0)],
+
+        // Decelerating
+        [new Velocity(300, 300), Direction.None, 1, new Acceleration(-200, -200)],
+        [new Velocity(-300, -300), Direction.None, 1, new Acceleration(200, 200)],
+        [new Velocity(200, 200), Direction.None, 1, new Acceleration(-200, -200)],
+        
+        // Decelerating along a single axis
+        [new Velocity(0, 200), Direction.Left, 1, new Acceleration(-200, -200)],
+        [new Velocity(0, 200), Direction.Right, 1, new Acceleration(200, -200)],
+        [new Velocity(200, 0), Direction.Up, 1, new Acceleration(-200, -200)],
+        [new Velocity(200, 0), Direction.Down, 1, new Acceleration(-200, 200)],
+        
+        // Decelerating towards zero
+        [new Velocity(150, 100), Direction.None, 1, new Acceleration(-150, -100)],
+        [new Velocity(-150, -100), Direction.None, 1, new Acceleration(150, 100)],
+    ])('getDirectionalAcceleration() directionalVelocity: %p, direction: %p, duration: %p, expectedResult: %p', (directionalVelocity: Velocity, direction: Direction, duration: number, expectedResult: Acceleration) => {
+        let subject = new Ship(new Coordinates(100, 100));
+        
+        subject.directionalVelocity = directionalVelocity;
+
+        let result = subject.getDirectionalAcceleration(direction, duration);
+
+        expect(result).toEqual(expectedResult);
+    });
+
+    it.each([
         // Direction
         [new Coordinates(100, 100), new Velocity(50, 50), Direction.Up, new Acceleration(0, 0), 1, new Velocity(50, -150), new Coordinates(150, 50)],
         [new Coordinates(100, 100), new Velocity(50, 50), Direction.Down, new Acceleration(0, 0), 1, new Velocity(50, 250), new Coordinates(150, 250)],
