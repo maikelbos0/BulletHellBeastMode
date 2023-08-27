@@ -58,7 +58,7 @@ export class Ship {
         // }
     }
 }
-Ship.maximumSpeed = 500;
-Ship.maximumAcceleration = 300;
-Ship.directionalAcceleration = 200;
+Ship.maximumSpeed = 700;
+Ship.maximumAcceleration = 1000;
+Ship.directionalAcceleration = 700;
 //# sourceMappingURL=ship.js.map
