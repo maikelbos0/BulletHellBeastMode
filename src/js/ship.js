@@ -7,7 +7,7 @@ export class Ship {
         this.velocity = new Velocity(0, 0);
         this.directionalVelocity = new Velocity(0, 0);
     }
-    getDirectionalAcceleration(direction, duration) {
+    getDirectionalAcceleration(direction, duration, allowDeceleration) {
         let acceleration = new Acceleration(0, 0);
         if ((direction & Direction.Up) == Direction.Up) {
             acceleration = acceleration.add(new Acceleration(0, -Ship.directionalAcceleration));
@@ -21,14 +21,14 @@ export class Ship {
         if ((direction & Direction.Right) == Direction.Right) {
             acceleration = acceleration.add(new Acceleration(Ship.directionalAcceleration, 0));
         }
-        if ((direction & Direction.Vertical) == Direction.None && this.directionalVelocity.y != 0) {
+        if (allowDeceleration && (direction & Direction.Vertical) == Direction.None && this.directionalVelocity.y != 0) {
             let verticalDeceleration = Ship.directionalAcceleration;
             if (verticalDeceleration * duration > Math.abs(this.directionalVelocity.y)) {
                 verticalDeceleration = Math.abs(this.directionalVelocity.y) / duration;
             }
             acceleration = acceleration.add(new Acceleration(0, Math.sign(this.directionalVelocity.y) * -verticalDeceleration));
         }
-        if ((direction & Direction.Horizontal) == Direction.None && this.directionalVelocity.x != 0) {
+        if (allowDeceleration && (direction & Direction.Horizontal) == Direction.None && this.directionalVelocity.x != 0) {
             let horizontalDeceleration = Ship.directionalAcceleration;
             if (horizontalDeceleration * duration > Math.abs(this.directionalVelocity.x)) {
                 horizontalDeceleration = Math.abs(this.directionalVelocity.x) / duration;
@@ -42,7 +42,7 @@ export class Ship {
         // let isStopped = this.velocity.x == 0 && this.velocity.y == 0;
         // let isAccelerating = direction != Direction.None || customAcceleration.x != 0 || customAcceleration.y != 0;
         // let isDecelerating = !isStopped && !isAccelerating;
-        let acceleration = this.getDirectionalAcceleration(direction, duration);
+        let acceleration = this.getDirectionalAcceleration(direction, duration, customAcceleration == null);
         // if (isAccelerating) {
         //     acceleration = acceleration.add(customAcceleration).limitMagnitude(Ship.maximumAcceleration);
         // }
