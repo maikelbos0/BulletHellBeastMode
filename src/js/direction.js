@@ -5,5 +5,7 @@ export var Direction;
     Direction[Direction["Down"] = 2] = "Down";
     Direction[Direction["Left"] = 4] = "Left";
     Direction[Direction["Right"] = 8] = "Right";
+    Direction[Direction["Vertical"] = 3] = "Vertical";
+    Direction[Direction["Horizontal"] = 12] = "Horizontal";
 })(Direction || (Direction = {}));
 //# sourceMappingURL=direction.js.map

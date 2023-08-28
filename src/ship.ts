@@ -37,7 +37,7 @@ export class Ship {
             acceleration = acceleration.add(new Acceleration(Ship.directionalAcceleration, 0));
         }
 
-        if ((direction & Direction.Up) != Direction.Up && (direction & Direction.Down) != Direction.Down && this.directionalVelocity.y != 0) {
+        if ((direction & Direction.Vertical) == Direction.None && this.directionalVelocity.y != 0) {
             let verticalDeceleration = Ship.directionalAcceleration;
 
             if (verticalDeceleration * duration > Math.abs(this.directionalVelocity.y)) {
@@ -47,7 +47,7 @@ export class Ship {
             acceleration = acceleration.add(new Acceleration(0, Math.sign(this.directionalVelocity.y) * -verticalDeceleration));
         }
 
-        if ((direction & Direction.Left) != Direction.Left && (direction & Direction.Right) != Direction.Right && this.directionalVelocity.x != 0) {
+        if ((direction & Direction.Horizontal) == Direction.None && this.directionalVelocity.x != 0) {
             let horizontalDeceleration = Ship.directionalAcceleration;
 
             if (horizontalDeceleration * duration > Math.abs(this.directionalVelocity.x)) {
@@ -77,10 +77,10 @@ export class Ship {
         // }
 
         // if (isAccelerating || isDecelerating) {
-            this.position = this.position.move(this.directionalVelocity, duration / 2);
-            // this.velocity = this.velocity.accelerate(acceleration, duration).limitMagnitude(Ship.maximumSpeed);
-            this.directionalVelocity = this.directionalVelocity.accelerate(acceleration, duration).limitMagnitude(Ship.maximumSpeed);
-            this.position = this.position.move(this.directionalVelocity, duration / 2);
+        this.position = this.position.move(this.directionalVelocity, duration / 2);
+        // this.velocity = this.velocity.accelerate(acceleration, duration).limitMagnitude(Ship.maximumSpeed);
+        this.directionalVelocity = this.directionalVelocity.accelerate(acceleration, duration).limitMagnitude(Ship.maximumSpeed);
+        this.position = this.position.move(this.directionalVelocity, duration / 2);
         // }
     }
 }
