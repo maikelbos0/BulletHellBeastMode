@@ -5,7 +5,6 @@ export class Ship {
     constructor(startingPosition) {
         this.position = startingPosition;
         this.velocity = new Velocity(0, 0);
-        this.directionalVelocity = new Velocity(0, 0);
     }
     getDirectionalAcceleration(direction, duration, allowDeceleration) {
         let acceleration = new Acceleration(0, 0);
@@ -21,19 +20,19 @@ export class Ship {
         if ((direction & Direction.Right) == Direction.Right) {
             acceleration = acceleration.add(new Acceleration(Ship.directionalAcceleration, 0));
         }
-        if (allowDeceleration && (direction & Direction.Vertical) == Direction.None && this.directionalVelocity.y != 0) {
+        if (allowDeceleration && (direction & Direction.Vertical) == Direction.None && this.velocity.y != 0) {
             let verticalDeceleration = Ship.directionalAcceleration;
-            if (verticalDeceleration * duration > Math.abs(this.directionalVelocity.y)) {
-                verticalDeceleration = Math.abs(this.directionalVelocity.y) / duration;
+            if (verticalDeceleration * duration > Math.abs(this.velocity.y)) {
+                verticalDeceleration = Math.abs(this.velocity.y) / duration;
             }
-            acceleration = acceleration.add(new Acceleration(0, Math.sign(this.directionalVelocity.y) * -verticalDeceleration));
+            acceleration = acceleration.add(new Acceleration(0, Math.sign(this.velocity.y) * -verticalDeceleration));
         }
-        if (allowDeceleration && (direction & Direction.Horizontal) == Direction.None && this.directionalVelocity.x != 0) {
+        if (allowDeceleration && (direction & Direction.Horizontal) == Direction.None && this.velocity.x != 0) {
             let horizontalDeceleration = Ship.directionalAcceleration;
-            if (horizontalDeceleration * duration > Math.abs(this.directionalVelocity.x)) {
-                horizontalDeceleration = Math.abs(this.directionalVelocity.x) / duration;
+            if (horizontalDeceleration * duration > Math.abs(this.velocity.x)) {
+                horizontalDeceleration = Math.abs(this.velocity.x) / duration;
             }
-            acceleration = acceleration.add(new Acceleration(Math.sign(this.directionalVelocity.x) * -horizontalDeceleration, 0));
+            acceleration = acceleration.add(new Acceleration(Math.sign(this.velocity.x) * -horizontalDeceleration, 0));
         }
         return acceleration;
     }
@@ -51,10 +50,10 @@ export class Ship {
         //     duration = Math.min(duration, this.velocity.getMagnitude() / acceleration.getMagnitude());
         // }
         // if (isAccelerating || isDecelerating) {
-        this.position = this.position.move(this.directionalVelocity, duration / 2);
+        this.position = this.position.move(this.velocity, duration / 2);
         // this.velocity = this.velocity.accelerate(acceleration, duration).limitMagnitude(Ship.maximumSpeed);
-        this.directionalVelocity = this.directionalVelocity.accelerate(acceleration, duration).limitMagnitude(Ship.maximumSpeed);
-        this.position = this.position.move(this.directionalVelocity, duration / 2);
+        this.velocity = this.velocity.accelerate(acceleration, duration).limitMagnitude(Ship.maximumSpeed);
+        this.position = this.position.move(this.velocity, duration / 2);
         // }
     }
 }

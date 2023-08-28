@@ -38,10 +38,10 @@ describe('Ship', () => {
 
         // Don't allow deceleration
         [new Velocity(1000, 1000), Direction.None, 1, false, new Acceleration(0, 0)],
-    ])('getDirectionalAcceleration() directionalVelocity: %p, direction: %p, duration: %p, allowDeceleration: %p, expectedResult: %p', (directionalVelocity: Velocity, direction: Direction, duration: number, allowDeceleration: boolean, expectedResult: Acceleration) => {
+    ])('getDirectionalAcceleration() velocity: %p, direction: %p, duration: %p, allowDeceleration: %p, expectedResult: %p', (velocity: Velocity, direction: Direction, duration: number, allowDeceleration: boolean, expectedResult: Acceleration) => {
         let subject = new Ship(new Coordinates(100, 100));
         
-        subject.directionalVelocity = directionalVelocity;
+        subject.velocity = velocity;
 
         let result = subject.getDirectionalAcceleration(direction, duration, allowDeceleration);
 
@@ -75,13 +75,11 @@ describe('Ship', () => {
             (startingPosition: Coordinates, startingVelocity: Velocity, direction: Direction, customAcceleration: Acceleration | null, duration: number, expectedVelocity: Velocity, expectedPosition: Coordinates) => {
         let subject = new Ship(startingPosition);
 
-        // subject.velocity = startingVelocity;
-        subject.directionalVelocity = startingVelocity;
+        subject.velocity = startingVelocity;
 
         subject.processFrame(direction, customAcceleration, duration);
         
-        // expect(subject.velocity).toEqual(expectedVelocity);
-        expect(subject.directionalVelocity).toEqual(expectedVelocity);
+        expect(subject.velocity).toEqual(expectedVelocity);
         expect(subject.position).toEqual(expectedPosition);
     });
 });
