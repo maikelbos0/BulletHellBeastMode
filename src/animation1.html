@@ -33,6 +33,7 @@
         }
 
         let direction = Direction.None;
+        let desiredPosition = null;
 
         window.addEventListener('keydown', e => {
             if (keyMap.hasOwnProperty(e.keyCode)) {
@@ -43,6 +44,19 @@
             if (keyMap.hasOwnProperty(e.keyCode)) {
                 direction &= ~keyMap[e.keyCode];
             }
+        });
+        canvas.addEventListener('mousedown', e => {
+            if (e.button === 0) {
+                desiredPosition = new Coordinates(e.offsetX, e.offsetY);
+            }
+        });
+        canvas.addEventListener('mousemove', e => {
+            if (desiredPosition != null) {
+                desiredPosition = new Coordinates(e.offsetX, e.offsetY);
+            }
+        });
+        canvas.addEventListener('mouseup', e => {
+            desiredPosition = null;
         });
 
         let previousTimestamp;
@@ -74,7 +88,7 @@
             context.lineWidth = 3;
             context.beginPath();
 
-            ship.processFrame(direction, new Acceleration(0, 0), duration);
+            ship.processFrame(direction, desiredPosition, duration);
 
             context.rect(ship.position.x - shipSize / 2, ship.position.y - shipSize / 2, shipSize, shipSize);
             context.stroke();
