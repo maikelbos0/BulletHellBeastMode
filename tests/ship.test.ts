@@ -7,6 +7,28 @@ import { Velocity } from '../src/velocity';
 describe('Ship', () => {
     it.each([
         // Stopped
+        [Direction.None, new Velocity(0, 0)],
+
+        // Moving
+        [Direction.Up, new Velocity(0, -700)],
+        [Direction.Down, new Velocity(0, 700)],
+        [Direction.Left, new Velocity(-700, 0)],
+        [Direction.Right, new Velocity(700, 0)],
+
+        // Moving in multiple directions
+        [Direction.Up | Direction.Left, new Velocity(-700, -700)],
+        [Direction.Down | Direction.Right, new Velocity(700, 700)],
+        [Direction.Up | Direction.Down | Direction.Left | Direction.Right, new Velocity(0, 0)],
+    ])('getDirectionalVelocity() direction: %p, expectedResult: %p', (direction: Direction, expectedResult: Velocity) => {
+        let subject = new Ship(new Coordinates(100, 100));
+        
+        let result = subject.getDirectionalVelocity(direction);
+        
+        expect(result).toEqual(expectedResult);
+    });
+
+    it.each([
+        // Stopped
         [new Velocity(0, 0), Direction.None, 5, true, new Acceleration(0, 0)],
 
         // Accelerating
@@ -47,6 +69,52 @@ describe('Ship', () => {
 
         expect(result).toEqual(expectedResult);
     });
+
+    /*
+    Calculating distance from acceleration is as easy as using this formula: 
+    D = vt + 1/2at^2
+    D = 1/2at^2
+
+    D(min) = 700t + 1/2*-1000t^2
+    D(min) = 1/2*1000t^2
+
+    t = 700/1000
+
+    D(min) = 700 * 0.7 + 1/2*-1000*0.7*0.7
+    D(min) = 1/2*1000*0.7*0.7
+
+
+    D = vt + 1/2at^2
+    vt = D - 1/2at^2
+    v = (D - 1/2at^2) / t
+    v = D/t - 1/2at
+    v = D/t - 1/2*1000t
+
+
+    D = 1/2at^2
+    2D = at^2
+    2D / a = t^2
+    t = sqrt(2D / a)
+    t = sqrt(2D / 1000)
+    t = sqrt(D / 500)
+    v = D/t - 1/2*1000t
+
+    D = vt + 1/2at^2
+    D - 1/2at^2 = vt
+    vt = D - 1/2at^2
+    v = D/t - 1/2at
+
+    if (d < stoppingDistance) {
+        stoppingTime = sqrt(D / 500)
+        v = direction.adjustmagnitude(D/t - 1/2*1000*t)
+    }
+    else {
+        v = direction.adjustmagnitude(700)
+    }
+    */
+
+
+    //static readonly stoppingDistance: number = 0.5 *  Ship.maximumAcceleration * ( Ship.maximumSpeed / Ship.maximumAcceleration) * ( Ship.maximumSpeed / Ship.maximumAcceleration);
 
     it.each([
         [new Coordinates(100, 100), new Velocity(0, 0), new Coordinates(100, 100), 1, new Acceleration(0, 0)],

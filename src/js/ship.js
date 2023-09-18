@@ -6,6 +6,22 @@ export class Ship {
         this.position = startingPosition;
         this.velocity = new Velocity(0, 0);
     }
+    getDirectionalVelocity(direction) {
+        let velocity = new Velocity(0, 0);
+        if ((direction & Direction.Up) == Direction.Up) {
+            velocity = velocity.add(new Velocity(0, -Ship.maximumSpeed));
+        }
+        if ((direction & Direction.Down) == Direction.Down) {
+            velocity = velocity.add(new Velocity(0, Ship.maximumSpeed));
+        }
+        if ((direction & Direction.Left) == Direction.Left) {
+            velocity = velocity.add(new Velocity(-Ship.maximumSpeed, 0));
+        }
+        if ((direction & Direction.Right) == Direction.Right) {
+            velocity = velocity.add(new Velocity(Ship.maximumSpeed, 0));
+        }
+        return velocity;
+    }
     getDirectionalAcceleration(direction, duration, allowDeceleration) {
         let acceleration = new Acceleration(0, 0);
         if ((direction & Direction.Up) == Direction.Up) {
