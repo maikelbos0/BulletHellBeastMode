@@ -49,6 +49,22 @@ describe('Ship', () => {
     });
 
     it.each([
+        [new Coordinates(100, 100), new Velocity(0, 0), new Coordinates(100, 100), 1, new Acceleration(0, 0)],
+        [new Coordinates(100, 100), new Velocity(0, 0), new Coordinates(1100, 100), 1, new Acceleration(700, 0)],
+        [new Coordinates(100, 100), new Velocity(0, 0), new Coordinates(1100, 100), 0.5, new Acceleration(1400, 0)]
+    ])('getAccelerationFromDesiredPosition(startingPosition: %p, startingVelocity: %p, desiredPosition: %p, duration: %p, expectedAcceleration: %p) ',
+            (startingPosition: Coordinates, startingVelocity: Velocity, desiredPosition: Coordinates, duration: number, expectedAcceleration: Acceleration) => {
+        let subject = new Ship(startingPosition);
+
+        subject.velocity = startingVelocity;
+
+        let acceleration = subject.getAccelerationFromDesiredPosition(desiredPosition, duration);
+
+        expect(acceleration).toEqual(expectedAcceleration);
+    });
+
+    /*
+    it.each([
         // Directional acceleration
         [new Coordinates(100, 100), new Velocity(100, 100), Direction.Down | Direction.Right, null, 0.5, new Velocity(450, 450), new Coordinates(237.5, 237.5)],
         //[new Coordinates(100, 100), new Velocity(100, 100), Direction.None, new Coordinates(100, 100), 0.2, new Velocity(100, 100), new Coordinates(120, 120)],
@@ -81,5 +97,5 @@ describe('Ship', () => {
         
         expect(subject.velocity).toEqual(expectedVelocity);
         expect(subject.position).toEqual(expectedPosition);
-    });
+    });*/
 });

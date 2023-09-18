@@ -37,13 +37,17 @@ export class Ship {
         }
         return acceleration;
     }
-    getAccelerationFromDesiredPosition(desiredPosition) {
+    getAccelerationFromDesiredPosition(desiredPosition, duration) {
         let positionDelta = desiredPosition.subtract(this.position);
-        let desiredVelocity = new Velocity(positionDelta.x, positionDelta.y).limitMagnitude(Ship.maximumSpeed);
+        let distance = positionDelta.getMagnitude();
+        let stoppingTime = Math.sqrt(2 * distance / Ship.maximumAcceleration);
+        if (stoppingTime == 0) {
+            return new Acceleration(0, 0);
+        }
+        let desiredVelocityMagnitude = distance / stoppingTime;
+        let desiredVelocity = new Velocity(positionDelta.x, positionDelta.y).adjustMagnitude(desiredVelocityMagnitude).limitMagnitude(Ship.maximumSpeed);
         let velocityDelta = desiredVelocity.subtract(this.velocity);
-        let acceleration = velocityDelta.getAcceleration(1);
-        console.log(acceleration);
-        return acceleration;
+        return velocityDelta.getAcceleration(duration);
     }
     // TODO calculate desired speed from delta using max acceleration as deceleration when approaching target, with max speed? Use that in processframe?
     processFrame(direction, desiredPosition, duration) {
@@ -52,7 +56,7 @@ export class Ship {
         // let isDecelerating = !isStopped && !isAccelerating;
         let acceleration = this.getDirectionalAcceleration(direction, duration, desiredPosition == null);
         if (desiredPosition != null) {
-            acceleration = acceleration.add(this.getAccelerationFromDesiredPosition(desiredPosition));
+            acceleration = acceleration.add(this.getAccelerationFromDesiredPosition(desiredPosition, duration));
         }
         acceleration = acceleration.limitMagnitude(Ship.maximumAcceleration);
         // since previous speed will be greater, and for half the duration it will apply to position, we need to subtract (0,0).move(prevspeed, duration/2) from desired velocity!!!
@@ -65,10 +69,10 @@ export class Ship {
         //     duration = Math.min(duration, this.velocity.getMagnitude() / acceleration.getMagnitude());
         // }
         // if (isAccelerating || isDecelerating) {
-        this.position = this.position.move(this.velocity, duration / 2);
+        //this.position = this.position.move(this.velocity, duration / 2);
         // this.velocity = this.velocity.accelerate(acceleration, duration).limitMagnitude(Ship.maximumSpeed);
         this.velocity = this.velocity.accelerate(acceleration, duration).limitMagnitude(Ship.maximumSpeed);
-        this.position = this.position.move(this.velocity, duration / 2);
+        this.position = this.position.move(this.velocity, duration);
         // }
     }
 }
