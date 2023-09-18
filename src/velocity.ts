@@ -12,4 +12,8 @@ export class Velocity extends Vector {
             this.y + aceleration.y * duration
         );
     }
+
+    getAcceleration(duration: number): Acceleration {
+        return new Acceleration(this.x / duration, this.y / duration);
+    }
 }
