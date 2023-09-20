@@ -4,6 +4,7 @@ export enum Direction {
     Down = 1 << 1,
     Left = 1 << 2,
     Right = 1 << 3,
+    // TODO remove
     Vertical = Up | Down,
     Horizontal = Left | Right
 }

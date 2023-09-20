@@ -108,39 +108,19 @@ export class Ship {
 
         return velocityDelta.getAcceleration(duration);
     }
+    
 
-    // TODO calculate desired speed from delta using max acceleration as deceleration when approaching target, with max speed? Use that in processframe?
     processFrame(direction: Direction, desiredPosition: Coordinates | null, duration: number) {
-        // let isStopped = this.velocity.x == 0 && this.velocity.y == 0;
-        // let isAccelerating = direction != Direction.None || customAcceleration.x != 0 || customAcceleration.y != 0;
-        // let isDecelerating = !isStopped && !isAccelerating;
-        let acceleration = this.getDirectionalAcceleration(direction, duration, desiredPosition == null);
+        let desiredVelocity = this.getDirectionalVelocity(direction);
 
         if (desiredPosition != null) {
-            acceleration = acceleration.add(this.getAccelerationFromDesiredPosition(desiredPosition, duration));
+            desiredVelocity = desiredVelocity.add(this.getVelocityFromDesiredPosition(desiredPosition));
         }
 
-        acceleration = acceleration.limitMagnitude(Ship.maximumAcceleration);
-
-        // since previous speed will be greater, and for half the duration it will apply to position, we need to subtract (0,0).move(prevspeed, duration/2) from desired velocity!!!
-        // easiest way to do this might be to only use old or new speed when processing frame
-
-        // if (isAccelerating) {
-        //     acceleration = acceleration.add(customAcceleration).limitMagnitude(Ship.maximumAcceleration);
-        // }
-        // else if (isDecelerating) {
-        //     acceleration = new Acceleration(-this.velocity.x, -this.velocity.y).adjustMagnitude(Ship.maximumAcceleration);
-
-        //     duration = Math.min(duration, this.velocity.getMagnitude() / acceleration.getMagnitude());
-        // }
-
-        // if (isAccelerating || isDecelerating) {
-        //this.position = this.position.move(this.velocity, duration / 2);
-        // this.velocity = this.velocity.accelerate(acceleration, duration).limitMagnitude(Ship.maximumSpeed);
+        let velocityDelta = desiredVelocity.subtract(this.velocity);
+        let acceleration = velocityDelta.getAcceleration(duration).limitMagnitude(Ship.maximumAcceleration);
 
         this.velocity = this.velocity.accelerate(acceleration, duration).limitMagnitude(Ship.maximumSpeed);
-
         this.position = this.position.move(this.velocity, duration);
-        // }
     }
 }

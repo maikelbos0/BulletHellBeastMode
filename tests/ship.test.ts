@@ -145,10 +145,14 @@ describe('Ship', () => {
             expect(acceleration).toEqual(expectedAcceleration);
         });
 
-    /*
     it.each([
         // Directional acceleration
-        [new Coordinates(100, 100), new Velocity(100, 100), Direction.Down | Direction.Right, null, 0.5, new Velocity(450, 450), new Coordinates(237.5, 237.5)],
+        [new Coordinates(100, 100), new Velocity(100, 0), Direction.Right, null, 1, new Velocity(700, 0), new Coordinates(800, 100)],
+        [new Coordinates(100, 100), new Velocity(100, 0), Direction.Right, null, 0.1, new Velocity(200, 0), new Coordinates(120, 100)],
+        [new Coordinates(100, 100), new Velocity(100, 0), Direction.Right, null, 0.05, new Velocity(150, 0), new Coordinates(107.5, 100)],
+
+        // TODO expand test coverage, include multi direction +/- desired position, and clean up old code
+
         //[new Coordinates(100, 100), new Velocity(100, 100), Direction.None, new Coordinates(100, 100), 0.2, new Velocity(100, 100), new Coordinates(120, 120)],
         //[new Coordinates(100, 100), new Velocity(340, 240), Direction.None, null, 0.2, new Velocity(200, 100), new Coordinates(154, 134)],
 
@@ -179,5 +183,5 @@ describe('Ship', () => {
         
         expect(subject.velocity).toEqual(expectedVelocity);
         expect(subject.position).toEqual(expectedPosition);
-    });*/
+    });
 });
