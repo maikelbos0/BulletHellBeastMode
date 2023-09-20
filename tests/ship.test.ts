@@ -21,9 +21,23 @@ describe('Ship', () => {
         [Direction.Up | Direction.Down | Direction.Left | Direction.Right, new Velocity(0, 0)],
     ])('getDirectionalVelocity() direction: %p, expectedResult: %p', (direction: Direction, expectedResult: Velocity) => {
         let subject = new Ship(new Coordinates(100, 100));
-        
+
         let result = subject.getDirectionalVelocity(direction);
-        
+
+        expect(result).toEqual(expectedResult);
+    });
+
+    it.each([
+        [new Coordinates(1000, 1000), new Coordinates(1000, 1000), new Velocity(0, 0)],
+        [new Coordinates(1000, 1000), new Coordinates(1500, 1000), new Velocity(500, 0)],
+        [new Coordinates(1000, 1000), new Coordinates(1000, 500), new Velocity(0, -500)],
+        [new Coordinates(1000, 1000), new Coordinates(1300, 1400), new Velocity(300, 400)],
+        [new Coordinates(1000, 1000), new Coordinates(600, 700), new Velocity(-400, -300)]
+    ])('getVelocityFromDesiredPosition desiredPosition: %p, expectedResults: %p', (startingPosition: Coordinates, desiredPosition: Coordinates, expectedResult: Velocity) => {
+        let subject = new Ship(startingPosition);
+
+        let result = subject.getVelocityFromDesiredPosition(desiredPosition);
+
         expect(result).toEqual(expectedResult);
     });
 
@@ -46,13 +60,13 @@ describe('Ship', () => {
         [new Velocity(1000, 1000), Direction.None, 1, true, new Acceleration(-700, -700)],
         [new Velocity(-1000, -1000), Direction.None, 1, true, new Acceleration(700, 700)],
         [new Velocity(700, 700), Direction.None, 1, true, new Acceleration(-700, -700)],
-       
+
         // Decelerating along a single axis
         [new Velocity(0, 1000), Direction.Left, 1, true, new Acceleration(-700, -700)],
         [new Velocity(0, 1000), Direction.Right, 1, true, new Acceleration(700, -700)],
         [new Velocity(1000, 0), Direction.Up, 1, true, new Acceleration(-700, -700)],
         [new Velocity(1000, 0), Direction.Down, 1, true, new Acceleration(-700, 700)],
-        
+
         // Decelerating towards zero
         [new Velocity(600, 500), Direction.None, 1, true, new Acceleration(-600, -500)],
         [new Velocity(-600, -500), Direction.None, 1, true, new Acceleration(600, 500)],
@@ -62,7 +76,7 @@ describe('Ship', () => {
         [new Velocity(1000, 1000), Direction.None, 1, false, new Acceleration(0, 0)],
     ])('getDirectionalAcceleration() velocity: %p, direction: %p, duration: %p, allowDeceleration: %p, expectedResult: %p', (velocity: Velocity, direction: Direction, duration: number, allowDeceleration: boolean, expectedResult: Acceleration) => {
         let subject = new Ship(new Coordinates(100, 100));
-        
+
         subject.velocity = velocity;
 
         let result = subject.getDirectionalAcceleration(direction, duration, allowDeceleration);
@@ -120,16 +134,16 @@ describe('Ship', () => {
         [new Coordinates(100, 100), new Velocity(0, 0), new Coordinates(100, 100), 1, new Acceleration(0, 0)],
         [new Coordinates(100, 100), new Velocity(0, 0), new Coordinates(1100, 100), 1, new Acceleration(700, 0)],
         [new Coordinates(100, 100), new Velocity(0, 0), new Coordinates(1100, 100), 0.5, new Acceleration(1400, 0)]
-    ])('getAccelerationFromDesiredPosition(startingPosition: %p, startingVelocity: %p, desiredPosition: %p, duration: %p, expectedAcceleration: %p) ',
-            (startingPosition: Coordinates, startingVelocity: Velocity, desiredPosition: Coordinates, duration: number, expectedAcceleration: Acceleration) => {
-        let subject = new Ship(startingPosition);
+    ])('getAccelerationFromDesiredPosition() startingPosition: %p, startingVelocity: %p, desiredPosition: %p, duration: %p, expectedAcceleration: %p',
+        (startingPosition: Coordinates, startingVelocity: Velocity, desiredPosition: Coordinates, duration: number, expectedAcceleration: Acceleration) => {
+            let subject = new Ship(startingPosition);
 
-        subject.velocity = startingVelocity;
+            subject.velocity = startingVelocity;
 
-        let acceleration = subject.getAccelerationFromDesiredPosition(desiredPosition, duration);
+            let acceleration = subject.getAccelerationFromDesiredPosition(desiredPosition, duration);
 
-        expect(acceleration).toEqual(expectedAcceleration);
-    });
+            expect(acceleration).toEqual(expectedAcceleration);
+        });
 
     /*
     it.each([
