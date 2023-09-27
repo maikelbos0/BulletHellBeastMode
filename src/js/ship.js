@@ -28,7 +28,14 @@ export class Ship {
         if (stoppingTime == 0) {
             return new Velocity(0, 0);
         }
-        return new Velocity(positionDelta.x, positionDelta.y).adjustMagnitude(distance / stoppingTime);
+        let velocity = new Velocity(positionDelta.x, positionDelta.y);
+        if (distance > Ship.stoppingDistance) {
+            velocity = velocity.adjustMagnitude(Ship.maximumSpeed);
+        }
+        else {
+            velocity = velocity.adjustMagnitude(distance / stoppingTime);
+        }
+        return velocity;
     }
     processFrame(direction, desiredPosition, duration) {
         let desiredVelocity = this.getDirectionalVelocity(direction);
@@ -44,4 +51,5 @@ export class Ship {
 Ship.maximumSpeed = 700;
 Ship.maximumAcceleration = 1000;
 Ship.directionalAcceleration = 700;
+Ship.stoppingDistance = Ship.maximumAcceleration / 2 * Math.pow(Ship.maximumSpeed / Ship.maximumAcceleration, 2);
 //# sourceMappingURL=ship.js.map

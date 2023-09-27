@@ -29,10 +29,10 @@ describe('Ship', () => {
 
     it.each([
         [new Coordinates(1000, 1000), new Coordinates(1000, 1000), new Velocity(0, 0)],
-        [new Coordinates(1000, 1000), new Coordinates(1500, 1000), new Velocity(500, 0)],
-        [new Coordinates(1000, 1000), new Coordinates(1000, 500), new Velocity(0, -500)],
-        [new Coordinates(1000, 1000), new Coordinates(1300, 1400), new Velocity(300, 400)],
-        [new Coordinates(1000, 1000), new Coordinates(600, 700), new Velocity(-400, -300)]
+        [new Coordinates(1000, 1000), new Coordinates(1500, 1000), new Velocity(700, 0)],
+        [new Coordinates(1000, 1000), new Coordinates(1000, 500), new Velocity(0, -700)],
+        [new Coordinates(1000, 1000), new Coordinates(1300, 1400), new Velocity(420, 560)],
+        [new Coordinates(1000, 1000), new Coordinates(600, 700), new Velocity(-560, -420)]
     ])('getVelocityFromDesiredPosition desiredPosition: %p, expectedResults: %p', (startingPosition: Coordinates, desiredPosition: Coordinates, expectedResult: Velocity) => {
         let subject = new Ship(startingPosition);
 

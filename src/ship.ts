@@ -7,6 +7,7 @@ export class Ship {
     static readonly maximumSpeed: number = 700;
     static readonly maximumAcceleration: number = 1000;
     static readonly directionalAcceleration: number = 700;
+    static readonly stoppingDistance: number = Ship.maximumAcceleration / 2 * Math.pow(Ship.maximumSpeed / Ship.maximumAcceleration, 2);
 
     position: Coordinates;
     velocity: Velocity;
@@ -47,7 +48,16 @@ export class Ship {
             return new Velocity(0, 0);
         }
 
-        return new Velocity(positionDelta.x, positionDelta.y).adjustMagnitude(distance / stoppingTime);
+        let velocity = new Velocity(positionDelta.x, positionDelta.y)
+
+        if (distance > Ship.stoppingDistance) {
+            velocity = velocity.adjustMagnitude(Ship.maximumSpeed);
+        }
+        else {
+            velocity = velocity.adjustMagnitude(distance / stoppingTime);
+        }
+
+        return velocity;
     }
 
     processFrame(direction: Direction, desiredPosition: Coordinates | null, duration: number) {
@@ -61,7 +71,6 @@ export class Ship {
         let acceleration = velocityDelta.getAcceleration(duration).limitMagnitude(Ship.maximumAcceleration);
 
         this.velocity = this.velocity.accelerate(acceleration, duration).limitMagnitude(Ship.maximumSpeed);
-
         this.position = this.position.move(this.velocity, duration);
     }
 }
