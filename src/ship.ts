@@ -4,9 +4,8 @@ import { Direction } from './direction.js';
 import { Velocity } from './velocity.js';
 
 export class Ship {
-    static readonly maximumSpeed: number = 700;
-    static readonly maximumAcceleration: number = 1000;
-    static readonly directionalAcceleration: number = 700;
+    static readonly maximumSpeed: number = 1000;
+    static readonly maximumAcceleration: number = 2000;
     static readonly stoppingDistance: number = Ship.maximumAcceleration / 2 * Math.pow(Ship.maximumSpeed / Ship.maximumAcceleration, 2);
 
     position: Coordinates;

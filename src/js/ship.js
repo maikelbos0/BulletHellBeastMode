@@ -46,8 +46,7 @@ export class Ship {
         this.position = this.position.move(this.velocity, duration);
     }
 }
-Ship.maximumSpeed = 700;
-Ship.maximumAcceleration = 1000;
-Ship.directionalAcceleration = 700;
+Ship.maximumSpeed = 1000;
+Ship.maximumAcceleration = 2000;
 Ship.stoppingDistance = Ship.maximumAcceleration / 2 * Math.pow(Ship.maximumSpeed / Ship.maximumAcceleration, 2);
 //# sourceMappingURL=ship.js.map
