@@ -42,26 +42,19 @@ describe('Ship', () => {
     });
 
     it.each([
-        // Directional acceleration
+        // Directions
         [new Coordinates(100, 100), new Velocity(100, 0), Direction.Right, null, 1, new Velocity(700, 0), new Coordinates(800, 100)],
         [new Coordinates(100, 100), new Velocity(100, 0), Direction.Right, null, 0.1, new Velocity(200, 0), new Coordinates(120, 100)],
-        [new Coordinates(100, 100), new Velocity(100, 0), Direction.Right, null, 0.05, new Velocity(150, 0), new Coordinates(107.5, 100)],
         [new Coordinates(100, 100), new Velocity(0, 0), Direction.Right | Direction.Down, null, 0.1, new Velocity(70.7107, 70.7107), new Coordinates(107.0711, 107.0711)],
 
-        // TODO add tests for position, combination
+        // Desired position
+        [new Coordinates(100, 100), new Velocity(100, 0), Direction.None, new Coordinates(1000, 100), 1, new Velocity(700, 0), new Coordinates(800, 100)],
+        [new Coordinates(100, 100), new Velocity(100, 0), Direction.None, new Coordinates(1000, 100), 0.1, new Velocity(200, 0), new Coordinates(120, 100)],
+        [new Coordinates(100, 100), new Velocity(0, 0), Direction.None, new Coordinates(1000, 1000), 0.1, new Velocity(70.7107, 70.7107), new Coordinates(107.0711, 107.0711)],
 
-        //[new Coordinates(100, 100), new Velocity(100, 100), Direction.None, new Coordinates(100, 100), 0.2, new Velocity(100, 100), new Coordinates(120, 120)],
-        //[new Coordinates(100, 100), new Velocity(340, 240), Direction.None, null, 0.2, new Velocity(200, 100), new Coordinates(154, 134)],
-
-        // Custom acceleration
-        // [new Coordinates(100, 100), new Velocity(50, 50), Direction.None, new Acceleration(40, 60), 1, new Velocity(90, 110), new Coordinates(170, 180)],
-        // [new Coordinates(100, 100), new Velocity(50, 50), Direction.None, new Acceleration(-40, -60), 2, new Velocity(-30, -70), new Coordinates(120, 80)],
-
-        // Combined direction and custom acceleration
-        // [new Coordinates(100, 100), new Velocity(50, 50), Direction.Up, new Acceleration(80, 20), 1, new Velocity(130, -130), new Coordinates(190, 60)],
-
-        // Acceleration limit
-        // [new Coordinates(100, 100), new Velocity(50, 50), Direction.None, new Acceleration(400, 300), 1, new Velocity(290, 230), new Coordinates(270, 240)],
+        // Combined
+        [new Coordinates(100, 100), new Velocity(100, 0), Direction.Right, new Coordinates(1000, 100), 0.1, new Velocity(200, 0), new Coordinates(120, 100)],
+        [new Coordinates(100, 100), new Velocity(0, 0), Direction.Left, new Coordinates(100, 1000), 0.1, new Velocity(-70.7107, 70.7107), new Coordinates(92.9289, 107.0711)],
 
         // Velocity limit
         [new Coordinates(100, 100), new Velocity(700, 0), Direction.Right, null, 1, new Velocity(700, 0), new Coordinates(800, 100)],
