@@ -5,7 +5,7 @@
 </head>
 
 <body>
-    <canvas id="game" height="800" width="800"></canvas>
+    <canvas id="game" height="1000" width="1000"></canvas>
 
     <script type="module">
         import { Acceleration } from './js/acceleration.js';
@@ -13,6 +13,7 @@
         import { Direction } from './js/direction.js';
         import { Ship } from './js/ship.js';
 
+        const maximumFrameRate = 1000000;
         const canvas = document.getElementById("game");
         const context = canvas.getContext("2d");
         const height = parseInt(canvas.height);
@@ -66,33 +67,36 @@
         function draw(timestamp) {
             let duration = (timestamp - previousTimestamp) / 1000;
 
-            context.clearRect(0, 0, width, height);
-            context.strokeStyle = "rgba(0, 0, 0, 0.5)";
-            context.lineWidth = 1;
-            context.beginPath();
+            if (duration > 1 / maximumFrameRate) {
+                context.clearRect(0, 0, width, height);
+                context.strokeStyle = "rgba(0, 0, 0, 0.5)";
+                context.lineWidth = 1;
+                context.beginPath();
 
-            for (var i = 0; i < lineCount; i++) {
-                context.moveTo(0, linePositions[i]);
-                context.lineTo(width, linePositions[i]);
+                for (var i = 0; i < lineCount; i++) {
+                    context.moveTo(0, linePositions[i]);
+                    context.lineTo(width, linePositions[i]);
+                    context.stroke();
+
+                    linePositions[i] += duration * speed;
+
+                    if (linePositions[i] > height) {
+                        linePositions[i] -= height;
+                    }
+                }
+
+                context.strokeStyle = "black";
+                context.lineWidth = 3;
+                context.beginPath();
+
+                ship.processFrame(direction, desiredPosition, duration);
+
+                context.rect(ship.position.x - shipSize / 2, ship.position.y - shipSize / 2, shipSize, shipSize);
                 context.stroke();
 
-                linePositions[i] += duration * speed;
-
-                if (linePositions[i] > height) {
-                    linePositions[i] -= height;
-                }
+                previousTimestamp = timestamp;
             }
 
-            context.strokeStyle = "black";
-            context.lineWidth = 3;
-            context.beginPath();
-
-            ship.processFrame(direction, desiredPosition, duration);
-
-            context.rect(ship.position.x - shipSize / 2, ship.position.y - shipSize / 2, shipSize, shipSize);
-            context.stroke();
-
-            previousTimestamp = timestamp;
             window.requestAnimationFrame(draw);
         }
 
