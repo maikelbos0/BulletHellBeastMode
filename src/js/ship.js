@@ -24,18 +24,16 @@ export class Ship {
     getVelocityFromDesiredPosition(desiredPosition) {
         let positionDelta = desiredPosition.subtract(this.position);
         let distance = positionDelta.getMagnitude();
-        let stoppingTime = Math.sqrt(2 * distance / Ship.maximumAcceleration);
-        if (stoppingTime == 0) {
+        if (distance == 0) {
             return new Velocity(0, 0);
         }
-        let velocity = new Velocity(positionDelta.x, positionDelta.y);
-        if (distance > Ship.stoppingDistance) {
-            velocity = velocity.adjustMagnitude(Ship.maximumSpeed);
+        else if (distance > Ship.stoppingDistance) {
+            return new Velocity(positionDelta.x, positionDelta.y).adjustMagnitude(Ship.maximumSpeed);
         }
         else {
-            velocity = velocity.adjustMagnitude(distance / stoppingTime);
+            let stoppingTime = Math.sqrt(2 * distance / Ship.maximumAcceleration);
+            return new Velocity(positionDelta.x, positionDelta.y).adjustMagnitude(distance / stoppingTime);
         }
-        return velocity;
     }
     processFrame(direction, desiredPosition, duration) {
         let desiredVelocity = this.getDirectionalVelocity(direction);
