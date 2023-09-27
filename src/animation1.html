@@ -13,7 +13,8 @@
         import { Direction } from './js/direction.js';
         import { Ship } from './js/ship.js';
 
-        const maximumFrameRate = 1000000;
+        // TODO send telemetry every X time so that server can verify distance travelled, check current hitbox, etc
+        const maximumFrameRate = 1000;
         const canvas = document.getElementById("game");
         const context = canvas.getContext("2d");
         const height = parseInt(canvas.height);

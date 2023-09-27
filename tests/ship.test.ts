@@ -46,8 +46,9 @@ describe('Ship', () => {
         [new Coordinates(100, 100), new Velocity(100, 0), Direction.Right, null, 1, new Velocity(700, 0), new Coordinates(800, 100)],
         [new Coordinates(100, 100), new Velocity(100, 0), Direction.Right, null, 0.1, new Velocity(200, 0), new Coordinates(120, 100)],
         [new Coordinates(100, 100), new Velocity(100, 0), Direction.Right, null, 0.05, new Velocity(150, 0), new Coordinates(107.5, 100)],
+        [new Coordinates(100, 100), new Velocity(0, 0), Direction.Right | Direction.Down, null, 0.1, new Velocity(70.7107, 70.7107), new Coordinates(107.0711, 107.0711)],
 
-        // TODO expand test coverage, include multi direction +/- desired position, and clean up old code
+        // TODO add tests for position, combination
 
         //[new Coordinates(100, 100), new Velocity(100, 100), Direction.None, new Coordinates(100, 100), 0.2, new Velocity(100, 100), new Coordinates(120, 120)],
         //[new Coordinates(100, 100), new Velocity(340, 240), Direction.None, null, 0.2, new Velocity(200, 100), new Coordinates(154, 134)],
@@ -63,12 +64,16 @@ describe('Ship', () => {
         // [new Coordinates(100, 100), new Velocity(50, 50), Direction.None, new Acceleration(400, 300), 1, new Velocity(290, 230), new Coordinates(270, 240)],
 
         // Velocity limit
-        // [new Coordinates(100, 100), new Velocity(360, 270), Direction.None, new Acceleration(80, 60), 1, new Velocity(400, 300), new Coordinates(480, 385)],
+        [new Coordinates(100, 100), new Velocity(700, 0), Direction.Right, null, 1, new Velocity(700, 0), new Coordinates(800, 100)],
+        [new Coordinates(100, 100), new Velocity(350, 0), Direction.Right, null, 1, new Velocity(700, 0), new Coordinates(800, 100)],
+
+        // Decelerating
+        [new Coordinates(100, 100), new Velocity(700, 0), Direction.None, null, 1, new Velocity(0, 0), new Coordinates(100, 100)],
+        [new Coordinates(100, 100), new Velocity(700, 0), Direction.None, null, 0.5, new Velocity(200, 0), new Coordinates(200, 100)],
+        [new Coordinates(100, 100), new Velocity(-150, -200), Direction.None, null, 0.1, new Velocity(-90, -120), new Coordinates(91, 88)],
 
         // Stopped
-        //[new Coordinates(100, 100), new Velocity(0, 0), Direction.None, null, 1, new Velocity(0, 0), new Coordinates(100, 100)],
-        //[new Coordinates(100, 100), new Velocity(0, 0), Direction.Up, null, 1, new Velocity(0, -700), new Coordinates(100, -250)],
-        // [new Coordinates(100, 100), new Velocity(0, 0), Direction.None, new Acceleration(40, 60), 1, new Velocity(40, 60), new Coordinates(120, 130)]
+        [new Coordinates(100, 100), new Velocity(0, 0), Direction.None, null, 1, new Velocity(0, 0), new Coordinates(100, 100)],
     ])('processFrame() startingPosition: %p, startingVelocity: %p, direction: %p, desiredPosition: %p, duration: %p, expectedVelocity: %p, expectedPosition: %p', 
             (startingPosition: Coordinates, startingVelocity: Velocity, direction: Direction, desiredPosition: Coordinates | null, duration: number, expectedVelocity: Velocity, expectedPosition: Coordinates) => {
         let subject = new Ship(startingPosition);
