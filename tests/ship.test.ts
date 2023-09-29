@@ -1,4 +1,3 @@
-import { Acceleration } from '../src/acceleration';
 import { Coordinates } from '../src/coordinates';
 import { Direction } from '../src/direction';
 import { Ship } from '../src/ship';

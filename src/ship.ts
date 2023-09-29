@@ -1,4 +1,3 @@
-import { Acceleration } from './acceleration.js';
 import { Coordinates } from './coordinates.js';
 import { Direction } from './direction.js';
 import { Velocity } from './velocity.js';
