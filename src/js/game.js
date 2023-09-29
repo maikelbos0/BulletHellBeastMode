@@ -7,7 +7,8 @@ export class Game {
         this.ship = new Ship(new Coordinates(this.width * 0.5, this.height * 0.9));
         this.renderables = [this.ship];
     }
-    render(context) {
+    renderFrame(context, duration) {
+        this.renderables.forEach(renderable => renderable.processFrame(duration));
         this.renderables.forEach(renderable => renderable.render(context));
     }
 }

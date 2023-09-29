@@ -55,7 +55,7 @@ export class Ship implements Renderable {
         }
     }
 
-    processFrame(direction: Direction, desiredPosition: Coordinates | null, duration: number) {
+    processInput(direction: Direction, desiredPosition: Coordinates | null, duration: number) {
         let desiredVelocity = this.getDirectionalVelocity(direction);
 
         if (desiredPosition != null) {
@@ -66,6 +66,9 @@ export class Ship implements Renderable {
         let acceleration = velocityDelta.getAcceleration(duration).limitMagnitude(Ship.maximumAcceleration);
 
         this.velocity = this.velocity.accelerate(acceleration, duration).limitMagnitude(Ship.maximumSpeed);
+    }
+
+    processFrame(duration: number): void {
         this.position = this.position.move(this.velocity, duration);
     }
 

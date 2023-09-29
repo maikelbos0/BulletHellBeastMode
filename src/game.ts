@@ -15,7 +15,8 @@ export class Game {
         this.renderables = [this.ship];
     }
 
-    render(context: CanvasRenderingContext2D): void {
+    renderFrame(context: CanvasRenderingContext2D, duration: number): void {
+        this.renderables.forEach(renderable => renderable.processFrame(duration));
         this.renderables.forEach(renderable => renderable.render(context));
     }
 }

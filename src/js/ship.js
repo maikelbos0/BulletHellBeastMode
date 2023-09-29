@@ -35,7 +35,7 @@ export class Ship {
             return new Velocity(positionDelta.x, positionDelta.y).adjustMagnitude(distance / stoppingTime);
         }
     }
-    processFrame(direction, desiredPosition, duration) {
+    processInput(direction, desiredPosition, duration) {
         let desiredVelocity = this.getDirectionalVelocity(direction);
         if (desiredPosition != null) {
             desiredVelocity = desiredVelocity.add(this.getVelocityFromDesiredPosition(desiredPosition));
@@ -43,6 +43,8 @@ export class Ship {
         let velocityDelta = desiredVelocity.subtract(this.velocity);
         let acceleration = velocityDelta.getAcceleration(duration).limitMagnitude(Ship.maximumAcceleration);
         this.velocity = this.velocity.accelerate(acceleration, duration).limitMagnitude(Ship.maximumSpeed);
+    }
+    processFrame(duration) {
         this.position = this.position.move(this.velocity, duration);
     }
     render(context) {
