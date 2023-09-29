@@ -10,22 +10,13 @@
     <script type="module">
         import { Coordinates } from './js/coordinates.js';
         import { Direction } from './js/direction.js';
-        import { Ship } from './js/ship.js';
         import { Game } from './js/game.js';
 
         // TODO send telemetry every X time so that server can verify distance travelled, check current hitbox, etc
         const maximumFrameRate = 1000;
         const canvas = document.getElementById("game");
         const context = canvas.getContext("2d");
-        const width = parseInt(canvas.width);
-        const height = parseInt(canvas.height);
-        const game = new Game(width, height);
-        const speed = 200;
-        const lineCount = 5;
-        const linePositions = Array.from(
-            { length: lineCount },
-            (_, i) => height / lineCount * i
-        );
+        const game = new Game(canvas.width, canvas.height);
         const keyMap = {
             37: Direction.Left,
             38: Direction.Up,
@@ -68,23 +59,6 @@
             let duration = (timestamp - previousTimestamp) / 1000;
 
             if (duration > 1 / maximumFrameRate) {
-                context.clearRect(0, 0, width, height);
-                context.strokeStyle = "rgba(0, 0, 0, 0.5)";
-                context.lineWidth = 1;
-                context.beginPath();
-
-                for (var i = 0; i < lineCount; i++) {
-                    context.moveTo(0, linePositions[i]);
-                    context.lineTo(width, linePositions[i]);
-                    context.stroke();
-
-                    linePositions[i] += duration * speed;
-
-                    if (linePositions[i] > height) {
-                        linePositions[i] -= height;
-                    }
-                }
-
                 game.ship.processInput(direction, desiredPosition, duration);
                 game.renderFrame(context, duration);
 
