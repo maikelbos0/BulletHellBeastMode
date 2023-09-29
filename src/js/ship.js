@@ -45,6 +45,13 @@ export class Ship {
         this.velocity = this.velocity.accelerate(acceleration, duration).limitMagnitude(Ship.maximumSpeed);
         this.position = this.position.move(this.velocity, duration);
     }
+    render(context) {
+        context.strokeStyle = "black";
+        context.lineWidth = 3;
+        context.beginPath();
+        context.rect(this.position.x - 10, this.position.y - 10, 20, 20);
+        context.stroke();
+    }
 }
 Ship.maximumSpeed = 1000;
 Ship.maximumAcceleration = 2000;

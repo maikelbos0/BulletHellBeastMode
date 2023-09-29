@@ -11,17 +11,17 @@
         import { Coordinates } from './js/coordinates.js';
         import { Direction } from './js/direction.js';
         import { Ship } from './js/ship.js';
+        import { Game } from './js/game.js';
 
         // TODO send telemetry every X time so that server can verify distance travelled, check current hitbox, etc
         const maximumFrameRate = 1000;
         const canvas = document.getElementById("game");
+        const game = new Game(canvas);
         const context = canvas.getContext("2d");
         const height = parseInt(canvas.height);
         const width = parseInt(canvas.width);
         const speed = 200;
         const lineCount = 5;
-        const ship = new Ship(new Coordinates(width * 0.5, height * 0.9));
-        const shipSize = 20;
         const linePositions = Array.from(
             { length: lineCount },
             (_, i) => height / lineCount * i
@@ -85,14 +85,8 @@
                     }
                 }
 
-                context.strokeStyle = "black";
-                context.lineWidth = 3;
-                context.beginPath();
-
-                ship.processFrame(direction, desiredPosition, duration);
-
-                context.rect(ship.position.x - shipSize / 2, ship.position.y - shipSize / 2, shipSize, shipSize);
-                context.stroke();
+                game.ship.processFrame(direction, desiredPosition, duration);
+                game.render();
 
                 previousTimestamp = timestamp;
             }

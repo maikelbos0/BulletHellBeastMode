@@ -1,8 +1,9 @@
 import { Coordinates } from './coordinates.js';
 import { Direction } from './direction.js';
+import { Renderable } from './renderable.js';
 import { Velocity } from './velocity.js';
 
-export class Ship {
+export class Ship implements Renderable {
     static readonly maximumSpeed: number = 1000;
     static readonly maximumAcceleration: number = 2000;
     static readonly stoppingDistance: number = Ship.maximumAcceleration / 2 * Math.pow(Ship.maximumSpeed / Ship.maximumAcceleration, 2);
@@ -40,7 +41,7 @@ export class Ship {
     getVelocityFromDesiredPosition(desiredPosition: Coordinates): Velocity {
         let positionDelta = desiredPosition.subtract(this.position);
         let distance = positionDelta.getMagnitude();
-        
+
         if (distance == 0) {
             return new Velocity(0, 0);
         }
@@ -49,7 +50,7 @@ export class Ship {
         }
         else {
             let stoppingTime = Math.sqrt(2 * distance / Ship.maximumAcceleration);
-            
+
             return new Velocity(positionDelta.x, positionDelta.y).adjustMagnitude(distance / stoppingTime);
         }
     }
@@ -66,5 +67,13 @@ export class Ship {
 
         this.velocity = this.velocity.accelerate(acceleration, duration).limitMagnitude(Ship.maximumSpeed);
         this.position = this.position.move(this.velocity, duration);
+    }
+
+    render(context: CanvasRenderingContext2D): void {
+        context.strokeStyle = "black";
+        context.lineWidth = 3;
+        context.beginPath();
+        context.rect(this.position.x - 10, this.position.y - 10, 20, 20);
+        context.stroke();
     }
 }
