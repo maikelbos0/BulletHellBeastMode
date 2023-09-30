@@ -47,32 +47,6 @@ export class Ship {
     processFrame(duration) {
         this.position = this.position.move(this.velocity, duration);
     }
-    /*
-    -20	  5	-10	  0
-    -10	  0	 -5	  5
-     -5	  5	  0	-20
-      0	-20	  5	  5
-      5	  5  10	  0
-     10	  0	 20	  5
-     20	  5  15	 10
-     15	 10	  5	  5
-      5	  5  0	 15
-      0	 15 -5	  5
-     -5	  5	-15	 10
-    -15	 10	-20	  5
-    -20	  5	-20	 -5
-    -20	 -5	-15	 10
-    
-    -10	-10	  0	  5
-      0	  5	 10	-10
-     10	-10	 10	  0
-    
-     20	 -5	 20	  5
-     20	 -5	 15	 10
-    
-    -10	-10	-10	  0
-    
-    */
     render(context) {
         context.beginPath();
         context.strokeStyle = "#ffffff";

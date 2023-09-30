@@ -2,10 +2,8 @@ import { Background } from '../src/background';
 
 describe('Background', () => {
     test('constructor()', () => {
-        const subject = new Background(800, 1000);
+        const subject = new Background();
 
-        expect(subject.width).toBe(800);
-        expect(subject.height).toBe(1000);
         expect(subject.lineHeight).toBe(200);
         expect(subject.offset).toBe(0);
     });
@@ -17,7 +15,7 @@ describe('Background', () => {
         [1, 0],
         [2.1, 20],
     ])('processFrame() duration: %p', (duration: number, expectedOffset: number) => {
-        const subject = new Background(800, 1000);
+        const subject = new Background();
 
         subject.processFrame(duration);
 

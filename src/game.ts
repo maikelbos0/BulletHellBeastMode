@@ -4,20 +4,19 @@ import { Renderable } from './renderable.js';
 import { Ship } from './ship.js';
 
 export class Game {
-    readonly width: number;
-    readonly height: number;
+    static readonly width: number = 1000;
+    static readonly height: number = 1000;
+
     readonly ship: Ship;
     readonly renderables: Renderable[];
 
-    constructor(width: number, height: number) {
-        this.height = height;
-        this.width = width;
-        this.ship = new Ship(new Coordinates(this.width * 0.5, this.height * 0.9));
-        this.renderables = [this.ship, new Background(width, height)];
+    constructor() {
+        this.ship = new Ship(new Coordinates(Game.width * 0.5, Game.height * 0.9));
+        this.renderables = [this.ship, new Background()];
     }
 
     renderFrame(context: CanvasRenderingContext2D, duration: number): void {
-        context.clearRect(0, 0, this.width, this.height);
+        context.clearRect(0, 0, Game.width, Game.height);
 
         this.renderables.forEach(renderable => renderable.processFrame(duration));
         this.renderables.forEach(renderable => renderable.render(context));

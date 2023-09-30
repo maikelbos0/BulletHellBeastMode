@@ -1,18 +1,15 @@
-import { Renderable } from "./renderable";
+import { Renderable } from "./renderable.js";
+import { Game } from "./game.js";
 
 export class Background implements Renderable {
     static readonly speed: number = 200;
     static readonly lineCount: number = 5;
 
-    readonly width: number;
-    readonly height: number;
     readonly lineHeight: number;
     offset: number;
 
-    constructor(width: number, height: number) {
-        this.width = width;
-        this.height = height;
-        this.lineHeight = height / Background.lineCount;
+    constructor() {
+        this.lineHeight = Game.height / Background.lineCount;
         this.offset = 0;
     }
 
@@ -34,7 +31,7 @@ export class Background implements Renderable {
             gradient.addColorStop(1, "#0066cc");
 
             context.fillStyle = gradient;
-            context.fillRect(0, this.offset + i * this.lineHeight, this.width, this.lineHeight);
+            context.fillRect(0, this.offset + i * this.lineHeight, Game.width, this.lineHeight);
         }
     }
 }

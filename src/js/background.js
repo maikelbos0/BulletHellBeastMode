@@ -1,8 +1,7 @@
+import { Game } from "./game.js";
 export class Background {
-    constructor(width, height) {
-        this.width = width;
-        this.height = height;
-        this.lineHeight = height / Background.lineCount;
+    constructor() {
+        this.lineHeight = Game.height / Background.lineCount;
         this.offset = 0;
     }
     processFrame(duration) {
@@ -18,7 +17,7 @@ export class Background {
             gradient.addColorStop(0.5, "#000000");
             gradient.addColorStop(1, "#0066cc");
             context.fillStyle = gradient;
-            context.fillRect(0, this.offset + i * this.lineHeight, this.width, this.lineHeight);
+            context.fillRect(0, this.offset + i * this.lineHeight, Game.width, this.lineHeight);
         }
     }
 }
