@@ -71,11 +71,39 @@ export class Ship implements Renderable {
     processFrame(duration: number): void {
         this.position = this.position.move(this.velocity, duration);
     }
-
+    
     render(context: CanvasRenderingContext2D): void {
         context.beginPath();
         context.strokeStyle = "#ffffff";
-        context.lineWidth = 3;
-        context.strokeRect(this.position.x - 10, this.position.y - 10, 20, 20);
+        context.lineWidth = 2;
+
+        context.moveTo(this.position.x - 20, this.position.y + 5);
+        context.lineTo(this.position.x - 10, this.position.y);
+        context.lineTo(this.position.x - 5, this.position.y + 5);
+        context.lineTo(this.position.x, this.position.y - 20);
+        context.lineTo(this.position.x + 5, this.position.y + 5);
+        context.lineTo(this.position.x + 10, this.position.y);
+        context.lineTo(this.position.x + 20, this.position.y + 5);
+        context.lineTo(this.position.x + 15, this.position.y + 10);
+        context.lineTo(this.position.x + 5, this.position.y + 5);
+        context.lineTo(this.position.x, this.position.y + 15);
+        context.lineTo(this.position.x - 5, this.position.y + 5);
+        context.lineTo(this.position.x - 15, this.position.y + 10);
+        context.lineTo(this.position.x - 20, this.position.y + 5);
+        context.lineTo(this.position.x - 20, this.position.y - 5);
+        context.lineTo(this.position.x - 15, this.position.y + 10);
+
+        context.moveTo(this.position.x - 10, this.position.y - 10);
+        context.lineTo(this.position.x, this.position.y + 5);
+        context.lineTo(this.position.x + 10, this.position.y - 10);
+        context.lineTo(this.position.x + 10, this.position.y);
+        
+        context.moveTo(this.position.x + 20, this.position.y + 5);
+        context.lineTo(this.position.x + 20, this.position.y - 5);
+        context.lineTo(this.position.x + 15, this.position.y + 10);
+        
+        context.moveTo(this.position.x - 10, this.position.y - 10);
+        context.lineTo(this.position.x - 10, this.position.y);
+        context.stroke();
     }
 }
