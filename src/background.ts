@@ -6,35 +6,35 @@ export class Background implements Renderable {
 
     readonly width: number;
     readonly height: number;
-    linePositions: number[];
+    readonly lineHeight: number;
+    offset: number;
 
     constructor(width: number, height: number) {
         this.width = width;
         this.height = height;
-        this.linePositions = Array.from(
-            { length: Background.lineCount },
-            (_, i) => height / Background.lineCount * i
-        );
+        this.lineHeight = height / Background.lineCount;
+        this.offset = 0;
     }
-    
-    processFrame(duration: number): void {
-        for (var i = 0; i < Background.lineCount; i++) {
-            this.linePositions[i] += duration * Background.speed;
 
-            if (this.linePositions[i] > this.height) {
-                this.linePositions[i] -= this.height;
-            }
+    processFrame(duration: number): void {
+        this.offset += duration * Background.speed;
+
+        while (this.offset >= this.lineHeight) {
+            this.offset -= this.lineHeight;
         }
     }
 
-    render(context: CanvasRenderingContext2D): void {
-        context.strokeStyle = "rgba(0, 0, 0, 0.5)";
-        context.lineWidth = 1;
+    render(context: CanvasRenderingContext2D): void {    
+        context.beginPath();
 
-        for (var i = 0; i < Background.lineCount; i++) {
-            context.moveTo(0, this.linePositions[i]);
-            context.lineTo(this.width, this.linePositions[i]);
-            context.stroke();
+        for (var i = -1; i < Background.lineCount; i++) {
+            const gradient = context.createLinearGradient(0, this.offset + i * this.lineHeight, 0, this.offset + (i + 1) * this.lineHeight);
+            
+            gradient.addColorStop(0.5, "#000000");
+            gradient.addColorStop(1, "#0066cc");
+
+            context.fillStyle = gradient;
+            context.fillRect(0, this.offset + i * this.lineHeight, this.width, this.lineHeight);
         }
     }
 }
