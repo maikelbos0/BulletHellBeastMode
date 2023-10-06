@@ -15,8 +15,8 @@ describe('Ship', () => {
         [Direction.Right, new Velocity(1000, 0)],
 
         // Moving in multiple directions
-        [Direction.Up | Direction.Left, new Velocity(-1000, -1000)],
-        [Direction.Down | Direction.Right, new Velocity(1000, 1000)],
+        [Direction.Up | Direction.Left, new Velocity(-707.1068, -707.1068)],
+        [Direction.Down | Direction.Right, new Velocity(707.1068, 707.1068)],
         [Direction.Up | Direction.Down | Direction.Left | Direction.Right, new Velocity(0, 0)],
     ])('getDirectionalVelocity() direction: %p, expectedResult: %p', (direction: Direction, expectedResult: Velocity) => {
         let subject = new Ship(new Coordinates(100, 100));

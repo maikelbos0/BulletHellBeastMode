@@ -8,16 +8,19 @@ export class Ship {
     getDirectionalVelocity(direction) {
         let velocity = new Velocity(0, 0);
         if ((direction & Direction.Up) == Direction.Up) {
-            velocity = velocity.add(new Velocity(0, -Ship.maximumSpeed));
+            velocity = velocity.add(new Velocity(0, -1));
         }
         if ((direction & Direction.Down) == Direction.Down) {
-            velocity = velocity.add(new Velocity(0, Ship.maximumSpeed));
+            velocity = velocity.add(new Velocity(0, 1));
         }
         if ((direction & Direction.Left) == Direction.Left) {
-            velocity = velocity.add(new Velocity(-Ship.maximumSpeed, 0));
+            velocity = velocity.add(new Velocity(-1, 0));
         }
         if ((direction & Direction.Right) == Direction.Right) {
-            velocity = velocity.add(new Velocity(Ship.maximumSpeed, 0));
+            velocity = velocity.add(new Velocity(1, 0));
+        }
+        if (!(velocity.x == 0 && velocity.y == 0)) {
+            velocity = velocity.adjustMagnitude(Ship.maximumSpeed);
         }
         return velocity;
     }
