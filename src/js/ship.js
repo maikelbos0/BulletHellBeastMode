@@ -1,4 +1,6 @@
+import { Coordinates } from './coordinates.js';
 import { Direction } from './direction.js';
+import { Game } from './game.js';
 import { Velocity } from './velocity.js';
 export class Ship {
     constructor(startingPosition) {
@@ -44,11 +46,33 @@ export class Ship {
             desiredVelocity = desiredVelocity.add(this.getVelocityFromDesiredPosition(desiredPosition));
         }
         let velocityDelta = desiredVelocity.subtract(this.velocity);
+        //if (desiredVelocity.x != 0 || desiredVelocity.y != 0) {
         let acceleration = velocityDelta.getAcceleration(duration).limitMagnitude(Ship.maximumAcceleration);
         this.velocity = this.velocity.accelerate(acceleration, duration).limitMagnitude(Ship.maximumSpeed);
+        let stoppedPosition = this.position.move(this.velocity, this.velocity.getMagnitude() / Ship.maximumAcceleration / 2);
+        //console.log("Current: " + this.position.x + "," + this.position.y + "; Stopped: " + stoppedPosition.x + "," + stoppedPosition.y);
+        let velocityAdjustmentFractions = [];
+        if (stoppedPosition.x < 0) {
+            velocityAdjustmentFractions.push(1 + stoppedPosition.x / (this.position.x - stoppedPosition.x));
+        }
+        if (stoppedPosition.y < 0) {
+            velocityAdjustmentFractions.push(1 + stoppedPosition.y / (this.position.y - stoppedPosition.y));
+        }
+        if (stoppedPosition.x > Game.width) {
+            velocityAdjustmentFractions.push(1 - (stoppedPosition.x - Game.width) / (stoppedPosition.x - this.position.x));
+        }
+        if (stoppedPosition.y > Game.height) {
+            velocityAdjustmentFractions.push(1 - (stoppedPosition.y - Game.height) / (stoppedPosition.y - this.position.y));
+        }
+        //console.log(velocityAdjustmentFractions);
+        let velocityAdjustmentFraction = Math.max(0, Math.min(1, Math.min.apply(null, velocityAdjustmentFractions)));
+        //console.log(velocityAdjustmentFraction);
+        this.velocity = this.velocity.limitMagnitude(this.velocity.getMagnitude() * velocityAdjustmentFraction);
+        //}
     }
     processFrame(duration) {
         this.position = this.position.move(this.velocity, duration);
+        this.position = new Coordinates(Math.max(0, Math.min(Game.width, this.position.x)), Math.max(0, Math.min(Game.height, this.position.y)));
     }
     render(context) {
         context.beginPath();
