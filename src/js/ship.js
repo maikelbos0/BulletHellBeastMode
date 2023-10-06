@@ -51,30 +51,39 @@ export class Ship {
         context.beginPath();
         context.strokeStyle = "#ffffff";
         context.lineWidth = 2;
-        context.moveTo(this.position.x - 20, this.position.y + 5);
-        context.lineTo(this.position.x - 10, this.position.y);
-        context.lineTo(this.position.x - 5, this.position.y + 5);
+        // Left wing
+        context.moveTo(this.position.x - 30, this.position.y + 25);
+        context.lineTo(this.position.x - 20, this.position.y + 20);
+        context.lineTo(this.position.x - 20, this.position.y - 30);
+        context.lineTo(this.position.x - 25, this.position.y - 25);
+        context.lineTo(this.position.x - 30, this.position.y + 20);
+        context.lineTo(this.position.x - 20, this.position.y - 10);
+        // Right wing
+        context.moveTo(this.position.x + 30, this.position.y + 25);
+        context.lineTo(this.position.x + 20, this.position.y + 20);
+        context.lineTo(this.position.x + 20, this.position.y - 30);
+        context.lineTo(this.position.x + 25, this.position.y - 25);
+        context.lineTo(this.position.x + 30, this.position.y + 20);
+        context.lineTo(this.position.x + 20, this.position.y - 10);
+        // Back spar
+        context.moveTo(this.position.x - 20, this.position.y + 10);
+        context.lineTo(this.position.x, this.position.y + 30);
+        context.lineTo(this.position.x + 20, this.position.y + 10);
+        // Front spar
+        context.moveTo(this.position.x - 20, this.position.y - 10);
+        context.lineTo(this.position.x - 10, this.position.y + 5);
+        context.lineTo(this.position.x, this.position.y + 10);
+        context.lineTo(this.position.x + 10, this.position.y + 5);
+        context.lineTo(this.position.x + 20, this.position.y - 10);
+        // Fuselage exterior
+        context.moveTo(this.position.x - 5, this.position.y + 25);
+        context.lineTo(this.position.x - 10, this.position.y + 5);
         context.lineTo(this.position.x, this.position.y - 20);
-        context.lineTo(this.position.x + 5, this.position.y + 5);
-        context.lineTo(this.position.x + 10, this.position.y);
-        context.lineTo(this.position.x + 20, this.position.y + 5);
-        context.lineTo(this.position.x + 15, this.position.y + 10);
-        context.lineTo(this.position.x + 5, this.position.y + 5);
-        context.lineTo(this.position.x, this.position.y + 15);
-        context.lineTo(this.position.x - 5, this.position.y + 5);
-        context.lineTo(this.position.x - 15, this.position.y + 10);
-        context.lineTo(this.position.x - 20, this.position.y + 5);
-        context.lineTo(this.position.x - 20, this.position.y - 5);
-        context.lineTo(this.position.x - 15, this.position.y + 10);
-        context.moveTo(this.position.x - 10, this.position.y - 10);
-        context.lineTo(this.position.x, this.position.y + 5);
-        context.lineTo(this.position.x + 10, this.position.y - 10);
-        context.lineTo(this.position.x + 10, this.position.y);
-        context.moveTo(this.position.x + 20, this.position.y + 5);
-        context.lineTo(this.position.x + 20, this.position.y - 5);
-        context.lineTo(this.position.x + 15, this.position.y + 10);
-        context.moveTo(this.position.x - 10, this.position.y - 10);
-        context.lineTo(this.position.x - 10, this.position.y);
+        context.lineTo(this.position.x + 10, this.position.y + 5);
+        context.lineTo(this.position.x + 5, this.position.y + 25);
+        // Fuselage central line
+        context.moveTo(this.position.x, this.position.y - 20);
+        context.lineTo(this.position.x, this.position.y + 30);
         context.stroke();
     }
 }
