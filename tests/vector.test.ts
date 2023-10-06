@@ -8,9 +8,18 @@ describe('Vector', () => {
         [1.11156, 2.11156, 1.1116, 2.1116]
     ])('constructor() x: %p, y: %p, expectedX: %p, expectedY: %p', (x: number, y: number, expectedX: number, expectedY: number) => {
         let result = new Vector(x, y);
-        
+
         expect(result.x).toBe(expectedX);
         expect(result.y).toBe(expectedY);
+    });
+
+    it.each([
+        [new Vector(0, 0), false],
+        [new Vector(4, 0), true],
+        [new Vector(0, 3), true],
+        [new Vector(4, 3), true]
+    ])('hasMagnitude() subject: %p, expectedResult: %p', (subject: Vector, expectedResult: boolean) => {
+        expect(subject.hasMagnitude()).toBe(expectedResult);
     });
 
     it.each([
@@ -33,7 +42,7 @@ describe('Vector', () => {
 
         expect(result).toEqual(expectedResult);
     });
-    
+
     it.each([
         [new Vector(6, 8), 5, new Vector(3, 4)],
         [new Vector(-6, -8), 5, new Vector(-3, -4)],
@@ -45,22 +54,22 @@ describe('Vector', () => {
 
         expect(result).toEqual(expectedResult);
     });
-    
+
     it.each([
         [new Vector(10, 10), new Vector(3, 4), new Vector(13, 14)],
         [new Vector(10, 10), new Vector(-3, -4), new Vector(7, 6)]
     ])('add() subject: %p, vector: %p, expectedResult: %p', (subject: Vector, vector: Vector, expectedResult: Vector) => {
         const result = subject.add(vector);
-  
+
         expect(result).toEqual(expectedResult);
     });
-    
+
     it.each([
         [new Vector(10, 10), new Vector(3, 4), new Vector(7, 6)],
         [new Vector(10, 10), new Vector(-3, -4), new Vector(13, 14)]
     ])('subtract() subject: %p, vector: %p, expectedResult: %p', (subject: Vector, vector: Vector, expectedResult: Vector) => {
         const result = subject.subtract(vector);
-  
+
         expect(result).toEqual(expectedResult);
     });
 });

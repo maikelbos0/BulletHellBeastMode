@@ -6,6 +6,9 @@ export class Vector {
     round(value) {
         return Math.round(value * Math.pow(10, Vector.precision)) / Math.pow(10, Vector.precision);
     }
+    hasMagnitude() {
+        return this.x != 0 || this.y != 0;
+    }
     getMagnitude() {
         return Math.sqrt(this.x * this.x + this.y * this.y);
     }

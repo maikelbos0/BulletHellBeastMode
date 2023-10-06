@@ -13,6 +13,10 @@ export class Vector {
         return Math.round(value * Math.pow(10, Vector.precision)) / Math.pow(10, Vector.precision);
     }
 
+    hasMagnitude(): boolean {
+        return this.x != 0 || this.y != 0;
+    }
+
     getMagnitude(): number {
         return Math.sqrt(this.x * this.x + this.y * this.y);
     }

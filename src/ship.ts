@@ -36,7 +36,7 @@ export class Ship implements Renderable {
             velocity = velocity.add(new Velocity(1, 0));
         }
 
-        if (!(velocity.x == 0 && velocity.y == 0)) {
+        if (velocity.hasMagnitude()) {
             velocity = velocity.adjustMagnitude(Ship.maximumSpeed);
         }
 

@@ -21,7 +21,7 @@ export class Ship {
         if ((direction & Direction.Right) == Direction.Right) {
             velocity = velocity.add(new Velocity(1, 0));
         }
-        if (!(velocity.x == 0 && velocity.y == 0)) {
+        if (velocity.hasMagnitude()) {
             velocity = velocity.adjustMagnitude(Ship.maximumSpeed);
         }
         return velocity;
