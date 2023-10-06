@@ -50,24 +50,23 @@ export class Ship {
         let acceleration = velocityDelta.getAcceleration(duration).limitMagnitude(Ship.maximumAcceleration);
         this.velocity = this.velocity.accelerate(acceleration, duration).limitMagnitude(Ship.maximumSpeed);
         let stoppedPosition = this.position.move(this.velocity, this.velocity.getMagnitude() / Ship.maximumAcceleration / 2);
-        //console.log("Current: " + this.position.x + "," + this.position.y + "; Stopped: " + stoppedPosition.x + "," + stoppedPosition.y);
-        let velocityAdjustmentFractions = [];
+        let horizontalVelocityAdjustment = 1;
+        let verticalVelocityAdjustment = 1;
         if (stoppedPosition.x < 0) {
-            velocityAdjustmentFractions.push(1 + stoppedPosition.x / (this.position.x - stoppedPosition.x));
+            horizontalVelocityAdjustment = 1 + stoppedPosition.x / (this.position.x - stoppedPosition.x);
+        }
+        else if (stoppedPosition.x > Game.width) {
+            horizontalVelocityAdjustment = 1 - (stoppedPosition.x - Game.width) / (stoppedPosition.x - this.position.x);
         }
         if (stoppedPosition.y < 0) {
-            velocityAdjustmentFractions.push(1 + stoppedPosition.y / (this.position.y - stoppedPosition.y));
+            verticalVelocityAdjustment = 1 + stoppedPosition.y / (this.position.y - stoppedPosition.y);
         }
-        if (stoppedPosition.x > Game.width) {
-            velocityAdjustmentFractions.push(1 - (stoppedPosition.x - Game.width) / (stoppedPosition.x - this.position.x));
+        else if (stoppedPosition.y > Game.height) {
+            verticalVelocityAdjustment = 1 - (stoppedPosition.y - Game.height) / (stoppedPosition.y - this.position.y);
         }
-        if (stoppedPosition.y > Game.height) {
-            velocityAdjustmentFractions.push(1 - (stoppedPosition.y - Game.height) / (stoppedPosition.y - this.position.y));
-        }
-        //console.log(velocityAdjustmentFractions);
-        let velocityAdjustmentFraction = Math.max(0, Math.min(1, Math.min.apply(null, velocityAdjustmentFractions)));
-        //console.log(velocityAdjustmentFraction);
-        this.velocity = this.velocity.limitMagnitude(this.velocity.getMagnitude() * velocityAdjustmentFraction);
+        horizontalVelocityAdjustment = Math.max(0, Math.min(1, horizontalVelocityAdjustment));
+        verticalVelocityAdjustment = Math.max(0, Math.min(1, verticalVelocityAdjustment));
+        this.velocity = new Velocity(this.velocity.x * horizontalVelocityAdjustment, this.velocity.y * verticalVelocityAdjustment);
         //}
     }
     processFrame(duration) {
