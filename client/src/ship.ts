@@ -60,21 +60,8 @@ export class Ship implements Renderable {
         }
     }
 
-    processInput(direction: Direction, desiredPosition: Coordinates | null, duration: number) {
-        let desiredVelocity = this.getDirectionalVelocity(direction);
-
-        if (desiredPosition != null) {
-            desiredVelocity = desiredVelocity.add(this.getVelocityFromDesiredPosition(desiredPosition));
-        }
-
-        let velocityDelta = desiredVelocity.subtract(this.velocity);
-
-        //if (desiredVelocity.x != 0 || desiredVelocity.y != 0) {
-        let acceleration = velocityDelta.getAcceleration(duration).limitMagnitude(Ship.maximumAcceleration);
-
-        this.velocity = this.velocity.accelerate(acceleration, duration).limitMagnitude(Ship.maximumSpeed);
-
-        let stoppedPosition = this.position.move(this.velocity, this.velocity.getMagnitude() / Ship.maximumAcceleration / 2);
+    adjustVelocityToBounds(velocity: Velocity): Velocity {
+        let stoppedPosition = this.position.move(velocity, velocity.getMagnitude() / Ship.maximumAcceleration / 2);
         let horizontalVelocityAdjustment = 1;
         let verticalVelocityAdjustment = 1;
 
@@ -95,8 +82,20 @@ export class Ship implements Renderable {
         horizontalVelocityAdjustment = Math.max(0, Math.min(1, horizontalVelocityAdjustment));
         verticalVelocityAdjustment = Math.max(0, Math.min(1, verticalVelocityAdjustment));
 
-        this.velocity = new Velocity(this.velocity.x * horizontalVelocityAdjustment, this.velocity.y * verticalVelocityAdjustment);
-        //}
+        return new Velocity(velocity.x * horizontalVelocityAdjustment, velocity.y * verticalVelocityAdjustment);
+    }
+
+    processInput(direction: Direction, desiredPosition: Coordinates | null, duration: number) {
+        let desiredVelocity = this.getDirectionalVelocity(direction);
+
+        if (desiredPosition != null) {
+            desiredVelocity = desiredVelocity.add(this.getVelocityFromDesiredPosition(desiredPosition));
+        }
+
+        let velocityDelta = desiredVelocity.subtract(this.velocity);
+        let acceleration = velocityDelta.getAcceleration(duration).limitMagnitude(Ship.maximumAcceleration);
+
+        this.velocity = this.adjustVelocityToBounds(this.velocity.accelerate(acceleration, duration).limitMagnitude(Ship.maximumSpeed));
     }
 
     processFrame(duration: number): void {
