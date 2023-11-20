@@ -1,0 +1,81 @@
+<html>
+
+<head>
+    <title>Bullet Hell: Beast Mode</title>
+</head>
+
+<body>
+    <canvas id="game"></canvas>
+
+    <script type="module">
+        // TODO introduce api, set up angular, create login mechanism
+        
+        import { Coordinates } from './js/coordinates.js';
+        import { Direction } from './js/direction.js';
+        import { Game } from './js/game.js';
+
+        // TODO send telemetry every X time so that server can verify distance travelled, check current hitbox, etc
+        const maximumFrameRate = 1000;
+        const canvas = document.getElementById("game");
+        const context = canvas.getContext("2d");
+        const game = new Game();
+        const keyMap = {
+            37: Direction.Left,
+            38: Direction.Up,
+            39: Direction.Right,
+            40: Direction.Down
+        }
+
+        let direction = Direction.None;
+        let desiredPosition = null;
+
+        canvas.width = Game.width;
+        canvas.height = Game.height;
+
+        window.addEventListener('keydown', e => {
+            if (keyMap.hasOwnProperty(e.keyCode)) {
+                direction |= keyMap[e.keyCode];
+            }
+        });
+        window.addEventListener('keyup', e => {
+            if (keyMap.hasOwnProperty(e.keyCode)) {
+                direction &= ~keyMap[e.keyCode];
+            }
+        });
+        canvas.addEventListener('mousedown', e => {
+            if (e.button === 0) {
+                desiredPosition = new Coordinates(e.offsetX, e.offsetY);
+            }
+        });
+        canvas.addEventListener('mousemove', e => {
+            if (desiredPosition != null) {
+                desiredPosition = new Coordinates(e.offsetX, e.offsetY);
+            }
+        });
+        canvas.addEventListener('mouseup', e => {
+            desiredPosition = null;
+        });
+
+        let previousTimestamp;
+
+        context.globalCompositeOperation = "destination-over";
+
+        function draw(timestamp) {
+            let duration = (timestamp - previousTimestamp) / 1000;
+
+            if (duration > 1 / maximumFrameRate) {
+                game.ship.processInput(direction, desiredPosition, duration);
+                game.renderFrame(context, duration);
+
+                previousTimestamp = timestamp;
+            }
+
+            window.requestAnimationFrame(draw);
+        }
+
+        previousTimestamp = performance.now();
+        window.requestAnimationFrame(draw);
+    </script>
+</body>
+
+</html>
