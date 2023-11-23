@@ -1,11 +1,22 @@
 {
+    "env": {
+        "browser": true,
+        "es6": true
+    },
     "root": true,
     "extends": [
         "eslint:recommended",
-        "plugin:@typescript-eslint/recommended"
+        "plugin:@typescript-eslint/recommended",
+        "plugin:prettier/recommended",
+        "plugin:eqeqeq-fix/recommended",
+        "plugin:@angular-eslint/recommended"
     ],
     "parser": "@typescript-eslint/parser",
-    "parserOptions": { "project": ["./tsconfig.json"] },
+    "parserOptions": {
+        "project": [
+            "./tsconfig.json"
+        ]
+    },
     "plugins": [
         "@typescript-eslint"
     ],
@@ -13,5 +24,8 @@
         "@typescript-eslint/strict-boolean-expressions": "error",
         "@typescript-eslint/explicit-function-return-type": "error"
     },
-    "ignorePatterns": ["src/**/*.test.ts", "src/frontend/generated/*"]
+    "ignorePatterns": [
+        "src/**/*.test.ts",
+        "src/frontend/generated/*"
+    ]
 }
