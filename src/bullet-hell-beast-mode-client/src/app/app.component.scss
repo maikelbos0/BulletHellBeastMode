@@ -24,10 +24,26 @@ nav {
 
   div.logo {
     flex: 1;
+    font-size: 1.2em;
+
+    .first-part {
+      color: $accent-color;
+    }
+
+    .second-part {
+      color: $double-accent-color;
+      font-weight: bold;
+    }
   }
 
   a {
     color: $highlight-color;
+    text-align: left;
+
+    &:hover,
+    &:active {
+      color: $accent-color;
+    }
   }
 }
 
