@@ -56,4 +56,8 @@ main {
   @include page-element;
   background-color: $main-bg-color;
   color: $main-color;
+
+  *:last-child {
+    margin-bottom: 0;
+  }
 }

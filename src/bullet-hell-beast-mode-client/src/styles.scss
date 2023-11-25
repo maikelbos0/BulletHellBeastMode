@@ -25,9 +25,22 @@ $headers: (
 
 @each $header, $size in $headers {
   #{$header} {
-    color: $highlight-color;
+    color: $accent-color;
     font-size: #{$size}em;
     margin-bottom: math.div(1em, $size);
     font-weight: normal;
   }
+}
+
+a {
+  color: $double-accent-color;
+
+  &:hover,
+  &:active {
+    color: $accent-color;
+  }
+}
+
+p {
+  margin-bottom: 1em;
 }
