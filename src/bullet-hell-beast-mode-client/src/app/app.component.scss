@@ -16,29 +16,34 @@ nav {
   color: $highlight-color;
   display: flex;
   flex-direction: column;
+  font-size: 1.2em;
 
   @media (min-width: $breakpoint-width) {
     flex-direction: row;
     gap: 1em;
   }
 
-  div.logo {
+  .logo {
     flex: 1;
-    font-size: 1.2em;
+    line-height: 1rem;
+    text-align: left;
 
     .first-part {
       color: $accent-color;
+      letter-spacing: 0.1em;
     }
 
     .second-part {
       color: $double-accent-color;
-      font-weight: bold;
+      font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+      font-size: 1.2em;
     }
   }
 
   a {
     color: $highlight-color;
-    text-align: left;
+    text-align: right;
+    text-decoration: none;
 
     &:hover,
     &:active {
