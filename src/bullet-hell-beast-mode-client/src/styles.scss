@@ -1,3 +1,4 @@
+@use "sass:math";
 @import "variables";
 
 *,
@@ -11,4 +12,22 @@
 
 body {
   background-color: $body-bg-color;
+}
+
+$headers: (
+  "h1": 2.5,
+  "h2": 2,
+  "h3": 1.8,
+  "h4": 1.6,
+  "h5": 1.4,
+  "h6": 1.2
+);
+
+@each $header, $size in $headers {
+  #{$header} {
+    color: $highlight-color;
+    font-size: #{$size}em;
+    margin-bottom: math.div(1em, $size);
+    font-weight: normal;
+  }
 }
