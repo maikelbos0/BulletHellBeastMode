@@ -11,11 +11,10 @@ if (appSettings.ClientUri != null) {
 
 builder.Services.AddOptions<JwtSettings>()
     .Bind(builder.Configuration.GetRequiredSection(nameof(JwtSettings)))
-    .Configure(jwtSettings => {
-        if (jwtSettings.SecurityKey == null) {
-            jwtSettings.SecurityKey = RandomNumberGenerator.GetBytes(32);
-        }
-    });
+    .Configure(jwtSettings => jwtSettings.SecurityKey ??= RandomNumberGenerator.GetBytes(32));
+
+builder.Services.AddScoped<JwtSecurityTokenHandler>();
+builder.Services.AddScoped<JwtTokenGenerator>();
 
 var app = builder.Build();
 
@@ -26,5 +25,17 @@ if (appSettings.ClientUri != null) {
 }
 
 app.MapGet("/test", () => new { Text = "Hello World" });
+app.MapPost("/login", (string userName, HttpContext httpContext, JwtTokenGenerator jwtTokenGenerator) => {
+    var jwtToken = jwtTokenGenerator.GenerateToken(userName);
+    
+    httpContext.Response.Cookies.Append("X-Access-Token", jwtToken, new CookieOptions() { HttpOnly = true, SameSite = SameSiteMode.Strict, Secure = true });
+
+    return Results.NoContent();
+});
+app.MapPost("/logout", (HttpContext httpContext) => {
+    httpContext.Response.Cookies.Delete("X-Access-Token");
+
+    return Results.NoContent();
+});
 
 app.Run();
