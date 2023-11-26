@@ -5,6 +5,8 @@ VisualStudioVersion = 17.5.33424.131
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BulletHellBeastMode.Api", "BulletHellBeastMode.Api\BulletHellBeastMode.Api.csproj", "{A9CB3BE7-1DFF-48F6-AA9A-D7353C6EB07F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BulletHellBeastMode.Api.Tests", "BulletHellBeastMode.Api.Tests\BulletHellBeastMode.Api.Tests.csproj", "{E8058849-8A31-40B9-B3B4-35C10627ABE9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{A9CB3BE7-1DFF-48F6-AA9A-D7353C6EB07F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A9CB3BE7-1DFF-48F6-AA9A-D7353C6EB07F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A9CB3BE7-1DFF-48F6-AA9A-D7353C6EB07F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E8058849-8A31-40B9-B3B4-35C10627ABE9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E8058849-8A31-40B9-B3B4-35C10627ABE9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E8058849-8A31-40B9-B3B4-35C10627ABE9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E8058849-8A31-40B9-B3B4-35C10627ABE9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
