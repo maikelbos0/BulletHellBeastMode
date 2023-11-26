@@ -1,12 +1,19 @@
+using BulletHellBeastMode.Api;
 var builder = WebApplication.CreateBuilder(args);
+var appSettings = builder.Configuration.Get<AppSettings>()
+    ?? throw new InvalidOperationException($"Configuration section '{nameof(AppSettings)}' was not found");
 
-builder.Services.AddCors(options => options.AddDefaultPolicy(policy => policy.WithOrigins("http://localhost:4200")));
+if (appSettings.ClientUri != null) {
+    builder.Services.AddCors(options => options.AddDefaultPolicy(policy => policy.WithOrigins(appSettings.ClientUri)));
+}
 
 var app = builder.Build();
 
 app.UseHttpsRedirection();
 
-app.UseCors();
+if (appSettings.ClientUri != null) {
+    app.UseCors();
+}
 
 app.MapGet("/test", () => new { Text = "Hello World" });
 
