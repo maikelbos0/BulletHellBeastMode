@@ -1,52 +1,17 @@
 using BulletHellBeastMode.Api;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
-using System.Security.Cryptography;
-
-const string tokenCookieName = "X-Jwt-Token";
 
 var builder = WebApplication.CreateBuilder(args);
 var corsOrigin = builder.Configuration["CorsOrigin"];
-var jwtSettings = builder.Configuration.GetSection(nameof(JwtSettings)).Get<JwtSettings>()
-    ?? throw new InvalidOperationException($"Configuration section '{nameof(JwtSettings)}' was not found");
-
 
 if (corsOrigin != null) {
     builder.Services.AddCors(options => options.AddDefaultPolicy(policy => policy.WithOrigins(corsOrigin)));
 }
 
-jwtSettings.SecurityKey ??= RandomNumberGenerator.GetBytes(32);
-
-builder.Services.AddAuthentication().AddJwtBearer(options => {
-    options.MapInboundClaims = false;
-
-    options.TokenValidationParameters = new TokenValidationParameters() {
-        RequireAudience = jwtSettings.ValidAudience != null,
-        ValidateAudience = jwtSettings.ValidAudience != null,
-        ValidAudience = jwtSettings.ValidAudience,
-        ValidateIssuer = jwtSettings.ValidIssuer != null,
-        ValidIssuer = jwtSettings.ValidIssuer,
-        ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new SymmetricSecurityKey(jwtSettings.SecurityKey),
-        RequireExpirationTime = true,
-        ValidateLifetime = true,
-        ClockSkew = TimeSpan.FromSeconds(30),
-        NameClaimType = JwtRegisteredClaimNames.Sub
-    };
-    
-    options.Events = new JwtBearerEvents {
-        OnMessageReceived = context =>
-        {
-            context.Token = context.Request.Cookies[tokenCookieName];
-            return Task.CompletedTask;
-        }
-    };
-});
+builder.Services.AddAuthentication().AddJwtBearer();
+builder.Services.ConfigureOptions<ConfigureJwtBearerOptions>();
 builder.Services.AddAuthorization();
-
-builder.Services.AddSingleton(jwtSettings);
-
+builder.Services.AddOptions<JwtSettings>().Bind(builder.Configuration.GetSection(nameof(JwtSettings)));
 builder.Services.AddScoped<JwtSecurityTokenHandler>();
 builder.Services.AddScoped<JwtTokenGenerator>();
 

@@ -1,4 +1,5 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
@@ -8,9 +9,9 @@ public class JwtTokenGenerator {
     private readonly JwtSecurityTokenHandler jwtSecurityTokenHandler;
     private readonly JwtSettings jwtSettings;
 
-    public JwtTokenGenerator(JwtSecurityTokenHandler jwtSecurityTokenHandler, JwtSettings jwtSettings) {
+    public JwtTokenGenerator(JwtSecurityTokenHandler jwtSecurityTokenHandler, IOptionsSnapshot<JwtSettings> jwtSettings) {
         this.jwtSecurityTokenHandler = jwtSecurityTokenHandler;
-        this.jwtSettings = jwtSettings;
+        this.jwtSettings = jwtSettings.Value;
     }
 
     public string GenerateToken(string userName) {

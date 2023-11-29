@@ -1,5 +1,4 @@
 using FluentAssertions;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.IdentityModel.Tokens.Jwt;
@@ -17,7 +16,7 @@ public class JwtTokenGeneratorTests {
             ExpiresInSeconds = 1800,
             SecurityKey = new byte[32]
         };
-        var subject = new JwtTokenGenerator(jwtSecurityTokenHandler, Options.Create(jwtSettings));
+        var subject = new JwtTokenGenerator(jwtSecurityTokenHandler, OptionsSnapshot.Create(jwtSettings));
 
         var result = subject.GenerateToken("Foo");
 
