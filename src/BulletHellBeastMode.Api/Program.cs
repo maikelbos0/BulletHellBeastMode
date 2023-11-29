@@ -27,15 +27,28 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapGet("/test", () => new { Text = "Hello World" });
-app.MapPost("/login", (string userName, HttpContext httpContext, JwtTokenGenerator jwtTokenGenerator) => {
-    var jwtToken = jwtTokenGenerator.GenerateToken(userName);
-    
-    httpContext.Response.Cookies.Append("X-Access-Token", jwtToken, new CookieOptions() { HttpOnly = true, SameSite = SameSiteMode.Strict, Secure = true });
 
-    return Results.NoContent();
+app.MapGet("/account", (HttpContext httpContext) => {
+    var identity = httpContext.User.Identity
+        ?? throw new InvalidOperationException("Request was authorized but identity was not found");
+
+    return new {
+        IsAuthenticated = true,
+        UserName = identity.Name,
+        DisplayName = identity.Name
+    };
+}).RequireAuthorization();
+
+app.MapPost("/account/login", (LoginRequest loginRequest, HttpContext httpContext, JwtTokenGenerator jwtTokenGenerator) => {
+    var jwtToken = jwtTokenGenerator.GenerateToken(loginRequest.UserName);
+
+    httpContext.Response.Cookies.Append(Constants.AccessTokenCookieName, jwtToken, new CookieOptions() { HttpOnly = true, SameSite = SameSiteMode.Strict, Secure = true });
+
+    return Results.Redirect("/account");
 });
-app.MapPost("/logout", (HttpContext httpContext) => {
-    httpContext.Response.Cookies.Delete("X-Access-Token");
+
+app.MapPost("/account/logout", (HttpContext httpContext) => {
+    httpContext.Response.Cookies.Delete(Constants.AccessTokenCookieName);
 
     return Results.NoContent();
 });
