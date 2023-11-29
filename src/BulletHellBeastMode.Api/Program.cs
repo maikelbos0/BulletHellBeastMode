@@ -7,13 +7,13 @@ using System.Security.Cryptography;
 const string tokenCookieName = "X-Jwt-Token";
 
 var builder = WebApplication.CreateBuilder(args);
-var appSettings = builder.Configuration.Get<AppSettings>()
-    ?? throw new InvalidOperationException($"Configuration section '{nameof(AppSettings)}' was not found");
+var corsOrigin = builder.Configuration["CorsOrigin"];
 var jwtSettings = builder.Configuration.GetSection(nameof(JwtSettings)).Get<JwtSettings>()
     ?? throw new InvalidOperationException($"Configuration section '{nameof(JwtSettings)}' was not found");
 
-if (appSettings.ClientUri != null) {
-    builder.Services.AddCors(options => options.AddDefaultPolicy(policy => policy.WithOrigins(appSettings.ClientUri)));
+
+if (corsOrigin != null) {
+    builder.Services.AddCors(options => options.AddDefaultPolicy(policy => policy.WithOrigins(corsOrigin)));
 }
 
 jwtSettings.SecurityKey ??= RandomNumberGenerator.GetBytes(32);
@@ -54,7 +54,7 @@ var app = builder.Build();
 
 app.UseHttpsRedirection();
 
-if (appSettings.ClientUri != null) {
+if (corsOrigin != null) {
     app.UseCors();
 }
 
