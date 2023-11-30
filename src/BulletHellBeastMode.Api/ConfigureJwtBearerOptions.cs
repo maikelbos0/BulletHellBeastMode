@@ -31,7 +31,12 @@ public class ConfigureJwtBearerOptions : IConfigureNamedOptions<JwtBearerOptions
         options.Events = new JwtBearerEvents {
             OnMessageReceived = context =>
             {
-                context.Token = context.Request.Cookies[Constants.AccessTokenCookieName];
+                context.Token ??= context.Request.Cookies[Constants.AccessTokenCookieName];
+                return Task.CompletedTask;
+            },
+            OnAuthenticationFailed = context => 
+            {
+                //context.
                 return Task.CompletedTask;
             }
         };
