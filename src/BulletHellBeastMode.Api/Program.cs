@@ -8,10 +8,11 @@ if (corsOrigin != null) {
     builder.Services.AddCors(options => options.AddDefaultPolicy(policy => policy.WithOrigins(corsOrigin)));
 }
 
+builder.Services.AddOptions<JwtSettings>().Bind(builder.Configuration.GetSection(nameof(JwtSettings)));
+builder.Services.AddOptions<AppSettings>().Bind(builder.Configuration.GetSection(nameof(AppSettings)));
 builder.Services.AddAuthentication().AddJwtBearer();
 builder.Services.ConfigureOptions<ConfigureJwtBearerOptions>();
 builder.Services.AddAuthorization();
-builder.Services.AddOptions<JwtSettings>().Bind(builder.Configuration.GetSection(nameof(JwtSettings)));
 builder.Services.AddScoped<JwtSecurityTokenHandler>();
 builder.Services.AddScoped<JwtTokenGenerator>();
 
