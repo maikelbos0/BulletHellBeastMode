@@ -1,4 +1,9 @@
 using BulletHellBeastMode.Api;
+using BulletHellBeastMode.Api.Commands.Account;
+using BulletHellBeastMode.Api.Database;
+using BulletHellBeastMode.Api.Entities;
+using MediatR;
+using Microsoft.AspNetCore.Identity;
 using System.IdentityModel.Tokens.Jwt;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,8 +18,12 @@ builder.Services.AddOptions<AppSettings>().Bind(builder.Configuration.GetSection
 builder.Services.AddAuthentication().AddJwtBearer();
 builder.Services.ConfigureOptions<ConfigureJwtBearerOptions>();
 builder.Services.AddAuthorization();
-builder.Services.AddScoped<JwtSecurityTokenHandler>();
-builder.Services.AddScoped<JwtTokenGenerator>();
+builder.Services.AddTransient<JwtSecurityTokenHandler>();
+builder.Services.AddTransient<JwtTokenGenerator>();
+builder.Services.AddTransient<PasswordHasher<User>>();
+builder.Services.AddDbContext<BulletHellContext>();
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddMediatR(configuration => configuration.RegisterServicesFromAssemblyContaining<Program>());
 
 var app = builder.Build();
 
@@ -39,6 +48,8 @@ app.MapGet("/account", (HttpContext httpContext) => {
         DisplayName = identity.Name
     };
 }).RequireAuthorization();
+
+app.MapPost("/account/register", async (RegisterUserCommand command, IMediator mediator) => await mediator.Send(command));
 
 app.MapPost("/account/login", (LoginRequest loginRequest, HttpContext httpContext, JwtTokenGenerator jwtTokenGenerator) => {
     var jwtToken = jwtTokenGenerator.GenerateToken(loginRequest.UserName);
