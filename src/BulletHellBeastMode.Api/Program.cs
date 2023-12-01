@@ -1,5 +1,5 @@
 using BulletHellBeastMode.Api;
-using BulletHellBeastMode.Api.Commands.Account;
+using BulletHellBeastMode.Api.Account;
 using BulletHellBeastMode.Api.Database;
 using BulletHellBeastMode.Api.Entities;
 using MediatR;
@@ -20,6 +20,7 @@ builder.Services.ConfigureOptions<ConfigureJwtBearerOptions>();
 builder.Services.AddAuthorization();
 builder.Services.AddTransient<JwtSecurityTokenHandler>();
 builder.Services.AddTransient<JwtTokenGenerator>();
+builder.Services.AddTransient<IAccountService, AccountService>();
 builder.Services.AddTransient<PasswordHasher<User>>();
 builder.Services.AddDbContext<BulletHellContext>();
 builder.Services.AddHttpContextAccessor();

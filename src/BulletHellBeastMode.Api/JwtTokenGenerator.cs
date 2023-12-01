@@ -5,6 +5,7 @@ using System.Security.Claims;
 
 namespace BulletHellBeastMode.Api;
 
+[Obsolete]
 public class JwtTokenGenerator {
     private readonly JwtSecurityTokenHandler jwtSecurityTokenHandler;
     private readonly JwtSettings jwtSettings;
