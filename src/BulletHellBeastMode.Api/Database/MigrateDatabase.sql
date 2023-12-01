@@ -39,3 +39,44 @@ GO
 COMMIT;
 GO
 
+BEGIN TRANSACTION;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20231201090539_UserEvents'
+)
+BEGIN
+    CREATE TABLE [UserEvent] (
+        [Id] int NOT NULL IDENTITY,
+        [UserId] int NOT NULL,
+        [DateTime] datetimeoffset NOT NULL,
+        [Type] int NOT NULL,
+        CONSTRAINT [PK_UserEvent] PRIMARY KEY ([Id]),
+        CONSTRAINT [FK_UserEvent_Users_UserId] FOREIGN KEY ([UserId]) REFERENCES [Users] ([Id]) ON DELETE CASCADE
+    );
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20231201090539_UserEvents'
+)
+BEGIN
+    CREATE INDEX [IX_UserEvent_UserId] ON [UserEvent] ([UserId]);
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20231201090539_UserEvents'
+)
+BEGIN
+    INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+    VALUES (N'20231201090539_UserEvents', N'8.0.0');
+END;
+GO
+
+COMMIT;
+GO
+
