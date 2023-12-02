@@ -4,6 +4,8 @@ using BulletHellBeastMode.Api.Database;
 using BulletHellBeastMode.Api.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using System.IdentityModel.Tokens.Jwt;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -22,7 +24,9 @@ builder.Services.AddTransient<JwtSecurityTokenHandler>();
 builder.Services.AddTransient<JwtTokenGenerator>();
 builder.Services.AddTransient<IAccountService, AccountService>();
 builder.Services.AddTransient<PasswordHasher<User>>();
-builder.Services.AddDbContext<BulletHellContext>();
+builder.Services.AddDbContext<BulletHellContext>((serviceProvider, options) => options
+    .UseSqlServer(serviceProvider.GetRequiredService<IOptionsSnapshot<AppSettings>>().Value.ConnectionString)
+    .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking));
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddMediatR(configuration => configuration.RegisterServicesFromAssemblyContaining<Program>());
 
