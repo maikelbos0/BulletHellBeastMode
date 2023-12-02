@@ -17,7 +17,9 @@ public abstract class IntegrationTestBase : IClassFixture<WebApplicationFactory>
 
         Context = scope.ServiceProvider.GetRequiredService<BulletHellContext>();
         Context.Database.EnsureCreated();
-        Client = factory.CreateClient();
+        Client = factory.CreateClient(new() {
+            BaseAddress = new("https://localhost")
+        });
     }
 
     public void Dispose() {

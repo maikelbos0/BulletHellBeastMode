@@ -43,18 +43,11 @@ app.UseAuthorization();
 
 app.MapGet("/test", () => new { Text = "Hello World" });
 
-app.MapGet("/account", (HttpContext httpContext) => {
-    var identity = httpContext.User.Identity
-        ?? throw new InvalidOperationException("Request was authorized but identity was not found");
-
-    return new {
-        IsAuthenticated = true,
-        UserName = identity.Name,
-        DisplayName = identity.Name
-    };
-}).RequireAuthorization();
+app.MapGet("/account", async (IMediator mediator) => await mediator.Send(new GetAccountDetailsQuery())).RequireAuthorization();
 
 app.MapPost("/account/register", async (RegisterUserCommand command, IMediator mediator) => await mediator.Send(command));
+
+
 
 app.MapPost("/account/login", (LoginRequest loginRequest, HttpContext httpContext, JwtTokenGenerator jwtTokenGenerator) => {
     var jwtToken = jwtTokenGenerator.GenerateToken(loginRequest.UserName);

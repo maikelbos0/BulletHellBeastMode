@@ -4,14 +4,10 @@ using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
-namespace BulletHellBeastMode.Api.Account
-{
-    public record RegisterUserCommand(string UserName, string Password) : IRequest<CommandResult>;
-
+namespace BulletHellBeastMode.Api.Account {
     public class RegisterUserCommandHandler(BulletHellContext context, PasswordHasher<User> passwordHasher, IAccountService accountService)
         : IRequestHandler<RegisterUserCommand, CommandResult>
     {
-
         public async Task<CommandResult> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
         {
             if (await context.Users.AnyAsync(user => user.Name == request.UserName, cancellationToken))

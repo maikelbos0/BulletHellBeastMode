@@ -3,30 +3,15 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
-namespace BulletHellBeastMode.Api.Account
-{
-    public interface IAccountService
-    {
-        void SignIn(string userName);
-    }
+namespace BulletHellBeastMode.Api.Account {
+    public class AccountService(JwtSecurityTokenHandler jwtSecurityTokenHandler, IHttpContextAccessor httpContextAccessor, IOptionsSnapshot<JwtSettings> jwtSettings) : IAccountService {
+        private readonly JwtSecurityTokenHandler jwtSecurityTokenHandler = jwtSecurityTokenHandler;
+        private readonly IHttpContextAccessor httpContextAccessor = httpContextAccessor;
+        private readonly JwtSettings jwtSettings = jwtSettings.Value;
 
-    public class AccountService : IAccountService
-    {
-        private readonly JwtSecurityTokenHandler jwtSecurityTokenHandler;
-        private readonly IHttpContextAccessor httpContextAccessor;
-        private readonly JwtSettings jwtSettings;
-
-        public AccountService(JwtSecurityTokenHandler jwtSecurityTokenHandler, IHttpContextAccessor httpContextAccessor, IOptionsSnapshot<JwtSettings> jwtSettings)
-        {
-            this.jwtSecurityTokenHandler = jwtSecurityTokenHandler;
-            this.httpContextAccessor = httpContextAccessor;
-            this.jwtSettings = jwtSettings.Value;
-        }
-
-        public void SignIn(string userName)
-        {
+        public void SignIn(string userName) {
             var token = GenerateToken(userName);
-            
+
             httpContextAccessor.HttpContext?.Response.Cookies.Append(
                 Constants.AccessTokenCookieName,
                 token,
@@ -34,8 +19,7 @@ namespace BulletHellBeastMode.Api.Account
             );
         }
 
-        private string GenerateToken(string userName)
-        {
+        private string GenerateToken(string userName) {
             var signingCredentials = new SigningCredentials(new SymmetricSecurityKey(jwtSettings.SecurityKey), SecurityAlgorithms.HmacSha256);
             var now = DateTime.UtcNow;
 
@@ -52,6 +36,12 @@ namespace BulletHellBeastMode.Api.Account
             );
 
             return jwtSecurityTokenHandler.WriteToken(token);
+        }
+
+        public AccountDetails GetAcccountDetails() {
+            var identity = httpContextAccessor.HttpContext?.User.Identity;
+
+            return new AccountDetails(identity?.Name, identity?.Name);
         }
     }
 }

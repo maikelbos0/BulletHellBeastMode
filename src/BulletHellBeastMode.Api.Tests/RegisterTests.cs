@@ -16,14 +16,13 @@ public class RegisterTests : IntegrationTestBase {
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
-        var cookieHeader = Assert.Single(response.Headers, header => header.Key == "Set-Cookie");
-        Assert.StartsWith(Constants.AccessTokenCookieName, Assert.Single(cookieHeader.Value));
-
         var content = await response.Content.ReadFromJsonAsync<CommandResult>();
         Assert.NotNull(content);
         Assert.True(content.IsSuccess);
 
         Assert.Single(Context.Users, user => user.Name == "new-user");
+
+        Assert.Equal(HttpStatusCode.OK, (await Client.GetAsync("/account")).StatusCode);
     }
 
     [Fact]
@@ -35,12 +34,12 @@ public class RegisterTests : IntegrationTestBase {
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
-        Assert.DoesNotContain(response.Headers, header => header.Key == "Set-Cookie");
-
         var content = await response.Content.ReadFromJsonAsync<CommandResult>();
         Assert.NotNull(content);
         Assert.False(content.IsSuccess);
 
         Assert.Single(Context.Users, user => user.Name == "existing-user");
+
+        Assert.Equal(HttpStatusCode.Unauthorized, (await Client.GetAsync("/account")).StatusCode);
     }
 }
