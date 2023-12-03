@@ -31,8 +31,8 @@ public class SignInTests : IntegrationTestBase {
         Assert.NotNull(content);
         Assert.True(content.IsSuccess);
 
-        var updatedUser = Context.Users.Include(user => user.UserEvents).Single(user => user.Name == "sign-in-user");
-        Assert.Equal(UserEventType.LoggedIn, Assert.Single(updatedUser.UserEvents).Type);
+        var updatedUser = Context.Users.Include(user => user.Events).Single(user => user.Name == "sign-in-user");
+        Assert.Equal(UserEventType.SignedIn, Assert.Single(updatedUser.Events).Type);
 
         Assert.Equal(HttpStatusCode.OK, (await Client.GetAsync("/account")).StatusCode);
     }
@@ -53,9 +53,9 @@ public class SignInTests : IntegrationTestBase {
         Assert.NotNull(content);
         Assert.True(content.IsSuccess);
 
-        var updatedUser = Context.Users.Include(user => user.UserEvents).Single(user => user.Name == "rehash-user");
+        var updatedUser = Context.Users.Include(user => user.Events).Single(user => user.Name == "rehash-user");
         Assert.NotEqual(updatedUser.Password, user.Password);
-        Assert.Equal(UserEventType.LoggedIn, Assert.Single(updatedUser.UserEvents).Type);
+        Assert.Equal(UserEventType.SignedIn, Assert.Single(updatedUser.Events).Type);
 
         Assert.Equal(HttpStatusCode.OK, (await Client.GetAsync("/account")).StatusCode);
     }
@@ -89,8 +89,8 @@ public class SignInTests : IntegrationTestBase {
         Assert.NotNull(content);
         Assert.False(content.IsSuccess);
 
-        var updatedUser = Context.Users.Include(user => user.UserEvents).Single(user => user.Name == "password-user");
-        Assert.Equal(UserEventType.FailedLogIn, Assert.Single(updatedUser.UserEvents).Type);
+        var updatedUser = Context.Users.Include(user => user.Events).Single(user => user.Name == "password-user");
+        Assert.Equal(UserEventType.FailedSignIn, Assert.Single(updatedUser.Events).Type);
 
         Assert.Equal(HttpStatusCode.Unauthorized, (await Client.GetAsync("/account")).StatusCode);
     }

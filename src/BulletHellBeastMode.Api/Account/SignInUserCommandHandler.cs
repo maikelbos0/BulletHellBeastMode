@@ -21,8 +21,8 @@ public class SignInUserCommandHandler(BulletHellContext context, PasswordHasher<
         var passwordVerificationResult = passwordHasher.VerifyHashedPassword(user, user.Password, request.Password);
 
         if (passwordVerificationResult == PasswordVerificationResult.Failed) {
-            user.UserEvents.Add(new UserEvent() {
-                Type = UserEventType.FailedLogIn
+            user.Events.Add(new UserEvent() {
+                Type = UserEventType.FailedSignIn
             });
             await context.SaveChangesAsync();
 
@@ -32,8 +32,8 @@ public class SignInUserCommandHandler(BulletHellContext context, PasswordHasher<
             user.Password = passwordHasher.HashPassword(user, request.Password);
         }
 
-        user.UserEvents.Add(new UserEvent() {
-            Type = UserEventType.LoggedIn
+        user.Events.Add(new UserEvent() {
+            Type = UserEventType.SignedIn
         });
         await context.SaveChangesAsync();
         accountService.SignIn(user.Name);
