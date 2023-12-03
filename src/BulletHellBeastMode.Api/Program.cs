@@ -47,15 +47,9 @@ app.MapGet("/account", async (IMediator mediator) => await mediator.Send(new Get
 
 app.MapPost("/account/register", async (RegisterUserCommand command, IMediator mediator) => await mediator.Send(command));
 
+app.MapPost("/account/sign-in", async (SignInUserCommand command, IMediator mediator) => await mediator.Send(command));
 
 
-app.MapPost("/account/login", (LoginRequest loginRequest, HttpContext httpContext, JwtTokenGenerator jwtTokenGenerator) => {
-    var jwtToken = jwtTokenGenerator.GenerateToken(loginRequest.UserName);
-
-    httpContext.Response.Cookies.Append(Constants.AccessTokenCookieName, jwtToken, new CookieOptions() { HttpOnly = true, SameSite = SameSiteMode.Strict, Secure = true });
-
-    return Results.Redirect("/account");
-});
 
 app.MapPost("/account/logout", (HttpContext httpContext) => {
     httpContext.Response.Cookies.Delete(Constants.AccessTokenCookieName);
