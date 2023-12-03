@@ -2,7 +2,6 @@
 
 public class UserEvent {
     public int Id { get; set; }
-    public required User User { get; set; }
-    public required DateTimeOffset DateTime { get; set; }
+    public DateTimeOffset DateTime { get; set; } = DateTimeOffset.Now;
     public required UserEventType Type { get; set; }
 }

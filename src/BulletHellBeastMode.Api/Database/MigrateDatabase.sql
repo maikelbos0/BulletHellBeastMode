@@ -135,3 +135,36 @@ GO
 COMMIT;
 GO
 
+BEGIN TRANSACTION;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20231203075750_User-NotNullPassword'
+)
+BEGIN
+    DECLARE @var2 sysname;
+    SELECT @var2 = [d].[name]
+    FROM [sys].[default_constraints] [d]
+    INNER JOIN [sys].[columns] [c] ON [d].[parent_column_id] = [c].[column_id] AND [d].[parent_object_id] = [c].[object_id]
+    WHERE ([d].[parent_object_id] = OBJECT_ID(N'[Users]') AND [c].[name] = N'Password');
+    IF @var2 IS NOT NULL EXEC(N'ALTER TABLE [Users] DROP CONSTRAINT [' + @var2 + '];');
+    EXEC(N'UPDATE [Users] SET [Password] = N'''' WHERE [Password] IS NULL');
+    ALTER TABLE [Users] ALTER COLUMN [Password] nvarchar(max) NOT NULL;
+    ALTER TABLE [Users] ADD DEFAULT N'' FOR [Password];
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20231203075750_User-NotNullPassword'
+)
+BEGIN
+    INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+    VALUES (N'20231203075750_User-NotNullPassword', N'8.0.0');
+END;
+GO
+
+COMMIT;
+GO
+
