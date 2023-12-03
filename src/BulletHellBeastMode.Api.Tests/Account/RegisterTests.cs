@@ -5,7 +5,7 @@ using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace BulletHellBeastMode.Api.Tests;
+namespace BulletHellBeastMode.Api.Tests.Account;
 
 public class RegisterTests : IntegrationTestBase {
     public RegisterTests(WebApplicationFactory factory) : base(factory) { }
