@@ -11,6 +11,8 @@ public class BulletHellContext : DbContext {
     protected override void OnModelCreating(ModelBuilder modelBuilder) {
         base.OnModelCreating(modelBuilder);
 
-        modelBuilder.Entity<User>().HasMany<UserEvent>(user => user.Events).WithOne().IsRequired();
+        var userEntity = modelBuilder.Entity<User>();
+        userEntity.HasIndex(user => user.Name).IsUnique();
+        userEntity.HasMany(user => user.Events).WithOne().IsRequired();
     }
 }
