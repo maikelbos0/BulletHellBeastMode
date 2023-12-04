@@ -20,15 +20,19 @@ public class RegisterTests : IntegrationTestBase {
         Assert.NotNull(content);
         Assert.True(content.IsSuccess);
 
-        Assert.Single(Context.Users, user => user.Name == "new-user");
+        using (var contextProvider = CreateContextProvider()) {
+            Assert.Single(contextProvider.Context.Users, user => user.Name == "new-user");
+        }
 
         Assert.Equal(HttpStatusCode.OK, (await Client.GetAsync("/account")).StatusCode);
     }
 
     [Fact]
     public async Task Register_Existing_Name_Fails() {
-        await Context.Users.AddAsync(new User() { Name = "existing-user" });
-        await Context.SaveChangesAsync();
+        using (var contextProvider = CreateContextProvider()) {
+            await contextProvider.Context.Users.AddAsync(new User() { Name = "existing-user" });
+            await contextProvider.Context.SaveChangesAsync();
+        }
 
         var response = await Client.PostAsJsonAsync("/account/register", new RegisterUserCommand("existing-user", "password"));
 
@@ -38,7 +42,9 @@ public class RegisterTests : IntegrationTestBase {
         Assert.NotNull(content);
         Assert.False(content.IsSuccess);
 
-        Assert.Single(Context.Users, user => user.Name == "existing-user");
+        using (var contextProvider = CreateContextProvider()) {
+            Assert.Single(contextProvider.Context.Users, user => user.Name == "existing-user");
+        }
 
         Assert.Equal(HttpStatusCode.Unauthorized, (await Client.GetAsync("/account")).StatusCode);
     }

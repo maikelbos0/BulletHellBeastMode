@@ -7,25 +7,26 @@ using Xunit;
 namespace BulletHellBeastMode.Api.Tests;
 
 public abstract class IntegrationTestBase : IClassFixture<WebApplicationFactory>, IDisposable {
-    private IServiceScope scope;
+    private readonly WebApplicationFactory factory;
 
-    protected BulletHellContext Context { get; }
     protected HttpClient Client { get; }
 
     protected IntegrationTestBase(WebApplicationFactory factory) {
-        scope = factory.Services.CreateScope();
+        this.factory = factory;
 
-        Context = scope.ServiceProvider.GetRequiredService<BulletHellContext>();
-        Context.Database.EnsureCreated();
         Client = factory.CreateClient(new() {
             BaseAddress = new("https://localhost")
         });
+
+        using var scope = factory.Services.CreateScope();
+        using var context = scope.ServiceProvider.GetRequiredService<BulletHellContext>();
+        context.Database.EnsureCreated();
     }
+
+    public BulletHellContextProvider CreateContextProvider() => new BulletHellContextProvider(factory);
 
     public void Dispose() {
         Client?.Dispose();
-        Context?.Dispose();
-
-        scope?.Dispose();
+        GC.SuppressFinalize(this);
     }
 }

@@ -6,7 +6,6 @@ using Xunit;
 using BulletHellBeastMode.Api.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
-using System.Security.Cryptography;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 
@@ -20,8 +19,11 @@ public class SignInTests : IntegrationTestBase {
         var passwordHasher = new PasswordHasher<User>();
         var user = new User() { Name = "sign-in-user" };
         user.Password = passwordHasher.HashPassword(user, "password");
-        await Context.Users.AddAsync(user);
-        await Context.SaveChangesAsync();
+
+        using (var contextProvider = CreateContextProvider()) {
+            await contextProvider.Context.Users.AddAsync(user);
+            await contextProvider.Context.SaveChangesAsync();
+        }
 
         var response = await Client.PostAsJsonAsync("/account/sign-in", new SignInUserCommand("sign-in-user", "password"));
 
@@ -31,8 +33,10 @@ public class SignInTests : IntegrationTestBase {
         Assert.NotNull(content);
         Assert.True(content.IsSuccess);
 
-        var updatedUser = Context.Users.Include(user => user.Events).Single(user => user.Name == "sign-in-user");
-        Assert.Equal(UserEventType.SignedIn, Assert.Single(updatedUser.Events).Type);
+        using (var contextProvider = CreateContextProvider()) {
+            var updatedUser = contextProvider.Context.Users.Include(user => user.Events).Single(user => user.Name == "sign-in-user");
+            Assert.Equal(UserEventType.SignedIn, Assert.Single(updatedUser.Events).Type);
+        }
 
         Assert.Equal(HttpStatusCode.OK, (await Client.GetAsync("/account")).StatusCode);
     }
@@ -42,8 +46,11 @@ public class SignInTests : IntegrationTestBase {
         var passwordHasher = new PasswordHasher<User>(Options.Create(new PasswordHasherOptions() { CompatibilityMode = PasswordHasherCompatibilityMode.IdentityV2 }));
         var user = new User() { Name = "rehash-user" };
         user.Password = passwordHasher.HashPassword(user, "password");
-        await Context.Users.AddAsync(user);
-        await Context.SaveChangesAsync();
+
+        using (var contextProvider = CreateContextProvider()) {
+            await contextProvider.Context.Users.AddAsync(user);
+            await contextProvider.Context.SaveChangesAsync();
+        }
 
         var response = await Client.PostAsJsonAsync("/account/sign-in", new SignInUserCommand("rehash-user", "password"));
 
@@ -53,9 +60,11 @@ public class SignInTests : IntegrationTestBase {
         Assert.NotNull(content);
         Assert.True(content.IsSuccess);
 
-        var updatedUser = Context.Users.Include(user => user.Events).Single(user => user.Name == "rehash-user");
-        Assert.NotEqual(updatedUser.Password, user.Password);
-        Assert.Equal(UserEventType.SignedIn, Assert.Single(updatedUser.Events).Type);
+        using (var contextProvider = CreateContextProvider()) {
+            var updatedUser = contextProvider.Context.Users.Include(user => user.Events).Single(user => user.Name == "rehash-user");
+            Assert.NotEqual(updatedUser.Password, user.Password);
+            Assert.Equal(UserEventType.SignedIn, Assert.Single(updatedUser.Events).Type);
+        }
 
         Assert.Equal(HttpStatusCode.OK, (await Client.GetAsync("/account")).StatusCode);
     }
@@ -78,8 +87,11 @@ public class SignInTests : IntegrationTestBase {
         var passwordHasher = new PasswordHasher<User>();
         var user = new User() { Name = "password-user" };
         user.Password = passwordHasher.HashPassword(user, "password");
-        await Context.Users.AddAsync(user);
-        await Context.SaveChangesAsync();
+
+        using (var contextProvider = CreateContextProvider()) {
+            await contextProvider.Context.Users.AddAsync(user);
+            await contextProvider.Context.SaveChangesAsync();
+        }
 
         var response = await Client.PostAsJsonAsync("/account/sign-in", new SignInUserCommand("password-user", "wrong"));
 
@@ -89,8 +101,10 @@ public class SignInTests : IntegrationTestBase {
         Assert.NotNull(content);
         Assert.False(content.IsSuccess);
 
-        var updatedUser = Context.Users.Include(user => user.Events).Single(user => user.Name == "password-user");
-        Assert.Equal(UserEventType.FailedSignIn, Assert.Single(updatedUser.Events).Type);
+        using (var contextProvider = CreateContextProvider()) {
+            var updatedUser = contextProvider.Context.Users.Include(user => user.Events).Single(user => user.Name == "password-user");
+            Assert.Equal(UserEventType.FailedSignIn, Assert.Single(updatedUser.Events).Type);
+        }
 
         Assert.Equal(HttpStatusCode.Unauthorized, (await Client.GetAsync("/account")).StatusCode);
     }
