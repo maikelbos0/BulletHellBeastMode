@@ -20,7 +20,7 @@ public class AccountService(JwtSecurityTokenHandler jwtSecurityTokenHandler, IHt
         );
     }
 
-    private string GenerateToken(string userName) {
+    public string GenerateToken(string userName) {
         var signingCredentials = new SigningCredentials(new SymmetricSecurityKey(jwtSettings.SecurityKey), SecurityAlgorithms.HmacSha256);
         var now = DateTime.UtcNow;
 
@@ -37,6 +37,10 @@ public class AccountService(JwtSecurityTokenHandler jwtSecurityTokenHandler, IHt
         );
 
         return jwtSecurityTokenHandler.WriteToken(token);
+    }
+
+    public void SignOut() {
+        httpContextAccessor.HttpContext?.Response.Cookies.Delete(Constants.AccessTokenCookieName);
     }
 
     public AccountDetails GetAcccountDetails() {
