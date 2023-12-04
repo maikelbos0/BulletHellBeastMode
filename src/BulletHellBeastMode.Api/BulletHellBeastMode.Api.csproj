@@ -23,5 +23,5 @@
 		<Exec Condition="$(Configuration) == 'Debug'" Command="dotnet ef migrations script --no-build --idempotent --output ./Database/MigrateDatabase.sql" />
 		<Exec Condition="$(Configuration) == 'Debug'" Command="dotnet ef database update --no-build" />
 	</Target>
-
+	
 </Project>

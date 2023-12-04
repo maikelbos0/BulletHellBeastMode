@@ -5,14 +5,7 @@ using System.IdentityModel.Tokens.Jwt;
 
 namespace BulletHellBeastMode.Api;
 
-public class ConfigureJwtBearerOptions : IConfigureNamedOptions<JwtBearerOptions> {
-    private readonly IOptionsMonitor<JwtSettings> jwtSettings;
-
-    public ConfigureJwtBearerOptions(IOptionsMonitor<JwtSettings> jwtSettings)
-    {
-        this.jwtSettings = jwtSettings;
-    }
-
+public class ConfigureJwtBearerOptions(IOptionsMonitor<JwtSettings> jwtSettings) : IConfigureNamedOptions<JwtBearerOptions> {
     public void Configure(string? name, JwtBearerOptions options) {
         Configure(options);
     }
@@ -32,11 +25,6 @@ public class ConfigureJwtBearerOptions : IConfigureNamedOptions<JwtBearerOptions
             OnMessageReceived = context =>
             {
                 context.Token ??= context.Request.Cookies[Constants.AccessTokenCookieName];
-                return Task.CompletedTask;
-            },
-            OnAuthenticationFailed = context => 
-            {
-                //context.
                 return Task.CompletedTask;
             }
         };
