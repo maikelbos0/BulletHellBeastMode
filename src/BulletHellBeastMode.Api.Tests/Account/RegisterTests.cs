@@ -7,6 +7,7 @@ using Xunit;
 
 namespace BulletHellBeastMode.Api.Tests.Account;
 
+// TODO test refresh token?
 public class RegisterTests : IntegrationTestBase {
     public RegisterTests(WebApplicationFactory factory) : base(factory) { }
 

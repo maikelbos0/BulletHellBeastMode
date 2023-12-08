@@ -49,14 +49,17 @@ public class AccountService(JwtSecurityTokenHandler jwtSecurityTokenHandler, IHt
     public RefreshTokenDetails GenerateRefreshToken()
         => new(Convert.ToBase64String(RandomNumberGenerator.GetBytes(384)), DateTimeOffset.UtcNow.AddSeconds(jwtSettings.RefreshTokenExpiresInSeconds));
 
-    public void SignOut() {
-        // TODO remove refresh token
-        httpContextAccessor.HttpContext?.Response.Cookies.Delete(Constants.AccessTokenCookieName);
-    }
-
     public AccountDetails GetAcccountDetails() {
         var identity = httpContextAccessor.HttpContext?.User.Identity;
 
         return new AccountDetails(identity?.Name, identity?.Name);
+    }
+
+    public string? GetRefreshToken()
+        => httpContextAccessor.HttpContext?.Request.Cookies[Constants.RefreshTokenCookieName];
+
+    public void SignOut() {
+        httpContextAccessor.HttpContext?.Response.Cookies.Delete(Constants.AccessTokenCookieName);
+        httpContextAccessor.HttpContext?.Response.Cookies.Delete(Constants.RefreshTokenCookieName);
     }
 }
