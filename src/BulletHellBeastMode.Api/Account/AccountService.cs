@@ -2,6 +2,7 @@
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 
 namespace BulletHellBeastMode.Api.Account;
 
@@ -10,17 +11,23 @@ public class AccountService(JwtSecurityTokenHandler jwtSecurityTokenHandler, IHt
     private readonly IHttpContextAccessor httpContextAccessor = httpContextAccessor;
     private readonly JwtSettings jwtSettings = jwtSettings.Value;
 
-    public void SignIn(string userName) {
-        var token = GenerateToken(userName);
+    public void SignIn(string userName, string refreshToken) {
+        var accessToken = GenerateAccessToken(userName);
 
         httpContextAccessor.HttpContext?.Response.Cookies.Append(
             Constants.AccessTokenCookieName,
-            token,
+            accessToken,
+            new CookieOptions() { HttpOnly = true, SameSite = SameSiteMode.Strict, Secure = true }
+        );
+
+        httpContextAccessor.HttpContext?.Response.Cookies.Append(
+            Constants.RefreshTokenCookieName,
+            refreshToken,
             new CookieOptions() { HttpOnly = true, SameSite = SameSiteMode.Strict, Secure = true }
         );
     }
 
-    public string GenerateToken(string userName) {
+    public string GenerateAccessToken(string userName) {
         var signingCredentials = new SigningCredentials(new SymmetricSecurityKey(jwtSettings.SecurityKey), SecurityAlgorithms.HmacSha256);
         var now = DateTime.UtcNow;
 
@@ -32,14 +39,18 @@ public class AccountService(JwtSecurityTokenHandler jwtSecurityTokenHandler, IHt
                 new(JwtRegisteredClaimNames.Sub, userName)
             },
             notBefore: now,
-            expires: now.AddSeconds(jwtSettings.ExpiresInSeconds),
+            expires: now.AddSeconds(jwtSettings.AccessTokenExpiresInSeconds),
             signingCredentials: signingCredentials
         );
 
         return jwtSecurityTokenHandler.WriteToken(token);
     }
 
+    public RefreshTokenDetails GenerateRefreshToken()
+        => new(Convert.ToBase64String(RandomNumberGenerator.GetBytes(384)), DateTimeOffset.UtcNow.AddSeconds(jwtSettings.RefreshTokenExpiresInSeconds));
+
     public void SignOut() {
+        // TODO remove refresh token
         httpContextAccessor.HttpContext?.Response.Cookies.Delete(Constants.AccessTokenCookieName);
     }
 

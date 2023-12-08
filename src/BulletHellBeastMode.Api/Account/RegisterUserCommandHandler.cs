@@ -22,7 +22,7 @@ public class RegisterUserCommandHandler(BulletHellContext context, PasswordHashe
         await context.Users.AddAsync(user, cancellationToken);
         await context.SaveChangesAsync(cancellationToken);
 
-        accountService.SignIn(user.Name);
+        accountService.SignIn(user.Name, string.Empty);
 
         return CommandResult.Success;
     }

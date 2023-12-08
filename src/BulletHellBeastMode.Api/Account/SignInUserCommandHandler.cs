@@ -32,11 +32,17 @@ public class SignInUserCommandHandler(BulletHellContext context, PasswordHasher<
             user.Password = passwordHasher.HashPassword(user, request.Password);
         }
 
+        var refreshToken = accountService.GenerateRefreshToken();
+        user.RefreshTokenFamilies.Add(new RefreshTokenFamily() {
+            Token = passwordHasher.HashPassword(user, refreshToken.Token),
+            Expires = refreshToken.Expires
+        });
+
         user.Events.Add(new UserEvent() {
             Type = UserEventType.SignedIn
         });
         await context.SaveChangesAsync();
-        accountService.SignIn(user.Name);
+        accountService.SignIn(user.Name, refreshToken.Token);
 
         return CommandResult.Success;
     }

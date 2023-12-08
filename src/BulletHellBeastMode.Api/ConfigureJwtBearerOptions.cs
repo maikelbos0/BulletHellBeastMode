@@ -24,7 +24,7 @@ public class ConfigureJwtBearerOptions(IOptionsMonitor<JwtSettings> jwtSettings)
         options.Events = new JwtBearerEvents {
             OnMessageReceived = context =>
             {
-                context.Token ??= context.Request.Cookies[Constants.AccessTokenCookieName];
+                context.Token = context.Request.Cookies[Constants.AccessTokenCookieName];
                 return Task.CompletedTask;
             }
         };

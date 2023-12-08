@@ -7,6 +7,7 @@ public class JwtSettings {
 
     public string? ValidIssuer { get; set; }
     public string? ValidAudience { get; set; }
-    public int ExpiresInSeconds { get; set; }
+    public int AccessTokenExpiresInSeconds { get; set; }
+    public int RefreshTokenExpiresInSeconds { get; set; }
     public byte[] SecurityKey { get; set; } = DefaultSecurityKey;
 }
