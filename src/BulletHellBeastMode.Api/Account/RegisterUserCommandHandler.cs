@@ -6,9 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BulletHellBeastMode.Api.Account;
 
-public class RegisterUserCommandHandler(BulletHellContext context, PasswordHasher<User> passwordHasher, IAccountService accountService)
-    : IRequestHandler<RegisterUserCommand, CommandResult> {
-
+public class RegisterUserCommandHandler(BulletHellContext context, PasswordHasher<User> passwordHasher, IAccountService accountService) : IRequestHandler<RegisterUserCommand, CommandResult> {
     public async Task<CommandResult> Handle(RegisterUserCommand request, CancellationToken cancellationToken) {
         if (await context.Users.AnyAsync(user => user.Name == request.UserName, cancellationToken)) {
             return CommandResult.Failure("A user with this name already exists");

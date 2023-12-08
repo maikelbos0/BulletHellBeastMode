@@ -8,9 +8,7 @@ using Microsoft.EntityFrameworkCore;
 namespace BulletHellBeastMode.Api.Tests.Account;
 
 // TODO test refresh token?
-public class SignOutTests : IntegrationTestBase {
-    public SignOutTests(WebApplicationFactory factory) : base(factory) { }
-
+public class SignOutTests(WebApplicationFactory factory) : IntegrationTestBase(factory) {
     [Fact]
     public async Task SignOut_Succeeds() {
         using (var contextProvider = CreateContextProvider()) {

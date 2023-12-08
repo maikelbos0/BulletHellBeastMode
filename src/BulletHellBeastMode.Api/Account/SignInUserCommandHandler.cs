@@ -6,13 +6,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BulletHellBeastMode.Api.Account;
 
-public class SignInUserCommandHandler(BulletHellContext context, PasswordHasher<User> passwordHasher, IAccountService accountService)
-    : IRequestHandler<SignInUserCommand, CommandResult> {
-
+public class SignInUserCommandHandler(BulletHellContext context, PasswordHasher<User> passwordHasher, IAccountService accountService) : IRequestHandler<SignInUserCommand, CommandResult> {
     public async Task<CommandResult> Handle(SignInUserCommand request, CancellationToken cancellationToken) {
         const string signInError = "Incorrect user name or password";
 
-        var user = await context.Users.AsTracking().SingleOrDefaultAsync(user => user.Name == request.UserName);
+        var user = await context.Users.AsTracking().SingleOrDefaultAsync(user => user.Name == request.UserName, cancellationToken);
 
         if (user == null) {
             return CommandResult.Failure(signInError);
@@ -24,7 +22,7 @@ public class SignInUserCommandHandler(BulletHellContext context, PasswordHasher<
             user.Events.Add(new UserEvent() {
                 Type = UserEventType.FailedSignIn
             });
-            await context.SaveChangesAsync();
+            await context.SaveChangesAsync(cancellationToken);
 
             return CommandResult.Failure(signInError);
         }
@@ -41,7 +39,7 @@ public class SignInUserCommandHandler(BulletHellContext context, PasswordHasher<
         user.Events.Add(new UserEvent() {
             Type = UserEventType.SignedIn
         });
-        await context.SaveChangesAsync();
+        await context.SaveChangesAsync(cancellationToken);
         accountService.SignIn(user.Name, refreshToken.Token);
 
         return CommandResult.Success;

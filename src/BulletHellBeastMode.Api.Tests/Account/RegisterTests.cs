@@ -8,9 +8,7 @@ using Xunit;
 namespace BulletHellBeastMode.Api.Tests.Account;
 
 // TODO test refresh token?
-public class RegisterTests : IntegrationTestBase {
-    public RegisterTests(WebApplicationFactory factory) : base(factory) { }
-
+public class RegisterTests(WebApplicationFactory factory) : IntegrationTestBase(factory) {
     [Fact]
     public async Task Register_New_Name_Succeeds() {
         var response = await Client.PostAsJsonAsync("/account/register", new RegisterUserCommand("new-user", "password"));

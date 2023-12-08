@@ -34,7 +34,7 @@ public abstract class IntegrationTestBase : IClassFixture<WebApplicationFactory>
         cookieContainer.Add(new("https://localhost"), new Cookie(Constants.AccessTokenCookieName, token));
     }
 
-    public BulletHellContextProvider CreateContextProvider() => new BulletHellContextProvider(factory);
+    public BulletHellContextProvider CreateContextProvider() => new(factory);
 
     public void Dispose() {
         Client?.Dispose();

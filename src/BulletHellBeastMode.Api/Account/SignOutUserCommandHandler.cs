@@ -6,13 +6,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BulletHellBeastMode.Api.Account;
 
-public class SignOutUserCommandHandler(BulletHellContext context, IAccountService accountService, PasswordHasher<User> passwordHasher)
-    : IRequestHandler<SignOutUserCommand> {
-
+public class SignOutUserCommandHandler(BulletHellContext context, IAccountService accountService, PasswordHasher<User> passwordHasher) : IRequestHandler<SignOutUserCommand> {
     public async Task Handle(SignOutUserCommand request, CancellationToken cancellationToken) {
         var user = await context.Users.AsTracking()
             .Include(user => user.RefreshTokenFamilies)
-            .SingleAsync(user => user.Name == accountService.GetAcccountDetails().UserName);
+            .SingleAsync(user => user.Name == accountService.GetAcccountDetails().UserName, cancellationToken);
 
         user.Events.Add(new UserEvent() {
             Type = UserEventType.SignedOut
@@ -26,7 +24,7 @@ public class SignOutUserCommandHandler(BulletHellContext context, IAccountServic
             }
         }
 
-        await context.SaveChangesAsync();
+        await context.SaveChangesAsync(cancellationToken);
         accountService.SignOut();
     }
 }

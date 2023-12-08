@@ -3,13 +3,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BulletHellBeastMode.Api.Database;
 
-public class BulletHellContext : DbContext {
+public class BulletHellContext(DbContextOptions<BulletHellContext> options) : DbContext(options) {
     public DbSet<User> Users => Set<User>();
     public DbSet<UserEvent> UserEvents => Set<UserEvent>();
     public DbSet<RefreshTokenFamily> RefreshTokenFamilies => Set<RefreshTokenFamily>();
     public DbSet<UsedRefreshToken> UsedRefreshTokens => Set<UsedRefreshToken>();
-
-    public BulletHellContext(DbContextOptions<BulletHellContext> options) : base(options) { }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder) {
         base.OnModelCreating(modelBuilder);

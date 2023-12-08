@@ -5,7 +5,7 @@ using System;
 namespace BulletHellBeastMode.Api.Tests;
 
 public class BulletHellContextProvider : IDisposable {
-    private IServiceScope scope;
+    private readonly IServiceScope scope;
 
     public BulletHellContext Context { get; }
 

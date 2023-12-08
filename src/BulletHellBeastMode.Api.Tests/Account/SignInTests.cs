@@ -12,9 +12,7 @@ using Microsoft.EntityFrameworkCore;
 namespace BulletHellBeastMode.Api.Tests.Account;
 
 // TODO test refresh token?
-public class SignInTests : IntegrationTestBase {
-    public SignInTests(WebApplicationFactory factory) : base(factory) { }
-
+public class SignInTests(WebApplicationFactory factory) : IntegrationTestBase(factory) {
     [Fact]
     public async Task SignIn_With_Correct_Credentials_Succeeds() {
         var passwordHasher = new PasswordHasher<User>();

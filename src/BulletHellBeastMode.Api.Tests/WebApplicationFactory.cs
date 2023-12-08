@@ -12,8 +12,7 @@ using Xunit;
 namespace BulletHellBeastMode.Api.Tests;
 
 public class WebApplicationFactory : WebApplicationFactory<AppSettings>, IAsyncLifetime {
-    private readonly MsSqlContainer databaseContainer = new MsSqlBuilder()
-        .Build();
+    private readonly MsSqlContainer databaseContainer = new MsSqlBuilder().Build();
 
     protected override void ConfigureWebHost(IWebHostBuilder builder) {
         builder.ConfigureTestServices(services => {
