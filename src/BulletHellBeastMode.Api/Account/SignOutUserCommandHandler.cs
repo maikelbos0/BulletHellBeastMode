@@ -22,7 +22,7 @@ public class SignOutUserCommandHandler(BulletHellContext context, IAccountServic
         if (refreshToken != null) {
             var refreshTokenFamily = user.RefreshTokenFamilies.SingleOrDefault(family => passwordHasher.VerifyHashedPassword(user, family.Token, refreshToken) != PasswordVerificationResult.Failed);
             if (refreshTokenFamily != null) {
-                context.RefreshTokenFamily.Remove(refreshTokenFamily);
+                context.RefreshTokenFamilies.Remove(refreshTokenFamily);
             }
         }
 

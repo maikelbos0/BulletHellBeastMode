@@ -273,3 +273,181 @@ GO
 COMMIT;
 GO
 
+BEGIN TRANSACTION;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20231208100157_Plural-TableNames'
+)
+BEGIN
+    ALTER TABLE [RefreshTokenFamily] DROP CONSTRAINT [FK_RefreshTokenFamily_Users_UserId];
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20231208100157_Plural-TableNames'
+)
+BEGIN
+    ALTER TABLE [UsedRefreshToken] DROP CONSTRAINT [FK_UsedRefreshToken_RefreshTokenFamily_RefreshTokenFamilyId];
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20231208100157_Plural-TableNames'
+)
+BEGIN
+    ALTER TABLE [UserEvent] DROP CONSTRAINT [FK_UserEvent_Users_UserId];
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20231208100157_Plural-TableNames'
+)
+BEGIN
+    ALTER TABLE [UserEvent] DROP CONSTRAINT [PK_UserEvent];
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20231208100157_Plural-TableNames'
+)
+BEGIN
+    ALTER TABLE [UsedRefreshToken] DROP CONSTRAINT [PK_UsedRefreshToken];
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20231208100157_Plural-TableNames'
+)
+BEGIN
+    ALTER TABLE [RefreshTokenFamily] DROP CONSTRAINT [PK_RefreshTokenFamily];
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20231208100157_Plural-TableNames'
+)
+BEGIN
+    EXEC sp_rename N'[UserEvent]', N'UserEvents';
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20231208100157_Plural-TableNames'
+)
+BEGIN
+    EXEC sp_rename N'[UsedRefreshToken]', N'UsedRefreshTokens';
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20231208100157_Plural-TableNames'
+)
+BEGIN
+    EXEC sp_rename N'[RefreshTokenFamily]', N'RefreshTokenFamilies';
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20231208100157_Plural-TableNames'
+)
+BEGIN
+    EXEC sp_rename N'[UserEvents].[IX_UserEvent_UserId]', N'IX_UserEvents_UserId', N'INDEX';
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20231208100157_Plural-TableNames'
+)
+BEGIN
+    EXEC sp_rename N'[UsedRefreshTokens].[IX_UsedRefreshToken_RefreshTokenFamilyId]', N'IX_UsedRefreshTokens_RefreshTokenFamilyId', N'INDEX';
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20231208100157_Plural-TableNames'
+)
+BEGIN
+    EXEC sp_rename N'[RefreshTokenFamilies].[IX_RefreshTokenFamily_UserId]', N'IX_RefreshTokenFamilies_UserId', N'INDEX';
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20231208100157_Plural-TableNames'
+)
+BEGIN
+    ALTER TABLE [UserEvents] ADD CONSTRAINT [PK_UserEvents] PRIMARY KEY ([Id]);
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20231208100157_Plural-TableNames'
+)
+BEGIN
+    ALTER TABLE [UsedRefreshTokens] ADD CONSTRAINT [PK_UsedRefreshTokens] PRIMARY KEY ([Id]);
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20231208100157_Plural-TableNames'
+)
+BEGIN
+    ALTER TABLE [RefreshTokenFamilies] ADD CONSTRAINT [PK_RefreshTokenFamilies] PRIMARY KEY ([Id]);
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20231208100157_Plural-TableNames'
+)
+BEGIN
+    ALTER TABLE [RefreshTokenFamilies] ADD CONSTRAINT [FK_RefreshTokenFamilies_Users_UserId] FOREIGN KEY ([UserId]) REFERENCES [Users] ([Id]);
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20231208100157_Plural-TableNames'
+)
+BEGIN
+    ALTER TABLE [UsedRefreshTokens] ADD CONSTRAINT [FK_UsedRefreshTokens_RefreshTokenFamilies_RefreshTokenFamilyId] FOREIGN KEY ([RefreshTokenFamilyId]) REFERENCES [RefreshTokenFamilies] ([Id]);
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20231208100157_Plural-TableNames'
+)
+BEGIN
+    ALTER TABLE [UserEvents] ADD CONSTRAINT [FK_UserEvents_Users_UserId] FOREIGN KEY ([UserId]) REFERENCES [Users] ([Id]) ON DELETE CASCADE;
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20231208100157_Plural-TableNames'
+)
+BEGIN
+    INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+    VALUES (N'20231208100157_Plural-TableNames', N'8.0.0');
+END;
+GO
+
+COMMIT;
+GO
+

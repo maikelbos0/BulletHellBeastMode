@@ -5,7 +5,9 @@ namespace BulletHellBeastMode.Api.Database;
 
 public class BulletHellContext : DbContext {
     public DbSet<User> Users => Set<User>();
-    public DbSet<RefreshTokenFamily> RefreshTokenFamily => Set<RefreshTokenFamily>(); // TODO rename
+    public DbSet<UserEvent> UserEvents => Set<UserEvent>();
+    public DbSet<RefreshTokenFamily> RefreshTokenFamilies => Set<RefreshTokenFamily>();
+    public DbSet<UsedRefreshToken> UsedRefreshTokens => Set<UsedRefreshToken>();
 
     public BulletHellContext(DbContextOptions<BulletHellContext> options) : base(options) { }
 
