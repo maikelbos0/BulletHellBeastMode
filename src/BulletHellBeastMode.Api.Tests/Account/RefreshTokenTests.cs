@@ -89,7 +89,25 @@ public class RefreshTokenTests(WebApplicationFactory factory) : IntegrationTestB
 
         RemoveCookie(Constants.AccessTokenCookieName);
 
+        var response = await Client.PostAsync("/account/refresh-token", null);
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+        var content = await response.Content.ReadFromJsonAsync<CommandResult>();
+        Assert.NotNull(content);
+        Assert.False(content.IsSuccess);
+
+        Assert.Equal(HttpStatusCode.Unauthorized, (await Client.GetAsync("/account")).StatusCode);
+    }
+
+    [Fact]
+    public async Task RefreshToken_Fails_Without_RefreshToken() {
+        await CreateSignedInUser("refreshless-refresh-user", DateTime.UtcNow.AddSeconds(3600), DateTime.UtcNow.AddSeconds(3600));
+
         var originalRefreshToken = GetCookie(Constants.RefreshTokenCookieName);
+        var originalAccessToken = GetCookie(Constants.AccessTokenCookieName);
+        
+        RemoveCookie(Constants.RefreshTokenCookieName);
 
         var response = await Client.PostAsync("/account/refresh-token", null);
 
@@ -99,16 +117,48 @@ public class RefreshTokenTests(WebApplicationFactory factory) : IntegrationTestB
         Assert.NotNull(content);
         Assert.False(content.IsSuccess);
 
-        Assert.Equal(originalRefreshToken, GetCookie(Constants.RefreshTokenCookieName));
-    }
+        using (var contextProvider = CreateContextProvider()) {
+            var updatedUser = contextProvider.Context.Users
+                .Include(user => user.Events)
+                .Include(user => user.RefreshTokenFamilies).ThenInclude(family => family.UsedRefreshTokens)
+                .Single(user => user.Name == "refreshless-refresh-user");
+            var passwordHasher = GetService<PasswordHasher<User>>();
+            Assert.Equal(UserEventType.RefreshAccessTokenFailed, Assert.Single(updatedUser.Events).Type);
+            var family = Assert.Single(updatedUser.RefreshTokenFamilies);
+            Assert.Empty(family.UsedRefreshTokens);
+            Assert.NotEqual(PasswordVerificationResult.Failed, passwordHasher.VerifyHashedPassword(updatedUser, family.Token, originalRefreshToken));
+        }
 
-    [Fact]
-    public async Task RefreshToken_Fails_Without_RefreshToken() {
+        Assert.Equal(HttpStatusCode.Unauthorized, (await Client.GetAsync("/account")).StatusCode);
     }
 
     [Fact]
     public async Task RefreshToken_Fails_With_Used_RefreshToken() {
+        await CreateSignedInUser("double-refresh-user", DateTime.UtcNow.AddSeconds(3600), DateTime.UtcNow.AddSeconds(3600));
 
+        var originalRefreshToken = GetCookie(Constants.RefreshTokenCookieName);
+        
+        Assert.Equal(HttpStatusCode.OK, (await Client.PostAsync("/account/refresh-token", null)).StatusCode);
+
+        SetCookie(Constants.RefreshTokenCookieName, originalRefreshToken);
+
+        var response = await Client.PostAsync("/account/refresh-token", null);
+
+        var content = await response.Content.ReadFromJsonAsync<CommandResult>();
+        Assert.NotNull(content);
+        Assert.False(content.IsSuccess);
+
+        using (var contextProvider = CreateContextProvider()) {
+            var updatedUser = contextProvider.Context.Users
+                .Include(user => user.Events)
+                .Include(user => user.RefreshTokenFamilies).ThenInclude(family => family.UsedRefreshTokens)
+                .Single(user => user.Name == "double-refresh-user");
+            var passwordHasher = GetService<PasswordHasher<User>>();
+            Assert.Equal(UserEventType.RefreshAccessTokenFailed, updatedUser.Events.OrderBy(e => e.DateTime).Last().Type);
+            Assert.Empty(updatedUser.RefreshTokenFamilies);
+        }
+
+        Assert.Equal(HttpStatusCode.Unauthorized, (await Client.GetAsync("/account")).StatusCode);
     }
 
     [Fact]

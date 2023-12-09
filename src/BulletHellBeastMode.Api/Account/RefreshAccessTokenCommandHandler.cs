@@ -11,6 +11,7 @@ public class RefreshAccessTokenCommandHandler(BulletHellContext context, IAccoun
         var userName = accountService.GetUserName(true);
 
         if (userName == null) {
+            accountService.SignOut();
             return CommandResult.Failure("Failed to refresh access token");
         }
 
@@ -48,6 +49,7 @@ public class RefreshAccessTokenCommandHandler(BulletHellContext context, IAccoun
             Type = UserEventType.RefreshAccessTokenFailed
         });
         await context.SaveChangesAsync(cancellationToken);
+        accountService.SignOut();
         return CommandResult.Failure("Failed to refresh access token");
     }
 }
