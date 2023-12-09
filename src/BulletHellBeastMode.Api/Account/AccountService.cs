@@ -71,11 +71,9 @@ public class AccountService(JwtSecurityTokenHandler jwtSecurityTokenHandler, IHt
                 ValidateLifetime = false
             };
 
-            var token = httpContextAccessor.HttpContext?.Request.Cookies[Constants.AccessTokenCookieName];
+            jwtSecurityTokenHandler.ValidateToken(httpContextAccessor.HttpContext?.Request.Cookies[Constants.AccessTokenCookieName], tokenValidationParameters, out var token);
 
-            var user = jwtSecurityTokenHandler.ValidateToken(token, tokenValidationParameters, out _);
-
-            return user.Identity?.Name;
+            return (token as JwtSecurityToken)?.Subject;
         }
     }
 

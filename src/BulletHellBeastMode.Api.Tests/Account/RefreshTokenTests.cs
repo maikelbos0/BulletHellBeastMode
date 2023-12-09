@@ -52,6 +52,35 @@ public class RefreshTokenTests(WebApplicationFactory factory) : IntegrationTestB
 
     [Fact]
     public async Task RefreshToken_Succeeds_With_Expired_AccessToken() {
+        await CreateSignedInUser("expired-refresh-user", DateTime.UtcNow.AddSeconds(-3600), DateTime.UtcNow.AddSeconds(3600));
+
+        var originalAccessToken = GetCookie(Constants.AccessTokenCookieName);
+        var originalRefreshToken = GetCookie(Constants.RefreshTokenCookieName);
+
+        var response = await Client.PostAsync("/account/refresh-token", null);
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+        var content = await response.Content.ReadFromJsonAsync<CommandResult>();
+        Assert.NotNull(content);
+        Assert.True(content.IsSuccess);
+
+        Assert.NotEqual(originalAccessToken, GetCookie(Constants.AccessTokenCookieName));
+        Assert.NotEqual(originalRefreshToken, GetCookie(Constants.RefreshTokenCookieName));
+
+        using (var contextProvider = CreateContextProvider()) {
+            var updatedUser = contextProvider.Context.Users
+                .Include(user => user.Events)
+                .Include(user => user.RefreshTokenFamilies).ThenInclude(family => family.UsedRefreshTokens)
+                .Single(user => user.Name == "expired-refresh-user");
+            var passwordHasher = GetService<PasswordHasher<User>>();
+            Assert.Equal(UserEventType.AccessTokenRefreshed, Assert.Single(updatedUser.Events).Type);
+            var family = Assert.Single(updatedUser.RefreshTokenFamilies);
+            Assert.NotEqual(PasswordVerificationResult.Failed, passwordHasher.VerifyHashedPassword(updatedUser, family.Token, GetCookie(Constants.RefreshTokenCookieName)));
+            Assert.NotEqual(PasswordVerificationResult.Failed, passwordHasher.VerifyHashedPassword(updatedUser, Assert.Single(family.UsedRefreshTokens).Token, originalRefreshToken));
+        }
+
+        Assert.Equal(HttpStatusCode.OK, (await Client.GetAsync("/account")).StatusCode);
     }
 
     [Fact]
