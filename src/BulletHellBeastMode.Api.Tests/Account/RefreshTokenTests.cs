@@ -85,6 +85,21 @@ public class RefreshTokenTests(WebApplicationFactory factory) : IntegrationTestB
 
     [Fact]
     public async Task RefreshToken_Fails_Without_AccessToken() {
+        await CreateSignedInUser("accessless-refresh-user", DateTime.UtcNow.AddSeconds(-3600), DateTime.UtcNow.AddSeconds(3600));
+
+        RemoveCookie(Constants.AccessTokenCookieName);
+
+        var originalRefreshToken = GetCookie(Constants.RefreshTokenCookieName);
+
+        var response = await Client.PostAsync("/account/refresh-token", null);
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+        var content = await response.Content.ReadFromJsonAsync<CommandResult>();
+        Assert.NotNull(content);
+        Assert.False(content.IsSuccess);
+
+        Assert.Equal(originalRefreshToken, GetCookie(Constants.RefreshTokenCookieName));
     }
 
     [Fact]

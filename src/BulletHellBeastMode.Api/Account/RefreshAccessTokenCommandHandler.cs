@@ -9,10 +9,16 @@ namespace BulletHellBeastMode.Api.Account;
 public class RefreshAccessTokenCommandHandler(BulletHellContext context, IAccountService accountService, PasswordHasher<User> passwordHasher) : IRequestHandler<RefreshAccessTokenCommand, CommandResult> {
     public async Task<CommandResult> Handle(RefreshAccessTokenCommand request, CancellationToken cancellationToken) {
         var userName = accountService.GetUserName(true);
+
+        if (userName == null) {
+            return CommandResult.Failure("Failed to refresh access token");
+        }
+
         var user = await context.Users.AsTracking()
             .Include(user => user.RefreshTokenFamilies).ThenInclude(family => family.UsedRefreshTokens)
             .SingleAsync(user => user.Name == userName, cancellationToken);
 
+        // TODO refactor this nested mess
         var refreshToken = accountService.GetRefreshToken();
         if (refreshToken != null) {
             var refreshTokenFamily = user.RefreshTokenFamilies.SingleOrDefault(family => passwordHasher.VerifyHashedPassword(user, family.Token, refreshToken) != PasswordVerificationResult.Failed);

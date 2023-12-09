@@ -51,13 +51,14 @@ public class AccountService(JwtSecurityTokenHandler jwtSecurityTokenHandler, IHt
     public RefreshTokenDetails GenerateRefreshToken()
         => new(Convert.ToBase64String(RandomNumberGenerator.GetBytes(384)), DateTimeOffset.UtcNow.AddSeconds(jwtSettings.RefreshTokenExpiresInSeconds));
 
-    public string GetUserName(bool allowExpiredToken) {
+    public string? GetUserName(bool allowExpiredToken) {
         return httpContextAccessor.HttpContext?.User.Identity?.Name
-            ?? GetUserNameFromExpiredToken()
-            ?? throw new InvalidOperationException("Could not find user name");
+            ?? GetUserNameFromExpiredAccessToken();
 
-        string? GetUserNameFromExpiredToken() {
-            if (!allowExpiredToken) {
+        string? GetUserNameFromExpiredAccessToken() {
+            var accessToken = httpContextAccessor.HttpContext?.Request.Cookies[Constants.AccessTokenCookieName];
+
+            if (!allowExpiredToken || accessToken == null) {
                 return null;
             }
 
@@ -71,9 +72,9 @@ public class AccountService(JwtSecurityTokenHandler jwtSecurityTokenHandler, IHt
                 ValidateLifetime = false
             };
 
-            jwtSecurityTokenHandler.ValidateToken(httpContextAccessor.HttpContext?.Request.Cookies[Constants.AccessTokenCookieName], tokenValidationParameters, out var token);
+            jwtSecurityTokenHandler.ValidateToken(accessToken, tokenValidationParameters, out var securityToken);
 
-            return (token as JwtSecurityToken)?.Subject;
+            return (securityToken as JwtSecurityToken)?.Subject;
         }
     }
 
