@@ -15,6 +15,7 @@ namespace BulletHellBeastMode.Api.Tests.Account;
 public class SignInTests(WebApplicationFactory factory) : IntegrationTestBase(factory) {
     [Fact]
     public async Task SignIn_With_Correct_Credentials_Succeeds() {
+        // TODO extract method?
         var passwordHasher = new PasswordHasher<User>();
         var user = new User() { Name = "sign-in-user" };
         user.Password = passwordHasher.HashPassword(user, "password");
@@ -26,6 +27,7 @@ public class SignInTests(WebApplicationFactory factory) : IntegrationTestBase(fa
 
         var response = await Client.PostAsJsonAsync("/account/sign-in", new SignInUserCommand("sign-in-user", "password"));
 
+        // TODO extract some response stuff here?
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
         var content = await response.Content.ReadFromJsonAsync<CommandResult>();

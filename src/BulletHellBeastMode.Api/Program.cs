@@ -43,6 +43,7 @@ app.UseAuthorization();
 app.MapGet("/test", () => new { Text = "Hello World" });
 
 app.MapGet("/account", async (IMediator mediator) => await mediator.Send(new GetAccountDetailsQuery())).RequireAuthorization();
+app.MapPost("/account/refresh-token", async (IMediator mediator) => await mediator.Send(new RefreshAccessTokenCommand()));
 app.MapPost("/account/register", async (RegisterUserCommand command, IMediator mediator) => await mediator.Send(command));
 app.MapPost("/account/sign-in", async (SignInUserCommand command, IMediator mediator) => await mediator.Send(command));
 app.MapPost("/account/sign-out", async (IMediator mediator) => await mediator.Send(new SignOutUserCommand())).RequireAuthorization();

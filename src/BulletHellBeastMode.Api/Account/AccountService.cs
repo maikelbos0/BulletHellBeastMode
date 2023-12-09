@@ -14,6 +14,8 @@ public class AccountService(JwtSecurityTokenHandler jwtSecurityTokenHandler, IHt
     public void SignIn(string userName, string refreshToken) {
         var accessToken = GenerateAccessToken(userName);
 
+        // TODO refresh token cookie expiration, access token cookie expiration maybe?
+
         httpContextAccessor.HttpContext?.Response.Cookies.Append(
             Constants.AccessTokenCookieName,
             accessToken,
@@ -49,9 +51,39 @@ public class AccountService(JwtSecurityTokenHandler jwtSecurityTokenHandler, IHt
     public RefreshTokenDetails GenerateRefreshToken()
         => new(Convert.ToBase64String(RandomNumberGenerator.GetBytes(384)), DateTimeOffset.UtcNow.AddSeconds(jwtSettings.RefreshTokenExpiresInSeconds));
 
+    public string GetUserName(bool allowExpiredToken) {
+        return httpContextAccessor.HttpContext?.User.Identity?.Name
+            ?? GetUserNameFromExpiredToken()
+            ?? throw new InvalidOperationException("Could not find user name");
+
+        string? GetUserNameFromExpiredToken() {
+            if (!allowExpiredToken) {
+                return null;
+            }
+
+            // TODO figure out how to combine this with ConfigureJwtBearerOptions
+            var tokenValidationParameters = new TokenValidationParameters() {
+                ValidAudience = jwtSettings.ValidAudience,
+                ValidIssuer = jwtSettings.ValidIssuer,
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(jwtSettings.SecurityKey),
+                NameClaimType = JwtRegisteredClaimNames.Sub,
+                ValidateLifetime = false
+            };
+
+            var token = httpContextAccessor.HttpContext?.Request.Cookies[Constants.AccessTokenCookieName];
+
+            var user = jwtSecurityTokenHandler.ValidateToken(token, tokenValidationParameters, out _);
+
+            return user.Identity?.Name;
+        }
+    }
+
+    // TODO replace calls for username with GetUserName
     public AccountDetails GetAcccountDetails() {
         var identity = httpContextAccessor.HttpContext?.User.Identity;
 
+        // TODO add display name
         return new AccountDetails(identity?.Name, identity?.Name);
     }
 

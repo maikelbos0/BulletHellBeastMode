@@ -3,8 +3,10 @@ using BulletHellBeastMode.Api.Database;
 using Microsoft.AspNetCore.Mvc.Testing.Handlers;
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Web;
 using Xunit;
 
 namespace BulletHellBeastMode.Api.Tests;
@@ -33,6 +35,22 @@ public abstract class IntegrationTestBase : IClassFixture<WebApplicationFactory>
         var token = scope.ServiceProvider.GetRequiredService<IAccountService>().GenerateAccessToken(userName);
         cookieContainer.Add(new("https://localhost"), new Cookie(Constants.AccessTokenCookieName, token));
     }
+
+    public string GetCookie(string name) => HttpUtility.UrlDecode(cookieContainer.GetAllCookies().Single(cookie => cookie.Name == name).Value);
+
+    public void SetCookie(string name, string value) {
+        RemoveCookie(name);
+        cookieContainer.Add(new("https://localhost"), new Cookie(name, HttpUtility.UrlEncode(value)));
+    }
+
+    public void RemoveCookie(string name) {
+        foreach (var cookie in cookieContainer.GetAllCookies().Where(cookie => cookie.Name == name)) {
+            cookie.Expired = true;
+        }
+    }
+
+    public TService GetService<TService>() where TService : class
+        => factory.Services.GetRequiredService<TService>();
 
     public BulletHellContextProvider CreateContextProvider() => new(factory);
 
