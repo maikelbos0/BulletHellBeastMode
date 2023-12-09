@@ -52,7 +52,7 @@ public class RefreshTokenTests(WebApplicationFactory factory) : IntegrationTestB
 
     [Fact]
     public async Task RefreshToken_Succeeds_With_Expired_AccessToken() {
-        await CreateSignedInUser("expired-refresh-user", DateTime.UtcNow.AddSeconds(-3600), DateTime.UtcNow.AddSeconds(3600));
+        await CreateSignedInUser("expired-access-refresh-user", DateTime.UtcNow.AddSeconds(-3600), DateTime.UtcNow.AddSeconds(3600));
 
         var originalAccessToken = GetCookie(Constants.AccessTokenCookieName);
         var originalRefreshToken = GetCookie(Constants.RefreshTokenCookieName);
@@ -72,7 +72,7 @@ public class RefreshTokenTests(WebApplicationFactory factory) : IntegrationTestB
             var updatedUser = contextProvider.Context.Users
                 .Include(user => user.Events)
                 .Include(user => user.RefreshTokenFamilies).ThenInclude(family => family.UsedRefreshTokens)
-                .Single(user => user.Name == "expired-refresh-user");
+                .Single(user => user.Name == "expired-access-refresh-user");
             var passwordHasher = GetService<PasswordHasher<User>>();
             Assert.Equal(UserEventType.AccessTokenRefreshed, Assert.Single(updatedUser.Events).Type);
             var family = Assert.Single(updatedUser.RefreshTokenFamilies);
@@ -163,7 +163,27 @@ public class RefreshTokenTests(WebApplicationFactory factory) : IntegrationTestB
 
     [Fact]
     public async Task RefreshToken_Fails_With_Expired_RefreshToken() {
+        await CreateSignedInUser("expired-refresh-user", DateTime.UtcNow.AddSeconds(3600), DateTime.UtcNow.AddSeconds(-3600));
 
+        var response = await Client.PostAsync("/account/refresh-token", null);
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+        var content = await response.Content.ReadFromJsonAsync<CommandResult>();
+        Assert.NotNull(content);
+        Assert.False(content.IsSuccess);
+
+        using (var contextProvider = CreateContextProvider()) {
+            var updatedUser = contextProvider.Context.Users
+                .Include(user => user.Events)
+                .Include(user => user.RefreshTokenFamilies).ThenInclude(family => family.UsedRefreshTokens)
+                .Single(user => user.Name == "expired-refresh-user");
+            var passwordHasher = GetService<PasswordHasher<User>>();
+            Assert.Equal(UserEventType.RefreshAccessTokenFailed, Assert.Single(updatedUser.Events).Type);
+            Assert.Empty(updatedUser.RefreshTokenFamilies);
+        }
+
+        Assert.Equal(HttpStatusCode.Unauthorized, (await Client.GetAsync("/account")).StatusCode);
     }
 
     private async Task CreateSignedInUser(string userName, DateTime accessTokenExpires, DateTime refreshTokenExpires) {

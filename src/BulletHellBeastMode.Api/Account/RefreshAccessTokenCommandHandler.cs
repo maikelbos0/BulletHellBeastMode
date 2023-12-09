@@ -23,7 +23,7 @@ public class RefreshAccessTokenCommandHandler(BulletHellContext context, IAccoun
         var refreshToken = accountService.GetRefreshToken();
         if (refreshToken != null) {
             var refreshTokenFamily = user.RefreshTokenFamilies.SingleOrDefault(family => passwordHasher.VerifyHashedPassword(user, family.Token, refreshToken) != PasswordVerificationResult.Failed);
-            if (refreshTokenFamily != null) {
+            if (refreshTokenFamily != null && refreshTokenFamily.Expires >= DateTime.UtcNow) {
                 var newRefreshToken = accountService.GenerateRefreshToken();
                 user.Events.Add(new UserEvent() {
                     Type = UserEventType.AccessTokenRefreshed
@@ -38,10 +38,14 @@ public class RefreshAccessTokenCommandHandler(BulletHellContext context, IAccoun
                 accountService.SignIn(userName, newRefreshToken.Token);
                 return CommandResult.Success;
             }
-
-            var usedRefreshTokenFamily = user.RefreshTokenFamilies.SingleOrDefault(family => family.UsedRefreshTokens.Any(token => passwordHasher.VerifyHashedPassword(user, token.Token, refreshToken) != PasswordVerificationResult.Failed));
-            if (usedRefreshTokenFamily != null) {
-                context.RefreshTokenFamilies.Remove(usedRefreshTokenFamily);
+            else if (refreshTokenFamily != null) {
+                context.RefreshTokenFamilies.Remove(refreshTokenFamily);
+            }
+            else {
+                var usedRefreshTokenFamily = user.RefreshTokenFamilies.SingleOrDefault(family => family.UsedRefreshTokens.Any(token => passwordHasher.VerifyHashedPassword(user, token.Token, refreshToken) != PasswordVerificationResult.Failed));
+                if (usedRefreshTokenFamily != null) {
+                    context.RefreshTokenFamilies.Remove(usedRefreshTokenFamily);
+                }
             }
         }
 
