@@ -1,5 +1,4 @@
 ﻿using BulletHellBeastMode.Api.Account;
-using BulletHellBeastMode.Api.Entities;
 using System.Net;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
@@ -28,10 +27,7 @@ public class RegisterTests(WebApplicationFactory factory) : IntegrationTestBase(
 
     [Fact]
     public async Task Register_Existing_Name_Fails() {
-        using (var contextProvider = CreateContextProvider()) {
-            await contextProvider.Context.Users.AddAsync(new User() { Name = "existing-user" });
-            await contextProvider.Context.SaveChangesAsync();
-        }
+        await CreateUser("existing-user");
 
         var response = await Client.PostAsJsonAsync("/account/register", new RegisterUserCommand("existing-user", "password"));
 

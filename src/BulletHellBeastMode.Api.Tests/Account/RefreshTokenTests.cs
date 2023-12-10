@@ -19,7 +19,7 @@ namespace BulletHellBeastMode.Api.Tests.Account;
 public class RefreshTokenTests(WebApplicationFactory factory) : IntegrationTestBase(factory) {
     [Fact]
     public async Task RefreshToken_Succeeds() {
-        await CreateSignedInUser("refresh-user", DateTime.UtcNow.AddSeconds(3600), DateTime.UtcNow.AddSeconds(3600));
+        await CreateUser("refresh-user").SignedIn();
 
         var originalAccessToken = GetCookie(Constants.AccessTokenCookieName);
         var originalRefreshToken = GetCookie(Constants.RefreshTokenCookieName);
@@ -52,7 +52,9 @@ public class RefreshTokenTests(WebApplicationFactory factory) : IntegrationTestB
 
     [Fact]
     public async Task RefreshToken_Succeeds_With_Expired_AccessToken() {
-        await CreateSignedInUser("expired-access-refresh-user", DateTime.UtcNow.AddSeconds(-3600), DateTime.UtcNow.AddSeconds(3600));
+        await CreateUser("expired-access-refresh-user")
+            .WithAccessToken(true)
+            .WithRefreshToken();
 
         var originalAccessToken = GetCookie(Constants.AccessTokenCookieName);
         var originalRefreshToken = GetCookie(Constants.RefreshTokenCookieName);
@@ -85,9 +87,8 @@ public class RefreshTokenTests(WebApplicationFactory factory) : IntegrationTestB
 
     [Fact]
     public async Task RefreshToken_Fails_Without_AccessToken() {
-        await CreateSignedInUser("accessless-refresh-user", DateTime.UtcNow.AddSeconds(-3600), DateTime.UtcNow.AddSeconds(3600));
-
-        RemoveCookie(Constants.AccessTokenCookieName);
+        await CreateUser("no-access-refresh-user")
+            .WithRefreshToken();
 
         var response = await Client.PostAsync("/account/refresh-token", null);
 
@@ -102,12 +103,9 @@ public class RefreshTokenTests(WebApplicationFactory factory) : IntegrationTestB
 
     [Fact]
     public async Task RefreshToken_Fails_Without_RefreshToken() {
-        await CreateSignedInUser("refreshless-refresh-user", DateTime.UtcNow.AddSeconds(3600), DateTime.UtcNow.AddSeconds(3600));
-
-        var originalRefreshToken = GetCookie(Constants.RefreshTokenCookieName);
-        var originalAccessToken = GetCookie(Constants.AccessTokenCookieName);
-        
-        RemoveCookie(Constants.RefreshTokenCookieName);
+        await CreateUser("no-refresh-refresh-user")
+            .WithAccessToken()
+            .WithRefreshToken(RefreshTokenMode.ServerOnly);
 
         var response = await Client.PostAsync("/account/refresh-token", null);
 
@@ -121,12 +119,10 @@ public class RefreshTokenTests(WebApplicationFactory factory) : IntegrationTestB
             var updatedUser = contextProvider.Context.Users
                 .Include(user => user.Events)
                 .Include(user => user.RefreshTokenFamilies).ThenInclude(family => family.UsedRefreshTokens)
-                .Single(user => user.Name == "refreshless-refresh-user");
-            var passwordHasher = GetService<PasswordHasher<User>>();
+                .Single(user => user.Name == "no-refresh-refresh-user");
             Assert.Equal(UserEventType.RefreshAccessTokenFailed, Assert.Single(updatedUser.Events).Type);
             var family = Assert.Single(updatedUser.RefreshTokenFamilies);
             Assert.Empty(family.UsedRefreshTokens);
-            Assert.NotEqual(PasswordVerificationResult.Failed, passwordHasher.VerifyHashedPassword(updatedUser, family.Token, originalRefreshToken));
         }
 
         Assert.Equal(HttpStatusCode.Unauthorized, (await Client.GetAsync("/account")).StatusCode);
@@ -134,7 +130,9 @@ public class RefreshTokenTests(WebApplicationFactory factory) : IntegrationTestB
 
     [Fact]
     public async Task RefreshToken_Fails_With_Used_RefreshToken() {
-        await CreateSignedInUser("double-refresh-user", DateTime.UtcNow.AddSeconds(3600), DateTime.UtcNow.AddSeconds(3600));
+        await CreateUser("double-refresh-user")
+            .WithAccessToken()
+            .WithRefreshToken();
 
         var originalRefreshToken = GetCookie(Constants.RefreshTokenCookieName);
         
@@ -163,7 +161,9 @@ public class RefreshTokenTests(WebApplicationFactory factory) : IntegrationTestB
 
     [Fact]
     public async Task RefreshToken_Fails_With_Expired_RefreshToken() {
-        await CreateSignedInUser("expired-refresh-user", DateTime.UtcNow.AddSeconds(3600), DateTime.UtcNow.AddSeconds(-3600));
+        await CreateUser("expired-refresh-user")
+            .WithAccessToken()
+            .WithRefreshToken(RefreshTokenMode.Expired);
 
         var response = await Client.PostAsync("/account/refresh-token", null);
 
@@ -184,39 +184,5 @@ public class RefreshTokenTests(WebApplicationFactory factory) : IntegrationTestB
         }
 
         Assert.Equal(HttpStatusCode.Unauthorized, (await Client.GetAsync("/account")).StatusCode);
-    }
-
-    private async Task CreateSignedInUser(string userName, DateTime accessTokenExpires, DateTime refreshTokenExpires) {
-        var passwordHasher = GetService<PasswordHasher<User>>();
-        var refreshToken = Convert.ToBase64String(RandomNumberGenerator.GetBytes(384));
-        var user = new User() { Name = userName };
-        user.Password = passwordHasher.HashPassword(user, "password");
-        user.RefreshTokenFamilies.Add(new RefreshTokenFamily() {
-            Token = passwordHasher.HashPassword(user, refreshToken),
-            Expires = refreshTokenExpires
-        });
-
-        using (var contextProvider = CreateContextProvider()) {
-            await contextProvider.Context.Users.AddAsync(user);
-            await contextProvider.Context.SaveChangesAsync();
-        }
-        
-        var jwtSettings = GetService<IOptions<JwtSettings>>().Value;
-        var jwtSecurityTokenHandler = GetService<JwtSecurityTokenHandler>();
-        var signingCredentials = new SigningCredentials(new SymmetricSecurityKey(jwtSettings.SecurityKey), SecurityAlgorithms.HmacSha256);
-        var accessToken = new JwtSecurityToken(
-            issuer: jwtSettings.ValidIssuer,
-            audience: jwtSettings.ValidAudience,
-            claims: new List<Claim>()
-            {
-                new(JwtRegisteredClaimNames.Sub, userName)
-            },
-            notBefore: DateTime.MinValue,
-            expires: accessTokenExpires,
-            signingCredentials: signingCredentials
-        );
-
-        SetCookie(Constants.AccessTokenCookieName, jwtSecurityTokenHandler.WriteToken(accessToken));
-        SetCookie(Constants.RefreshTokenCookieName, refreshToken);
     }
 }

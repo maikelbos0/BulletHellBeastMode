@@ -11,12 +11,7 @@ namespace BulletHellBeastMode.Api.Tests.Account;
 public class SignOutTests(WebApplicationFactory factory) : IntegrationTestBase(factory) {
     [Fact]
     public async Task SignOut_Succeeds() {
-        using (var contextProvider = CreateContextProvider()) {
-            await contextProvider.Context.Users.AddAsync(new User() { Name = "sign-out-user" });
-            await contextProvider.Context.SaveChangesAsync();
-        }
-
-        AuthenticateClient("sign-out-user");
+        await CreateUser("sign-out-user").SignedIn();
 
         var response = await Client.PostAsync("/account/sign-out", null);
 

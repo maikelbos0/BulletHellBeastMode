@@ -30,11 +30,7 @@ public abstract class IntegrationTestBase : IClassFixture<WebApplicationFactory>
         context.Database.EnsureCreated();
     }
 
-    public void AuthenticateClient(string userName) {
-        using var scope = factory.Services.CreateScope();
-        var token = scope.ServiceProvider.GetRequiredService<IAccountService>().GenerateAccessToken(userName);
-        cookieContainer.Add(new("https://localhost"), new Cookie(Constants.AccessTokenCookieName, token));
-    }
+    public UserBuilder CreateUser(string userName) => new(factory, cookieContainer, userName);
 
     public string GetCookie(string name) => HttpUtility.UrlDecode(cookieContainer.GetAllCookies().Single(cookie => cookie.Name == name).Value);
 

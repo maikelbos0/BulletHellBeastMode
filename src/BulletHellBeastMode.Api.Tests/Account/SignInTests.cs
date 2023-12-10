@@ -15,15 +15,7 @@ namespace BulletHellBeastMode.Api.Tests.Account;
 public class SignInTests(WebApplicationFactory factory) : IntegrationTestBase(factory) {
     [Fact]
     public async Task SignIn_With_Correct_Credentials_Succeeds() {
-        // TODO extract method?
-        var passwordHasher = new PasswordHasher<User>();
-        var user = new User() { Name = "sign-in-user" };
-        user.Password = passwordHasher.HashPassword(user, "password");
-
-        using (var contextProvider = CreateContextProvider()) {
-            await contextProvider.Context.Users.AddAsync(user);
-            await contextProvider.Context.SaveChangesAsync();
-        }
+        await CreateUser("sign-in-user");
 
         var response = await Client.PostAsJsonAsync("/account/sign-in", new SignInUserCommand("sign-in-user", "password"));
 
@@ -44,6 +36,7 @@ public class SignInTests(WebApplicationFactory factory) : IntegrationTestBase(fa
 
     [Fact]
     public async Task SignIn_With_Old_HashAlgorithmn_Rehashes_Password() {
+        // TODO move to builder?
         var passwordHasher = new PasswordHasher<User>(Options.Create(new PasswordHasherOptions() { CompatibilityMode = PasswordHasherCompatibilityMode.IdentityV2 }));
         var user = new User() { Name = "rehash-user" };
         user.Password = passwordHasher.HashPassword(user, "password");
@@ -85,14 +78,7 @@ public class SignInTests(WebApplicationFactory factory) : IntegrationTestBase(fa
 
     [Fact]
     public async Task SignIn_With_Invalid_Password_Fails() {
-        var passwordHasher = new PasswordHasher<User>();
-        var user = new User() { Name = "password-user" };
-        user.Password = passwordHasher.HashPassword(user, "password");
-
-        using (var contextProvider = CreateContextProvider()) {
-            await contextProvider.Context.Users.AddAsync(user);
-            await contextProvider.Context.SaveChangesAsync();
-        }
+        await CreateUser("password-user");
 
         var response = await Client.PostAsJsonAsync("/account/sign-in", new SignInUserCommand("password-user", "wrong"));
 
