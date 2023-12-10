@@ -36,15 +36,8 @@ public class SignInTests(WebApplicationFactory factory) : IntegrationTestBase(fa
 
     [Fact]
     public async Task SignIn_With_Old_HashAlgorithmn_Rehashes_Password() {
-        // TODO move to builder?
-        var passwordHasher = new PasswordHasher<User>(Options.Create(new PasswordHasherOptions() { CompatibilityMode = PasswordHasherCompatibilityMode.IdentityV2 }));
-        var user = new User() { Name = "rehash-user" };
-        user.Password = passwordHasher.HashPassword(user, "password");
-
-        using (var contextProvider = CreateContextProvider()) {
-            await contextProvider.Context.Users.AddAsync(user);
-            await contextProvider.Context.SaveChangesAsync();
-        }
+        var user = await CreateUser("rehash-user")
+            .WithPasswordHasherCompatibilityMode(PasswordHasherCompatibilityMode.IdentityV2);
 
         var response = await Client.PostAsJsonAsync("/account/sign-in", new SignInUserCommand("rehash-user", "password"));
 

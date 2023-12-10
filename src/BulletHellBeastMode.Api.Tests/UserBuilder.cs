@@ -22,6 +22,7 @@ public class UserBuilder(WebApplicationFactory factory, CookieContainer cookieCo
     private bool accessTokenExpired;
     private bool refreshToken;
     private RefreshTokenMode refreshTokenMode;
+    private PasswordHasherCompatibilityMode passwordHasherCompatibilityMode = PasswordHasherCompatibilityMode.IdentityV3;
 
     public UserBuilder SignedIn() => WithAccessToken().WithRefreshToken();
 
@@ -38,12 +39,17 @@ public class UserBuilder(WebApplicationFactory factory, CookieContainer cookieCo
         return this;
     }
 
-    public async Task Build() {
-        var passwordHasher = factory.Services.GetRequiredService<PasswordHasher<User>>();
+    public UserBuilder WithPasswordHasherCompatibilityMode(PasswordHasherCompatibilityMode passwordHasherCompatibilityMode) {
+        this.passwordHasherCompatibilityMode = passwordHasherCompatibilityMode;
+        return this;
+    }
+
+    public async Task<User> Build() {
+        var passwordHasher = new PasswordHasher<User>(Options.Create(new PasswordHasherOptions() { CompatibilityMode = passwordHasherCompatibilityMode }));
+        var user = new User() { Name = userName };
+        user.Password = passwordHasher.HashPassword(user, "password");
 
         using (var contextProvider = new BulletHellContextProvider(factory)) {
-            var user = new User() { Name = userName };
-            user.Password = passwordHasher.HashPassword(user, "password");
             await contextProvider.Context.Users.AddAsync(user);
             await contextProvider.Context.SaveChangesAsync();
         }
@@ -68,7 +74,7 @@ public class UserBuilder(WebApplicationFactory factory, CookieContainer cookieCo
 
         if (refreshToken) {
             using (var contextProvider = new BulletHellContextProvider(factory)) {
-                var user = await contextProvider.Context.Users.AsTracking().SingleAsync(user => user.Name == userName);
+                contextProvider.Context.Attach(user);
                 var refreshToken = Convert.ToBase64String(RandomNumberGenerator.GetBytes(384));
                 user.RefreshTokenFamilies.Add(new RefreshTokenFamily() {
                     Token = passwordHasher.HashPassword(user, refreshToken),
@@ -93,7 +99,9 @@ public class UserBuilder(WebApplicationFactory factory, CookieContainer cookieCo
                 await contextProvider.Context.SaveChangesAsync();
             }
         }
+
+        return user;
     }
 
-    public TaskAwaiter GetAwaiter() => Build().GetAwaiter();
+    public TaskAwaiter<User> GetAwaiter() => Build().GetAwaiter();
 }
