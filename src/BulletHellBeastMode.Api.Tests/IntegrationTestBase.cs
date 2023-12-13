@@ -41,25 +41,6 @@ public abstract class IntegrationTestBase : IClassFixture<WebApplicationFactory>
         context.Database.EnsureCreated();
     }
 
-    [Obsolete]
-    public UserBuilder CreateUserOld(string userName) => new(factory, cookieContainer, userName);
-
-    [Obsolete]
-    public string GetCookie(string name) => HttpUtility.UrlDecode(cookieContainer.GetAllCookies().Single(cookie => cookie.Name == name).Value);
-
-    [Obsolete]
-    public void SetCookie(string name, string value) {
-        RemoveCookie(name);
-        cookieContainer.Add(new(BaseAddress), new Cookie(name, HttpUtility.UrlEncode(value)));
-    }
-
-    [Obsolete]
-    public void RemoveCookie(string name) {
-        foreach (var cookie in cookieContainer.GetAllCookies().Where(cookie => cookie.Name == name)) {
-            cookie.Expired = true;
-        }
-    }
-
     public async Task<User> CreateSignedInUser(string userName, bool useOldAlgorithm = false, DateTime? accessTokenExpires = null, DateTime? refreshTokenExpires = null) {
         var user = await CreateUser(userName, useOldAlgorithm);
 
@@ -134,13 +115,6 @@ public abstract class IntegrationTestBase : IClassFixture<WebApplicationFactory>
 
         await contextAction(context);
     }
-
-    [Obsolete]
-    public TService GetService<TService>() where TService : class
-        => factory.Services.GetRequiredService<TService>();
-
-    [Obsolete]
-    public BulletHellContextProvider CreateContextProvider() => new(factory);
 
     public void Dispose() {
         Client?.Dispose();
