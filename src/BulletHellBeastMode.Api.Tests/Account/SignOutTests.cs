@@ -1,9 +1,8 @@
-﻿using System.Net;
+﻿using BulletHellBeastMode.Api.Entities;
+using Microsoft.EntityFrameworkCore;
+using System.Net;
 using System.Threading.Tasks;
 using Xunit;
-using BulletHellBeastMode.Api.Entities;
-using System.Linq;
-using Microsoft.EntityFrameworkCore;
 
 namespace BulletHellBeastMode.Api.Tests.Account;
 
@@ -11,16 +10,16 @@ namespace BulletHellBeastMode.Api.Tests.Account;
 public class SignOutTests(WebApplicationFactory factory) : IntegrationTestBase(factory) {
     [Fact]
     public async Task SignOut_Succeeds() {
-        await CreateUser("sign-out-user").SignedIn();
+        await CreateSignedInUser("sign-out-user");
 
         var response = await Client.PostAsync("/account/sign-out", null);
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
-        using (var contextProvider = CreateContextProvider()) {
-            var updatedUser = contextProvider.Context.Users.Include(user => user.Events).Single(user => user.Name == "sign-out-user");
-            Assert.Equal(UserEventType.SignedOut, Assert.Single(updatedUser.Events).Type);
-        }
+        await ExecuteOnContext(async context => {
+            var user = await context.Users.Include(user => user.Events).SingleAsync(user => user.Name == "sign-out-user");
+            Assert.Equal(UserEventType.SignedOut, Assert.Single(user.Events).Type);
+        });
 
         Assert.Equal(HttpStatusCode.Unauthorized, (await Client.GetAsync("/account")).StatusCode);
     }
