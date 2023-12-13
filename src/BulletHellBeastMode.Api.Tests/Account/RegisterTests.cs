@@ -13,14 +13,12 @@ public class RegisterTests(WebApplicationFactory factory) : IntegrationTestBase(
         var response = await Client.PostAsJsonAsync("/account/register", new RegisterUserCommand("new-user", "password"));
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.True((await response.Content.ReadFromJsonAsync<CommandResult>())?.IsSuccess);
 
-        var content = await response.Content.ReadFromJsonAsync<CommandResult>();
-        Assert.NotNull(content);
-        Assert.True(content.IsSuccess);
-
-        using (var contextProvider = CreateContextProvider()) {
-            Assert.Single(contextProvider.Context.Users, user => user.Name == "new-user");
-        }
+        await ExecuteOnContext(context => {
+            Assert.Single(context.Users, user => user.Name == "new-user");
+            return Task.CompletedTask;
+        });
 
         Assert.Equal(HttpStatusCode.OK, (await Client.GetAsync("/account")).StatusCode);
     }
@@ -32,14 +30,12 @@ public class RegisterTests(WebApplicationFactory factory) : IntegrationTestBase(
         var response = await Client.PostAsJsonAsync("/account/register", new RegisterUserCommand("existing-user", "password"));
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.False((await response.Content.ReadFromJsonAsync<CommandResult>())?.IsSuccess);
 
-        var content = await response.Content.ReadFromJsonAsync<CommandResult>();
-        Assert.NotNull(content);
-        Assert.False(content.IsSuccess);
-
-        using (var contextProvider = CreateContextProvider()) {
-            Assert.Single(contextProvider.Context.Users, user => user.Name == "existing-user");
-        }
+        await ExecuteOnContext(context => {
+            Assert.Single(context.Users, user => user.Name == "existing-user");
+            return Task.CompletedTask;
+        });
 
         Assert.Equal(HttpStatusCode.Unauthorized, (await Client.GetAsync("/account")).StatusCode);
     }
