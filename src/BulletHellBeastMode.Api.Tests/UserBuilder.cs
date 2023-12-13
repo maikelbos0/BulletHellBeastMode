@@ -17,6 +17,7 @@ using System.Web;
 
 namespace BulletHellBeastMode.Api.Tests;
 
+[Obsolete]
 public class UserBuilder(WebApplicationFactory factory, CookieContainer cookieContainer, string userName) {
     private bool accessToken;
     private bool accessTokenExpired;
