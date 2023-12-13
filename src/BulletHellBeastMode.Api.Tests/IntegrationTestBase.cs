@@ -63,8 +63,8 @@ public abstract class IntegrationTestBase : IClassFixture<WebApplicationFactory>
     public async Task<User> CreateSignedInUser(string userName, bool useOldAlgorithm = false, DateTime? accessTokenExpires = null, DateTime? refreshTokenExpires = null) {
         var user = await CreateUser(userName, useOldAlgorithm);
 
-        SetAccessToken(userName, accessTokenExpires ?? DateTime.MaxValue);
-        SetRefreshToken(await CreateRefreshToken(userName, refreshTokenExpires ?? DateTime.MaxValue));
+        SetAccessToken(userName, accessTokenExpires);
+        SetRefreshToken(await CreateRefreshToken(userName, refreshTokenExpires));
 
         return user;
     }
@@ -87,7 +87,7 @@ public abstract class IntegrationTestBase : IClassFixture<WebApplicationFactory>
     public string GetAccessToken()
         => HttpUtility.UrlDecode(cookieContainer.GetAllCookies().Single(cookie => cookie.Name == Constants.AccessTokenCookieName).Value);
 
-    public void SetAccessToken(string userName, DateTime expires) {
+    public void SetAccessToken(string userName, DateTime? expires = null) {
         var jwtSettings = factory.Services.GetRequiredService<IOptions<JwtSettings>>().Value;
         var jwtSecurityTokenHandler = factory.Services.GetRequiredService<JwtSecurityTokenHandler>();
         // TODO unify this also with jwt config?
@@ -99,14 +99,14 @@ public abstract class IntegrationTestBase : IClassFixture<WebApplicationFactory>
                 new(JwtRegisteredClaimNames.Sub, userName)
             },
             notBefore: DateTime.MinValue,
-            expires: expires,
+            expires: expires ?? DateTime.MaxValue,
             signingCredentials: signingCredentials
         );
 
         cookieContainer.Add(new(BaseAddress), new Cookie(Constants.AccessTokenCookieName, HttpUtility.UrlEncode(jwtSecurityTokenHandler.WriteToken(accessToken))));
     }
 
-    public async Task<string> CreateRefreshToken(string userName, DateTime expires) {
+    public async Task<string> CreateRefreshToken(string userName, DateTime? expires = null) {
         var refreshToken = Convert.ToBase64String(RandomNumberGenerator.GetBytes(384));
 
         await ExecuteOnContext(async context => {
@@ -114,7 +114,7 @@ public abstract class IntegrationTestBase : IClassFixture<WebApplicationFactory>
 
             user.RefreshTokenFamilies.Add(new RefreshTokenFamily() {
                 Token = new PasswordHasher<User>().HashPassword(user, refreshToken),
-                Expires = expires
+                Expires = expires ?? DateTime.MaxValue
             });
             await context.SaveChangesAsync();
         });
@@ -122,7 +122,7 @@ public abstract class IntegrationTestBase : IClassFixture<WebApplicationFactory>
         return refreshToken;
     }
 
-    public string GetRefreshToken() 
+    public string GetRefreshToken()
         => HttpUtility.UrlDecode(cookieContainer.GetAllCookies().Single(cookie => cookie.Name == Constants.RefreshTokenCookieName).Value);
 
     public void SetRefreshToken(string refreshToken)
