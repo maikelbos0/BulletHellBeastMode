@@ -23,6 +23,7 @@ builder.Services.AddAuthorization();
 builder.Services.AddTransient<JwtSecurityTokenHandler>();
 builder.Services.AddTransient<AccountService>();
 builder.Services.AddTransient<PasswordHasher<User>>();
+builder.Services.AddSingleton<TokenValidationParametersProvider>();
 builder.Services.AddDbContext<BulletHellContext>((serviceProvider, options) => options
     .UseSqlServer(serviceProvider.GetRequiredService<IOptionsSnapshot<AppSettings>>().Value.ConnectionString)
     .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking));

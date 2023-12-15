@@ -6,7 +6,12 @@ using System.Security.Cryptography;
 
 namespace BulletHellBeastMode.Api.Account;
 
-public class AccountService(JwtSecurityTokenHandler jwtSecurityTokenHandler, IHttpContextAccessor httpContextAccessor, IOptionsSnapshot<JwtSettings> jwtSettings) {
+public class AccountService(
+    TokenValidationParametersProvider tokenValidationParametersProvider,
+    JwtSecurityTokenHandler jwtSecurityTokenHandler, 
+    IHttpContextAccessor httpContextAccessor, 
+    IOptionsSnapshot<JwtSettings> jwtSettings
+) {
     private readonly JwtSecurityTokenHandler jwtSecurityTokenHandler = jwtSecurityTokenHandler;
     private readonly IHttpContextAccessor httpContextAccessor = httpContextAccessor;
     private readonly JwtSettings jwtSettings = jwtSettings.Value;
@@ -44,7 +49,7 @@ public class AccountService(JwtSecurityTokenHandler jwtSecurityTokenHandler, IHt
             expires: now.AddSeconds(jwtSettings.AccessTokenExpiresInSeconds),
             signingCredentials: signingCredentials
         );
-
+        
         return jwtSecurityTokenHandler.WriteToken(token);
     }
 
@@ -62,17 +67,7 @@ public class AccountService(JwtSecurityTokenHandler jwtSecurityTokenHandler, IHt
                 return null;
             }
 
-            // TODO figure out how to combine this with ConfigureJwtBearerOptions
-            var tokenValidationParameters = new TokenValidationParameters() {
-                ValidAudience = jwtSettings.ValidAudience,
-                ValidIssuer = jwtSettings.ValidIssuer,
-                ValidateIssuerSigningKey = true,
-                IssuerSigningKey = new SymmetricSecurityKey(jwtSettings.SecurityKey),
-                NameClaimType = JwtRegisteredClaimNames.Sub,
-                ValidateLifetime = false
-            };
-
-            jwtSecurityTokenHandler.ValidateToken(accessToken, tokenValidationParameters, out var securityToken);
+            jwtSecurityTokenHandler.ValidateToken(accessToken, tokenValidationParametersProvider.Provide(validateLifetime: false), out var securityToken);
 
             return (securityToken as JwtSecurityToken)?.Subject;
         }

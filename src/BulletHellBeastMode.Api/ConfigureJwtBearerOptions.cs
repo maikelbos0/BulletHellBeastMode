@@ -1,11 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
 
 namespace BulletHellBeastMode.Api;
 
-public class ConfigureJwtBearerOptions(IOptionsMonitor<JwtSettings> jwtSettings) : IConfigureNamedOptions<JwtBearerOptions> {
+public class ConfigureJwtBearerOptions(TokenValidationParametersProvider tokenValidationParametersProvider) : IConfigureNamedOptions<JwtBearerOptions> {
     public void Configure(string? name, JwtBearerOptions options) {
         Configure(options);
     }
@@ -13,13 +11,7 @@ public class ConfigureJwtBearerOptions(IOptionsMonitor<JwtSettings> jwtSettings)
     public void Configure(JwtBearerOptions options) {
         options.MapInboundClaims = false;
 
-        options.TokenValidationParameters = new TokenValidationParameters() {
-            ValidAudience = jwtSettings.CurrentValue.ValidAudience,
-            ValidIssuer = jwtSettings.CurrentValue.ValidIssuer,
-            ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(jwtSettings.CurrentValue.SecurityKey),
-            NameClaimType = JwtRegisteredClaimNames.Sub
-        };
+        options.TokenValidationParameters = tokenValidationParametersProvider.Provide(validateLifetime: true);
 
         options.Events = new JwtBearerEvents {
             OnMessageReceived = context =>
