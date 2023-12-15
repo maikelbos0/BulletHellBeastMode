@@ -21,7 +21,7 @@ builder.Services.AddAuthentication().AddJwtBearer();
 builder.Services.ConfigureOptions<ConfigureJwtBearerOptions>();
 builder.Services.AddAuthorization();
 builder.Services.AddTransient<JwtSecurityTokenHandler>();
-builder.Services.AddTransient<IAccountService, AccountService>();
+builder.Services.AddTransient<AccountService>();
 builder.Services.AddTransient<PasswordHasher<User>>();
 builder.Services.AddDbContext<BulletHellContext>((serviceProvider, options) => options
     .UseSqlServer(serviceProvider.GetRequiredService<IOptionsSnapshot<AppSettings>>().Value.ConnectionString)

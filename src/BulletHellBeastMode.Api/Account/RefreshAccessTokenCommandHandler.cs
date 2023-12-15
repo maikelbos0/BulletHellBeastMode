@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BulletHellBeastMode.Api.Account;
 
-public class RefreshAccessTokenCommandHandler(BulletHellContext context, IAccountService accountService, PasswordHasher<User> passwordHasher) : IRequestHandler<RefreshAccessTokenCommand, CommandResult> {
+public class RefreshAccessTokenCommandHandler(BulletHellContext context, AccountService accountService, PasswordHasher<User> passwordHasher) : IRequestHandler<RefreshAccessTokenCommand, CommandResult> {
     public async Task<CommandResult> Handle(RefreshAccessTokenCommand request, CancellationToken cancellationToken) {
         var userName = accountService.GetUserName(true);
 

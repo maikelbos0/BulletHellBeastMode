@@ -6,7 +6,7 @@ using System.Security.Cryptography;
 
 namespace BulletHellBeastMode.Api.Account;
 
-public class AccountService(JwtSecurityTokenHandler jwtSecurityTokenHandler, IHttpContextAccessor httpContextAccessor, IOptionsSnapshot<JwtSettings> jwtSettings) : IAccountService {
+public class AccountService(JwtSecurityTokenHandler jwtSecurityTokenHandler, IHttpContextAccessor httpContextAccessor, IOptionsSnapshot<JwtSettings> jwtSettings) {
     private readonly JwtSecurityTokenHandler jwtSecurityTokenHandler = jwtSecurityTokenHandler;
     private readonly IHttpContextAccessor httpContextAccessor = httpContextAccessor;
     private readonly JwtSettings jwtSettings = jwtSettings.Value;

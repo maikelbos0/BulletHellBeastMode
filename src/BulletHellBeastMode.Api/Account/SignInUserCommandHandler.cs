@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BulletHellBeastMode.Api.Account;
 
-public class SignInUserCommandHandler(BulletHellContext context, PasswordHasher<User> passwordHasher, IAccountService accountService) : IRequestHandler<SignInUserCommand, CommandResult> {
+public class SignInUserCommandHandler(BulletHellContext context, PasswordHasher<User> passwordHasher, AccountService accountService) : IRequestHandler<SignInUserCommand, CommandResult> {
     public async Task<CommandResult> Handle(SignInUserCommand request, CancellationToken cancellationToken) {
         const string signInError = "Incorrect user name or password";
 

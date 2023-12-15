@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BulletHellBeastMode.Api.Account;
 
-public class SignOutUserCommandHandler(BulletHellContext context, IAccountService accountService, PasswordHasher<User> passwordHasher) : IRequestHandler<SignOutUserCommand> {
+public class SignOutUserCommandHandler(BulletHellContext context, AccountService accountService, PasswordHasher<User> passwordHasher) : IRequestHandler<SignOutUserCommand> {
     public async Task Handle(SignOutUserCommand request, CancellationToken cancellationToken) {
         var user = await context.Users.AsTracking()
             .Include(user => user.RefreshTokenFamilies)
