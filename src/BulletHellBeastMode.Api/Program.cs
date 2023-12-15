@@ -20,10 +20,11 @@ builder.Services.AddOptions<AppSettings>().Bind(builder.Configuration.GetSection
 builder.Services.AddAuthentication().AddJwtBearer();
 builder.Services.ConfigureOptions<ConfigureJwtBearerOptions>();
 builder.Services.AddAuthorization();
-builder.Services.AddTransient<JwtSecurityTokenHandler>();
 builder.Services.AddTransient<AccountService>();
 builder.Services.AddTransient<PasswordHasher<User>>();
 builder.Services.AddSingleton<TokenValidationParametersProvider>();
+builder.Services.AddSingleton<JwtSecurityTokenProvider>();
+builder.Services.AddSingleton<JwtSecurityTokenHandler>();
 builder.Services.AddDbContext<BulletHellContext>((serviceProvider, options) => options
     .UseSqlServer(serviceProvider.GetRequiredService<IOptionsSnapshot<AppSettings>>().Value.ConnectionString)
     .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking));

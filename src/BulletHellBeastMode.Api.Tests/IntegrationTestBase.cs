@@ -5,14 +5,10 @@ using Microsoft.AspNetCore.Mvc.Testing.Handlers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
 using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
 using System.Web;
@@ -69,22 +65,10 @@ public abstract class IntegrationTestBase : IClassFixture<WebApplicationFactory>
         => HttpUtility.UrlDecode(cookieContainer.GetAllCookies().Single(cookie => cookie.Name == Constants.AccessTokenCookieName).Value);
 
     public void SetAccessToken(string userName, DateTime? expires = null) {
-        var jwtSettings = factory.Services.GetRequiredService<IOptions<JwtSettings>>().Value;
-        var jwtSecurityTokenHandler = factory.Services.GetRequiredService<JwtSecurityTokenHandler>();
-        // TODO unify this also with jwt config?
-        var signingCredentials = new SigningCredentials(new SymmetricSecurityKey(jwtSettings.SecurityKey), SecurityAlgorithms.HmacSha256);
-        var accessToken = new JwtSecurityToken(
-            issuer: jwtSettings.ValidIssuer,
-            audience: jwtSettings.ValidAudience,
-            claims: new List<Claim>() {
-                new(JwtRegisteredClaimNames.Sub, userName)
-            },
-            notBefore: DateTime.MinValue,
-            expires: expires ?? DateTime.MaxValue,
-            signingCredentials: signingCredentials
-        );
+        var jwtSecurityTokenProvider = factory.Services.GetRequiredService<JwtSecurityTokenProvider>();
+        var accessToken = jwtSecurityTokenProvider.Provide(userName, DateTime.MinValue, expires ?? DateTime.MaxValue);
 
-        cookieContainer.Add(new(BaseAddress), new Cookie(Constants.AccessTokenCookieName, HttpUtility.UrlEncode(jwtSecurityTokenHandler.WriteToken(accessToken))));
+        cookieContainer.Add(new(BaseAddress), new Cookie(Constants.AccessTokenCookieName, HttpUtility.UrlEncode(accessToken)));
     }
 
     public async Task<string> CreateRefreshToken(string userName, DateTime? expires = null) {
