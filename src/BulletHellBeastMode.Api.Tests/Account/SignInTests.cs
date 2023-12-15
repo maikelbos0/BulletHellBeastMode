@@ -1,5 +1,6 @@
 ﻿using BulletHellBeastMode.Api.Account;
 using BulletHellBeastMode.Api.Entities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
 using System.Net.Http.Json;
@@ -8,7 +9,6 @@ using Xunit;
 
 namespace BulletHellBeastMode.Api.Tests.Account;
 
-// TODO test refresh token?
 public class SignInTests(WebApplicationFactory factory) : IntegrationTestBase(factory) {
     [Fact]
     public async Task SignIn_With_Correct_Credentials_Succeeds() {
@@ -18,10 +18,17 @@ public class SignInTests(WebApplicationFactory factory) : IntegrationTestBase(fa
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         Assert.True((await response.Content.ReadFromJsonAsync<CommandResult>())?.IsSuccess);
+        Assert.True(HasRefreshToken());
 
         await ExecuteOnContext(async context => {
-            var user = await context.Users.Include(user => user.Events).SingleAsync(user => user.Name == "sign-in-user");
+            var user = await context.Users
+                .Include(user => user.Events)
+                .Include(user => user.RefreshTokenFamilies)
+                .SingleAsync(user => user.Name == "sign-in-user");
             Assert.Equal(UserEventType.SignedIn, Assert.Single(user.Events).Type);
+            var passwordHasher = new PasswordHasher<User>();
+            var refreshTokenFamily = Assert.Single(user.RefreshTokenFamilies);
+            Assert.NotEqual(PasswordVerificationResult.Failed, passwordHasher.VerifyHashedPassword(user, refreshTokenFamily.Token, GetRefreshToken()));
         });
 
         Assert.Equal(HttpStatusCode.OK, (await Client.GetAsync("/account")).StatusCode);
@@ -35,11 +42,18 @@ public class SignInTests(WebApplicationFactory factory) : IntegrationTestBase(fa
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         Assert.True((await response.Content.ReadFromJsonAsync<CommandResult>())?.IsSuccess);
+        Assert.True(HasRefreshToken());
 
         await ExecuteOnContext(async context => {
-            var updatedUser = await context.Users.Include(user => user.Events).SingleAsync(user => user.Name == "rehash-user");
+            var updatedUser = await context.Users
+                .Include(user => user.Events)
+                .Include(user => user.RefreshTokenFamilies)
+                .SingleAsync(user => user.Name == "rehash-user");
             Assert.NotEqual(updatedUser.Password, user.Password);
             Assert.Equal(UserEventType.SignedIn, Assert.Single(updatedUser.Events).Type);
+            var passwordHasher = new PasswordHasher<User>();
+            var refreshTokenFamily = Assert.Single(updatedUser.RefreshTokenFamilies);
+            Assert.NotEqual(PasswordVerificationResult.Failed, passwordHasher.VerifyHashedPassword(updatedUser, refreshTokenFamily.Token, GetRefreshToken()));
         });
 
         Assert.Equal(HttpStatusCode.OK, (await Client.GetAsync("/account")).StatusCode);
@@ -51,6 +65,7 @@ public class SignInTests(WebApplicationFactory factory) : IntegrationTestBase(fa
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         Assert.False((await response.Content.ReadFromJsonAsync<CommandResult>())?.IsSuccess);
+        Assert.False(HasRefreshToken());
 
         Assert.Equal(HttpStatusCode.Unauthorized, (await Client.GetAsync("/account")).StatusCode);
     }
@@ -63,10 +78,15 @@ public class SignInTests(WebApplicationFactory factory) : IntegrationTestBase(fa
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         Assert.False((await response.Content.ReadFromJsonAsync<CommandResult>())?.IsSuccess);
+        Assert.False(HasRefreshToken());
 
         await ExecuteOnContext(async context => {
-            var updatedUser = await context.Users.Include(user => user.Events).SingleAsync(user => user.Name == "password-user");
-            Assert.Equal(UserEventType.FailedSignIn, Assert.Single(updatedUser.Events).Type);
+            var user = await context.Users
+                .Include(user => user.Events)
+                .Include(user => user.RefreshTokenFamilies)
+                .SingleAsync(user => user.Name == "password-user");
+            Assert.Equal(UserEventType.FailedSignIn, Assert.Single(user.Events).Type);
+            Assert.Empty(user.RefreshTokenFamilies);
         });
 
         Assert.Equal(HttpStatusCode.Unauthorized, (await Client.GetAsync("/account")).StatusCode);

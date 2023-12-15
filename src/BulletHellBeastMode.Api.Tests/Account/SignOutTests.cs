@@ -6,7 +6,6 @@ using Xunit;
 
 namespace BulletHellBeastMode.Api.Tests.Account;
 
-// TODO test refresh token?
 public class SignOutTests(WebApplicationFactory factory) : IntegrationTestBase(factory) {
     [Fact]
     public async Task SignOut_Succeeds() {
@@ -15,6 +14,7 @@ public class SignOutTests(WebApplicationFactory factory) : IntegrationTestBase(f
         var response = await Client.PostAsync("/account/sign-out", null);
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.False(HasRefreshToken());
 
         await ExecuteOnContext(async context => {
             var user = await context.Users.Include(user => user.Events).SingleAsync(user => user.Name == "sign-out-user");

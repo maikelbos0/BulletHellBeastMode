@@ -103,6 +103,9 @@ public abstract class IntegrationTestBase : IClassFixture<WebApplicationFactory>
         return refreshToken;
     }
 
+    public bool HasRefreshToken()
+        => cookieContainer.GetAllCookies().Any(cookie => cookie.Name == Constants.RefreshTokenCookieName);
+
     public string GetRefreshToken()
         => HttpUtility.UrlDecode(cookieContainer.GetAllCookies().Single(cookie => cookie.Name == Constants.RefreshTokenCookieName).Value);
 

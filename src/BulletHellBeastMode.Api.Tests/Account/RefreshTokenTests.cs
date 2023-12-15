@@ -22,6 +22,7 @@ public class RefreshTokenTests(WebApplicationFactory factory) : IntegrationTestB
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         Assert.True((await response.Content.ReadFromJsonAsync<CommandResult>())?.IsSuccess);
+        Assert.True(HasRefreshToken());
 
         Assert.NotEqual(originalAccessToken, GetAccessToken());
         Assert.NotEqual(originalRefreshToken, GetRefreshToken());
@@ -31,8 +32,8 @@ public class RefreshTokenTests(WebApplicationFactory factory) : IntegrationTestB
                 .Include(user => user.Events)
                 .Include(user => user.RefreshTokenFamilies).ThenInclude(family => family.UsedRefreshTokens)
                 .SingleAsync(user => user.Name == "refresh-user");
-            var passwordHasher = new PasswordHasher<User>();
             Assert.Equal(UserEventType.AccessTokenRefreshed, Assert.Single(user.Events).Type);
+            var passwordHasher = new PasswordHasher<User>();
             var refreshTokenFamily = Assert.Single(user.RefreshTokenFamilies);
             Assert.NotEqual(PasswordVerificationResult.Failed, passwordHasher.VerifyHashedPassword(user, refreshTokenFamily.Token, GetRefreshToken()));
             Assert.NotEqual(PasswordVerificationResult.Failed, passwordHasher.VerifyHashedPassword(user, Assert.Single(refreshTokenFamily.UsedRefreshTokens).Token, originalRefreshToken));
@@ -52,6 +53,7 @@ public class RefreshTokenTests(WebApplicationFactory factory) : IntegrationTestB
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         Assert.True((await response.Content.ReadFromJsonAsync<CommandResult>())?.IsSuccess);
+        Assert.True(HasRefreshToken());
 
         Assert.NotEqual(originalAccessToken, GetAccessToken());
         Assert.NotEqual(originalRefreshToken, GetRefreshToken());
@@ -61,8 +63,8 @@ public class RefreshTokenTests(WebApplicationFactory factory) : IntegrationTestB
                 .Include(user => user.Events)
                 .Include(user => user.RefreshTokenFamilies).ThenInclude(family => family.UsedRefreshTokens)
                 .SingleAsync(user => user.Name == "expired-access-refresh-user");
-            var passwordHasher = new PasswordHasher<User>();
             Assert.Equal(UserEventType.AccessTokenRefreshed, Assert.Single(user.Events).Type);
+            var passwordHasher = new PasswordHasher<User>();
             var refreshTokenFamily = Assert.Single(user.RefreshTokenFamilies);
             Assert.NotEqual(PasswordVerificationResult.Failed, passwordHasher.VerifyHashedPassword(user, refreshTokenFamily.Token, GetRefreshToken()));
             Assert.NotEqual(PasswordVerificationResult.Failed, passwordHasher.VerifyHashedPassword(user, Assert.Single(refreshTokenFamily.UsedRefreshTokens).Token, originalRefreshToken));
@@ -80,6 +82,7 @@ public class RefreshTokenTests(WebApplicationFactory factory) : IntegrationTestB
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         Assert.False((await response.Content.ReadFromJsonAsync<CommandResult>())?.IsSuccess);
+        Assert.False(HasRefreshToken());
 
         Assert.Equal(HttpStatusCode.Unauthorized, (await Client.GetAsync("/account")).StatusCode);
     }
@@ -94,6 +97,7 @@ public class RefreshTokenTests(WebApplicationFactory factory) : IntegrationTestB
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         Assert.False((await response.Content.ReadFromJsonAsync<CommandResult>())?.IsSuccess);
+        Assert.False(HasRefreshToken());
 
         await ExecuteOnContext(async context => {
             var user = await context.Users
@@ -132,6 +136,7 @@ public class RefreshTokenTests(WebApplicationFactory factory) : IntegrationTestB
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         Assert.False((await response.Content.ReadFromJsonAsync<CommandResult>())?.IsSuccess);
+        Assert.False(HasRefreshToken());
 
         await ExecuteOnContext(async context => {
             var updatedUser = await context.Users
@@ -153,6 +158,7 @@ public class RefreshTokenTests(WebApplicationFactory factory) : IntegrationTestB
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         Assert.False((await response.Content.ReadFromJsonAsync<CommandResult>())?.IsSuccess);
+        Assert.False(HasRefreshToken());
 
         await ExecuteOnContext(async context => {
             var updatedUser = await context.Users
