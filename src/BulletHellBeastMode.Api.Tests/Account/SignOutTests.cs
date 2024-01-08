@@ -17,8 +17,12 @@ public class SignOutTests(WebApplicationFactory factory) : IntegrationTestBase(f
         Assert.False(HasRefreshToken());
 
         await ExecuteOnContext(async context => {
-            var user = await context.Users.Include(user => user.Events).SingleAsync(user => user.Name == "sign-out-user");
+            var user = await context.Users
+            .Include(user => user.Events)
+            .Include(user => user.RefreshTokenFamilies)
+            .SingleAsync(user => user.Name == "sign-out-user");
             Assert.Equal(UserEventType.SignedOut, Assert.Single(user.Events).Type);
+            Assert.Empty(user.RefreshTokenFamilies);
         });
 
         Assert.Equal(HttpStatusCode.Unauthorized, (await Client.GetAsync("/account")).StatusCode);
