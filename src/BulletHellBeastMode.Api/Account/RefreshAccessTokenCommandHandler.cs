@@ -11,48 +11,55 @@ public class RefreshAccessTokenCommandHandler(BulletHellContext context, Account
         var userName = accountService.GetUserName(true);
 
         if (userName == null) {
-            accountService.SignOut();
-            return CommandResult.Failure("Failed to refresh access token");
+            return await Failure(null, cancellationToken);
         }
 
         var user = await context.Users.AsTracking()
             .Include(user => user.RefreshTokenFamilies).ThenInclude(family => family.UsedRefreshTokens)
             .SingleAsync(user => user.Name == userName, cancellationToken);
 
-        // TODO refactor this nested mess
         var refreshToken = accountService.GetRefreshToken();
-        if (refreshToken != null) {
-            var refreshTokenFamily = user.RefreshTokenFamilies.SingleOrDefault(family => passwordHasher.VerifyHashedPassword(user, family.Token, refreshToken) != PasswordVerificationResult.Failed);
-            if (refreshTokenFamily != null && refreshTokenFamily.Expires >= DateTime.UtcNow) {
-                var newRefreshToken = accountService.GenerateRefreshToken();
-                user.Events.Add(new UserEvent() {
-                    Type = UserEventType.AccessTokenRefreshed
-                });
-                refreshTokenFamily.UsedRefreshTokens.Add(new UsedRefreshToken() {
-                    Token = refreshTokenFamily.Token
-                });
-                refreshTokenFamily.Token = passwordHasher.HashPassword(user, newRefreshToken.Token);
-                refreshTokenFamily.Expires = newRefreshToken.Expires;
-                await context.SaveChangesAsync(cancellationToken);
-
-                accountService.SignIn(userName, newRefreshToken.Token);
-                return CommandResult.Success;
-            }
-            else if (refreshTokenFamily != null) {
-                context.RefreshTokenFamilies.Remove(refreshTokenFamily);
-            }
-            else {
-                var usedRefreshTokenFamily = user.RefreshTokenFamilies.SingleOrDefault(family => family.UsedRefreshTokens.Any(token => passwordHasher.VerifyHashedPassword(user, token.Token, refreshToken) != PasswordVerificationResult.Failed));
-                if (usedRefreshTokenFamily != null) {
-                    context.RefreshTokenFamilies.Remove(usedRefreshTokenFamily);
-                }
-            }
+        if (refreshToken == null) {
+            return await Failure(user, cancellationToken);
         }
 
+        var refreshTokenFamily = user.RefreshTokenFamilies.SingleOrDefault(family => passwordHasher.VerifyHashedPassword(user, family.Token, refreshToken) != PasswordVerificationResult.Failed);
+
+        if (refreshTokenFamily == null) {
+            var usedRefreshTokenFamily = user.RefreshTokenFamilies.SingleOrDefault(family => family.UsedRefreshTokens.Any(token => passwordHasher.VerifyHashedPassword(user, token.Token, refreshToken) != PasswordVerificationResult.Failed));
+            if (usedRefreshTokenFamily != null) {
+                context.RefreshTokenFamilies.Remove(usedRefreshTokenFamily);
+            }
+            return await Failure(user, cancellationToken);
+        }
+        else if (refreshTokenFamily.Expires < DateTime.UtcNow) {
+            context.RefreshTokenFamilies.Remove(refreshTokenFamily);
+            return await Failure(user, cancellationToken);
+        }
+
+        var newRefreshToken = accountService.GenerateRefreshToken();
         user.Events.Add(new UserEvent() {
-            Type = UserEventType.RefreshAccessTokenFailed
+            Type = UserEventType.AccessTokenRefreshed
         });
+        refreshTokenFamily.UsedRefreshTokens.Add(new UsedRefreshToken() {
+            Token = refreshTokenFamily.Token
+        });
+        refreshTokenFamily.Token = passwordHasher.HashPassword(user, newRefreshToken.Token);
+        refreshTokenFamily.Expires = newRefreshToken.Expires;
         await context.SaveChangesAsync(cancellationToken);
+
+        accountService.SignIn(userName, newRefreshToken.Token);
+        return CommandResult.Success;
+    }
+
+    private async Task<CommandResult> Failure(User? user, CancellationToken cancellationToken) {
+        if (user != null) {
+            user.Events.Add(new UserEvent() {
+                Type = UserEventType.RefreshAccessTokenFailed
+            });
+            await context.SaveChangesAsync(cancellationToken);
+        }
+
         accountService.SignOut();
         return CommandResult.Failure("Failed to refresh access token");
     }
