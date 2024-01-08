@@ -10,7 +10,7 @@ public class SignOutUserCommandHandler(BulletHellContext context, AccountService
     public async Task Handle(SignOutUserCommand request, CancellationToken cancellationToken) {
         var user = await context.Users.AsTracking()
             .Include(user => user.RefreshTokenFamilies)
-            .SingleAsync(user => user.Name == accountService.GetAcccountDetails().UserName, cancellationToken);
+            .SingleAsync(user => user.Name == accountService.GetUserName(false), cancellationToken);
 
         user.Events.Add(new UserEvent() {
             Type = UserEventType.SignedOut

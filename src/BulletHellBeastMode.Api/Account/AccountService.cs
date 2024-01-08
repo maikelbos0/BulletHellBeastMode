@@ -31,6 +31,7 @@ public class AccountService(
         );
     }
 
+    // TODO move to domain???
     public RefreshTokenDetails GenerateRefreshToken()
         => new(Convert.ToBase64String(RandomNumberGenerator.GetBytes(384)), DateTimeOffset.UtcNow.AddSeconds(jwtSettings.RefreshTokenExpiresInSeconds));
 
@@ -51,7 +52,6 @@ public class AccountService(
         }
     }
 
-    // TODO replace calls for username with GetUserName
     public AccountDetails GetAcccountDetails() {
         var identity = httpContextAccessor.HttpContext?.User.Identity;
 
