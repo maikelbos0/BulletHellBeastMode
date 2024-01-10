@@ -72,4 +72,15 @@ describe('Vector', () => {
 
         expect(result).toEqual(expectedResult);
     });
+
+    it.each([
+        [new Vector(3, 4), new Vector(5, 6), 39],
+        [new Vector(6, 5), new Vector(4, 3), 39],
+        [new Vector(1, -2), new Vector(-2, 1), -4],
+        [new Vector(-1, -2), new Vector(-3, -4), 11]
+    ])('dotProduct() subject: %p, vector: %p, expectedResult: %p', (subject: Vector, vector: Vector, expectedResult: number) => {
+        const result = subject.dotProduct(vector);
+
+        expect(result).toEqual(expectedResult);
+    });
 });

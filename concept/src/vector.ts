@@ -46,4 +46,8 @@ export class Vector {
     subtract(vector: Vector): this {
         return new (this.constructor as any)(this.x - vector.x, this.y - vector.y);
     }
+
+    dotProduct(vector: Vector): number {
+        return this.x * vector.x + this.y * vector.y;
+    }
 }
