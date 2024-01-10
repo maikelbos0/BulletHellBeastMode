@@ -7,7 +7,7 @@ describe('Vector', () => {
         [1.11154, 2.11154, 1.1115, 2.1115],
         [1.11156, 2.11156, 1.1116, 2.1116]
     ])('constructor() x: %p, y: %p, expectedX: %p, expectedY: %p', (x: number, y: number, expectedX: number, expectedY: number) => {
-        let result = new Vector(x, y);
+        const result = new Vector(x, y);
 
         expect(result.x).toBe(expectedX);
         expect(result.y).toBe(expectedY);

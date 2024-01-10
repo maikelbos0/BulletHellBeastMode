@@ -19,9 +19,9 @@ describe('Ship', () => {
         [Direction.Down | Direction.Right, new Velocity(707.1068, 707.1068)],
         [Direction.Up | Direction.Down | Direction.Left | Direction.Right, new Velocity(0, 0)],
     ])('getDirectionalVelocity() direction: %p, expectedResult: %p', (direction: Direction, expectedResult: Velocity) => {
-        let subject = new Ship(new Coordinates(100, 100));
+        const subject = new Ship(new Coordinates(100, 100));
 
-        let result = subject.getDirectionalVelocity(direction);
+        const result = subject.getDirectionalVelocity(direction);
 
         expect(result).toEqual(expectedResult);
     });
@@ -33,9 +33,9 @@ describe('Ship', () => {
         [new Coordinates(1000, 1000), new Coordinates(1300, 1400), new Velocity(600, 800)],
         [new Coordinates(1000, 1000), new Coordinates(600, 700), new Velocity(-800, -600)]
     ])('getVelocityFromDesiredPosition desiredPosition: %p, expectedResults: %p', (startingPosition: Coordinates, desiredPosition: Coordinates, expectedResult: Velocity) => {
-        let subject = new Ship(startingPosition);
+        const subject = new Ship(startingPosition);
 
-        let result = subject.getVelocityFromDesiredPosition(desiredPosition);
+        const result = subject.getVelocityFromDesiredPosition(desiredPosition);
 
         expect(result).toEqual(expectedResult);
     });
@@ -75,7 +75,7 @@ describe('Ship', () => {
         [new Coordinates(900, 900), new Velocity(1000, 1000), Direction.Right | Direction.Down, null, 0.1, new Velocity(400, 400)],
     ])('processInput() startingPosition: %p, startingVelocity: %p, direction: %p, desiredPosition: %p, duration: %p, expectedVelocity: %p', 
             (startingPosition: Coordinates, startingVelocity: Velocity, direction: Direction, desiredPosition: Coordinates | null, duration: number, expectedVelocity: Velocity) => {
-        let subject = new Ship(startingPosition);
+        const subject = new Ship(startingPosition);
 
         subject.velocity = startingVelocity;
 
@@ -85,7 +85,7 @@ describe('Ship', () => {
     });
 
     test('processFrame()', () => {
-        let subject = new Ship(new Coordinates(500, 500));
+        const subject = new Ship(new Coordinates(500, 500));
 
         subject.velocity = new Velocity(-200, 200);
 
