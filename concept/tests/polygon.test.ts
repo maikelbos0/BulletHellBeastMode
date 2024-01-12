@@ -2,7 +2,7 @@ import { Coordinates } from '../src/coordinates';
 import { Polygon } from '../src/polygon';
 import { ShapeGroup } from '../src/shape-group';
 
-describe('Game', () => {
+describe('Polygon', () => {
     it.each([
         [[new Coordinates(-100, -100), new Coordinates(0, 50), new Coordinates(100, -100)]],
         [[new Coordinates(-100, -100), new Coordinates(-100, 100), new Coordinates(100, 100), new Coordinates(100, -100)]]
@@ -20,5 +20,16 @@ describe('Game', () => {
           };
 
           expect(t).toThrow();
+    });
+
+    it.each([
+        [[new Coordinates(-100, -100), new Coordinates(-100, 100), new Coordinates(-90, -90), new Coordinates(100, -100)]],
+        [[new Coordinates(-100, -100), new Coordinates(100, -100), new Coordinates(-90, -90), new Coordinates(-100, 100)]]
+    ])('constructor() requires a convex polygon; coordinates: %j', (coordinates: Coordinates[]) => {
+        const t = () => {
+            const subject = new Polygon(new ShapeGroup(new Coordinates(100, 100)), ...coordinates);
+        };
+
+        expect(t).toThrow();
     });
 });
