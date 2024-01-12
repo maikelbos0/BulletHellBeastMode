@@ -1,15 +1,19 @@
+import { ShapeGroup } from './shape-group.js';
 import { Coordinates } from './coordinates.js';
 
 export class Polygon {
-    readonly anchor: Coordinates;
-    readonly points: Coordinates[];
+    readonly shapeGroup: ShapeGroup;
+    readonly coordinates: Coordinates[];
 
-    constructor(anchor: Coordinates, ...points: Coordinates[]) {
-        if (points.length < 3) {
+    constructor(shapeGroup: ShapeGroup, ...coordinates: Coordinates[]) {
+        const coordinateCount = coordinates.length;
+        const angles: number[] = [];
+
+        if (coordinateCount  < 3) {
             throw new Error("Polygon requires at least 3 coordinates")
         }
 
-        this.anchor = anchor;
-        this.points = points;
+        this.shapeGroup = shapeGroup;
+        this.coordinates = coordinates;
     }
 }
