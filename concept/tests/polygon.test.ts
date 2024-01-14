@@ -1,22 +1,23 @@
 import { Coordinates } from '../src/coordinates';
 import { Polygon } from '../src/polygon';
-import { ShapeGroup } from '../src/shape-group';
+import { Anchor } from '../src/anchor';
 
 describe('Polygon', () => {
     it.each([
         [[new Coordinates(-100, -100), new Coordinates(0, 50), new Coordinates(100, -100)]],
         [[new Coordinates(-100, -100), new Coordinates(-100, 100), new Coordinates(100, 100), new Coordinates(100, -100)]]
     ])('constructor() coordinates: %j', (coordinates: Coordinates[]) => {
-        const shapeGroup = new ShapeGroup(new Coordinates(100, 100));
-        const subject = new Polygon(shapeGroup, ...coordinates);
+        const anchor = { position: new Coordinates(100, 100), polygons: new Array<Polygon>() };
+        const subject = new Polygon(anchor, ...coordinates);
 
-        expect(subject.shapeGroup).toEqual(shapeGroup);
+        expect(subject.anchor).toEqual(anchor);
         expect(subject.coordinates).toEqual(coordinates);
     });
 
     test('constructor() requires 3 coordinates', () => {
+        const anchor = { position: new Coordinates(100, 100), polygons: new Array<Polygon>() };
         const t = () => {
-            const subject = new Polygon(new ShapeGroup(new Coordinates(100, 100)), new Coordinates(0, 0), new Coordinates(0, 0));
+            const subject = new Polygon(anchor);
           };
 
           expect(t).toThrow();
@@ -26,8 +27,9 @@ describe('Polygon', () => {
         [[new Coordinates(-100, -100), new Coordinates(-100, 100), new Coordinates(-90, -90), new Coordinates(100, -100)]],
         [[new Coordinates(-100, -100), new Coordinates(100, -100), new Coordinates(-90, -90), new Coordinates(-100, 100)]]
     ])('constructor() requires a convex polygon; coordinates: %j', (coordinates: Coordinates[]) => {
+        const anchor = { position: new Coordinates(100, 100), polygons: new Array<Polygon>() };
         const t = () => {
-            const subject = new Polygon(new ShapeGroup(new Coordinates(100, 100)), ...coordinates);
+            const subject = new Polygon(anchor);
         };
 
         expect(t).toThrow();

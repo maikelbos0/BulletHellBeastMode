@@ -1,12 +1,12 @@
-import { ShapeGroup } from './shape-group.js';
+import { Anchor } from './anchor.js';
 import { Coordinates } from './coordinates.js';
 import { LineSegment } from './line-segment.js';
 
 export class Polygon {
-    readonly shapeGroup: ShapeGroup;
+    readonly anchor: Anchor;
     readonly coordinates: Coordinates[];
 
-    constructor(shapeGroup: ShapeGroup, ...coordinates: Coordinates[]) {
+    constructor(anchor: Anchor, ...coordinates: Coordinates[]) {
         const coordinateCount = coordinates.length;
 
         if (coordinateCount < 3) {
@@ -35,7 +35,7 @@ export class Polygon {
             }
         }
 
-        this.shapeGroup = shapeGroup;
+        this.anchor = anchor;
         this.coordinates = coordinates;
     }
 }
