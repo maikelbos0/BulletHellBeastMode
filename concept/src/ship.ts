@@ -14,9 +14,38 @@ export class Ship implements Renderable, Anchor {
     position: Coordinates;
     velocity: Velocity;
     polygons: Polygon[] = [
-
+        // Back left wing
+        new Polygon(
+            this,
+            new Coordinates(-30, 25),
+            new Coordinates(-20, 20),
+            new Coordinates(-20, -10)
+        ),
+        // Front left wing
+        new Polygon(
+            this,
+            new Coordinates(-20, -30),
+            new Coordinates(-20, -10),
+            new Coordinates(-30, 25),
+            new Coordinates(-25, -25)
+        ),
+        // Back right wing
+        new Polygon(
+            this,
+            new Coordinates(30, 25),
+            new Coordinates(20, 20),
+            new Coordinates(20, -10)
+        ),
+        // Front right wing
+        new Polygon(
+            this,
+            new Coordinates(20, -30),
+            new Coordinates(20, -10),
+            new Coordinates(30, 25),
+            new Coordinates(25, -25)
+        ),
     ];
-
+    
     constructor(startingPosition: Coordinates) {
         this.position = startingPosition;
         this.velocity = new Velocity(0, 0);
@@ -118,21 +147,7 @@ export class Ship implements Renderable, Anchor {
             f: this.position.y
         });
 
-        // Left wing
-        context.moveTo(-30, 25);
-        context.lineTo(-20, 20);
-        context.lineTo(-20, -30);
-        context.lineTo(-25, -25);
-        context.lineTo(-30, 20);
-        context.lineTo(-20, -10);
-
-        // Right wing
-        context.moveTo(30, +25);
-        context.lineTo(20, +20);
-        context.lineTo(20, -30);
-        context.lineTo(25, -25);
-        context.lineTo(30, 20);
-        context.lineTo(20, -10);
+        this.polygons.forEach(polygon => polygon.render(context));
 
         // Back spar
         context.moveTo(-20, 10);

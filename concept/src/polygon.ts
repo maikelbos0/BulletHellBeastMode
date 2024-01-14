@@ -38,4 +38,13 @@ export class Polygon {
         this.anchor = anchor;
         this.coordinates = coordinates;
     }
+
+    render(context: CanvasRenderingContext2D): void {
+        const startingCoordinates = this.coordinates[this.coordinates.length - 1];
+        context.moveTo(startingCoordinates.x, startingCoordinates.y);
+
+        this.coordinates.forEach(coordinates => {
+            context.lineTo(coordinates.x, coordinates.y);
+        });
+    }
 }
