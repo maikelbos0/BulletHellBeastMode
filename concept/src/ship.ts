@@ -1,16 +1,21 @@
+import { Anchor } from './anchor.js';
 import { Coordinates } from './coordinates.js';
 import { Direction } from './direction.js';
 import { Game } from './game.js';
+import { Polygon } from './polygon.js';
 import { Renderable } from './renderable.js';
 import { Velocity } from './velocity.js';
 
-export class Ship implements Renderable {
+export class Ship implements Renderable, Anchor {
     static readonly maximumSpeed: number = 1000;
     static readonly maximumAcceleration: number = 2000;
     static readonly stoppingDistance: number = Ship.maximumAcceleration / 2 * Math.pow(Ship.maximumSpeed / Ship.maximumAcceleration, 2);
 
     position: Coordinates;
     velocity: Velocity;
+    polygons: Polygon[] = [
+
+    ];
 
     constructor(startingPosition: Coordinates) {
         this.position = startingPosition;
@@ -108,45 +113,52 @@ export class Ship implements Renderable {
         context.strokeStyle = "#ffffff";
         context.lineWidth = 2;
 
+        context.setTransform({
+            e: this.position.x,
+            f: this.position.y
+        });
+
         // Left wing
-        context.moveTo(this.position.x - 30, this.position.y + 25);
-        context.lineTo(this.position.x - 20, this.position.y + 20);
-        context.lineTo(this.position.x - 20, this.position.y - 30);
-        context.lineTo(this.position.x - 25, this.position.y - 25);
-        context.lineTo(this.position.x - 30, this.position.y + 20);
-        context.lineTo(this.position.x - 20, this.position.y - 10);
+        context.moveTo(-30, 25);
+        context.lineTo(-20, 20);
+        context.lineTo(-20, -30);
+        context.lineTo(-25, -25);
+        context.lineTo(-30, 20);
+        context.lineTo(-20, -10);
 
         // Right wing
-        context.moveTo(this.position.x + 30, this.position.y + 25);
-        context.lineTo(this.position.x + 20, this.position.y + 20);
-        context.lineTo(this.position.x + 20, this.position.y - 30);
-        context.lineTo(this.position.x + 25, this.position.y - 25);
-        context.lineTo(this.position.x + 30, this.position.y + 20);
-        context.lineTo(this.position.x + 20, this.position.y - 10);
+        context.moveTo(30, +25);
+        context.lineTo(20, +20);
+        context.lineTo(20, -30);
+        context.lineTo(25, -25);
+        context.lineTo(30, 20);
+        context.lineTo(20, -10);
 
         // Back spar
-        context.moveTo(this.position.x - 20, this.position.y + 10);
-        context.lineTo(this.position.x, this.position.y + 30);
-        context.lineTo(this.position.x + 20, this.position.y + 10);
+        context.moveTo(-20, 10);
+        context.lineTo(0, 30);
+        context.lineTo(20, 10);
 
         // Front spar
-        context.moveTo(this.position.x - 20, this.position.y - 10);
-        context.lineTo(this.position.x - 10, this.position.y + 5);
-        context.lineTo(this.position.x, this.position.y + 10);
-        context.lineTo(this.position.x + 10, this.position.y + 5);
-        context.lineTo(this.position.x + 20, this.position.y - 10);
+        context.moveTo(-20, -10);
+        context.lineTo(-10, 5);
+        context.lineTo(0, 10);
+        context.lineTo(10, 5);
+        context.lineTo(20, -10);
 
         // Fuselage exterior
-        context.moveTo(this.position.x - 5, this.position.y + 25);
-        context.lineTo(this.position.x - 10, this.position.y + 5);
-        context.lineTo(this.position.x, this.position.y - 20);
-        context.lineTo(this.position.x + 10, this.position.y + 5);
-        context.lineTo(this.position.x + 5, this.position.y + 25);
+        context.moveTo(-5, 25);
+        context.lineTo(-10, 5);
+        context.lineTo(0, -20);
+        context.lineTo(10, 5);
+        context.lineTo(5, 25);
 
         // Fuselage central line
-        context.moveTo(this.position.x, this.position.y - 20);
-        context.lineTo(this.position.x, this.position.y + 30);
+        context.moveTo(0, -20);
+        context.lineTo(0, 30);
 
         context.stroke();
+
+        context.resetTransform();
     }
 }
