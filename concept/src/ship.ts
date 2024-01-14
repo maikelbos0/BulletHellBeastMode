@@ -29,6 +29,29 @@ export class Ship implements Renderable, Anchor {
             new Coordinates(-30, 25),
             new Coordinates(-25, -25)
         ),
+        // Left spar
+        new Polygon(
+            this,
+            new Coordinates(-20, 10),
+            new Coordinates(-5, 25),
+            new Coordinates(-10, 5),
+            new Coordinates(-20, -10)
+        ),
+        // Front left fuselage
+        new Polygon(
+            this,
+            new Coordinates(-10, 5),
+            new Coordinates(0, 10),
+            new Coordinates(0, -20),
+        ),
+        // Back left fuselage
+        new Polygon(
+            this,
+            new Coordinates(-5, 25),
+            new Coordinates(0, 30),
+            new Coordinates(0, 10),
+            new Coordinates(-10, 5)
+        ),
         // Back right wing
         new Polygon(
             this,
@@ -44,6 +67,29 @@ export class Ship implements Renderable, Anchor {
             new Coordinates(30, 25),
             new Coordinates(25, -25)
         ),
+        // Right spar
+        new Polygon(
+            this,
+            new Coordinates(20, 10),
+            new Coordinates(5, 25),
+            new Coordinates(10, 5),
+            new Coordinates(20, -10)
+        ),
+        // Front right fuselage
+        new Polygon(
+            this,
+            new Coordinates(10, 5),
+            new Coordinates(0, 10),
+            new Coordinates(0, -20),
+        ),
+        // Back right fuselage
+        new Polygon(
+            this,
+            new Coordinates(5, 25),
+            new Coordinates(0, 30),
+            new Coordinates(0, 10),
+            new Coordinates(10, 5)
+        )
     ];
     
     constructor(startingPosition: Coordinates) {
@@ -148,29 +194,6 @@ export class Ship implements Renderable, Anchor {
         });
 
         this.polygons.forEach(polygon => polygon.render(context));
-
-        // Back spar
-        context.moveTo(-20, 10);
-        context.lineTo(0, 30);
-        context.lineTo(20, 10);
-
-        // Front spar
-        context.moveTo(-20, -10);
-        context.lineTo(-10, 5);
-        context.lineTo(0, 10);
-        context.lineTo(10, 5);
-        context.lineTo(20, -10);
-
-        // Fuselage exterior
-        context.moveTo(-5, 25);
-        context.lineTo(-10, 5);
-        context.lineTo(0, -20);
-        context.lineTo(10, 5);
-        context.lineTo(5, 25);
-
-        // Fuselage central line
-        context.moveTo(0, -20);
-        context.lineTo(0, 30);
 
         context.stroke();
 
