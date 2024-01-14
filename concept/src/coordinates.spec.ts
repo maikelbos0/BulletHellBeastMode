@@ -1,5 +1,5 @@
-import { Coordinates } from '../src/coordinates';
-import { Velocity } from '../src/velocity';
+import { Coordinates } from './coordinates';
+import { Velocity } from './velocity';
 
 describe('Coordinate', () => {
     it.each([

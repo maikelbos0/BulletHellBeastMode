@@ -1,5 +1,5 @@
-import { Acceleration } from '../src/acceleration';
-import { Velocity } from '../src/velocity';
+import { Acceleration } from './acceleration';
+import { Velocity } from './velocity';
 
 describe('Velocity', () => {
     it.each([

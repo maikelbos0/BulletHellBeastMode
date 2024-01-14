@@ -1,4 +1,4 @@
-import { Vector } from '../src/vector';
+import { Vector } from './vector';
 
 describe('Vector', () => {
     it.each([

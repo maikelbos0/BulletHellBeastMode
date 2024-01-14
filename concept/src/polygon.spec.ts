@@ -1,6 +1,5 @@
-import { Coordinates } from '../src/coordinates';
-import { Polygon } from '../src/polygon';
-import { Anchor } from '../src/anchor';
+import { Coordinates } from './coordinates';
+import { Polygon } from './polygon';
 
 describe('Polygon', () => {
     it.each([

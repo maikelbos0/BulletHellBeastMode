@@ -1,4 +1,4 @@
-import { Background } from '../src/background';
+import { Background } from './background';
 
 describe('Background', () => {
     test('constructor()', () => {

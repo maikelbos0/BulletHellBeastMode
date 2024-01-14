@@ -1,7 +1,7 @@
-import { Coordinates } from '../src/coordinates';
-import { Direction } from '../src/direction';
-import { Ship } from '../src/ship';
-import { Velocity } from '../src/velocity';
+import { Coordinates } from './coordinates';
+import { Direction } from './direction';
+import { Ship } from './ship';
+import { Velocity } from './velocity';
 
 describe('Ship', () => {
     it.each([

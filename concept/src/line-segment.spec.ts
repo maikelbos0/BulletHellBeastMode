@@ -1,5 +1,5 @@
-import { Coordinates } from '../src/coordinates';
-import { LineSegment } from '../src/line-segment';
+import { Coordinates } from './coordinates';
+import { LineSegment } from './line-segment';
 
 describe('LineSegment', () => {
     it.each([

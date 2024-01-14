@@ -1,5 +1,5 @@
-import { Coordinates } from '../src/coordinates';
-import { Game } from '../src/game';
+import { Coordinates } from './coordinates';
+import { Game } from './game';
 
 describe('Game', () => {
     test('constructor()', () => {
