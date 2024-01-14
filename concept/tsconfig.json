@@ -2,7 +2,7 @@
     "compilerOptions": {
       "target": "es6",
       "sourceMap": true,
-      "outDir": "src/js",
+      "outDir": "dist",
       "moduleResolution": "node",
       "strict": true,
       "esModuleInterop": true
