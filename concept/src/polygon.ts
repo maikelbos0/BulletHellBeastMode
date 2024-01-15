@@ -42,12 +42,28 @@ export class Polygon {
         this.centerPoint = new Coordinates(this.centerPoint.x / coordinateCount, this.centerPoint.y / coordinateCount);
     }
 
-    render(context: CanvasRenderingContext2D): void {
-        const startingCoordinates = this.coordinates[this.coordinates.length - 1];
+    render(context: CanvasRenderingContext2D, deadForDuration: number | undefined): void {
+
+        const startingCoordinates = this.transformCoordinates(this.coordinates[this.coordinates.length - 1], deadForDuration);
         context.moveTo(startingCoordinates.x, startingCoordinates.y);
 
         this.coordinates.forEach(coordinates => {
-            context.lineTo(coordinates.x, coordinates.y);
+            const transformedCoordinates = this.transformCoordinates(coordinates, deadForDuration);
+            context.lineTo(transformedCoordinates.x, transformedCoordinates.y);
         });
+    }
+
+    transformCoordinates(coordinates: Coordinates, deadForDuration: number | undefined): Coordinates {
+        if (deadForDuration === undefined) {
+            return coordinates;
+        }
+
+        const scale = 1 / (1 + deadForDuration);
+        const driftSpeed = Math.sqrt(deadForDuration) * 5;
+
+        return new Coordinates(
+            scale * coordinates.x + driftSpeed * this.centerPoint.x,
+            scale * coordinates.y + driftSpeed * this.centerPoint.y
+        );
     }
 }

@@ -13,6 +13,7 @@ export class Ship implements Renderable, Anchor {
 
     position: Coordinates;
     velocity: Velocity;
+    deadForDuration: number | undefined;
     polygons: Polygon[] = [
         // Back left wing
         new Polygon(
@@ -91,7 +92,7 @@ export class Ship implements Renderable, Anchor {
             new Coordinates(10, 5)
         )
     ];
-    
+
     constructor(startingPosition: Coordinates) {
         this.position = startingPosition;
         this.velocity = new Velocity(0, 0);
@@ -180,20 +181,25 @@ export class Ship implements Renderable, Anchor {
 
     processFrame(duration: number): void {
         this.position = this.position.move(this.velocity, duration);
-        this.position = new Coordinates(Math.max(0, Math.min(Game.width, this.position.x)), Math.max(0, Math.min(Game.height, this.position.y))); 
+        this.position = new Coordinates(Math.max(0, Math.min(Game.width, this.position.x)), Math.max(0, Math.min(Game.height, this.position.y)));
+
+        if (this.deadForDuration !== undefined) {
+            this.deadForDuration += duration;
+        }
     }
 
+    // Probably this can live inside renderable/anchor
     render(context: CanvasRenderingContext2D): void {
+        if (this.deadForDuration !== undefined && this.deadForDuration > Game.deathAnimationDuration) {
+            return;
+        }
+
         context.beginPath();
-        context.strokeStyle = "#ffffff";
+        context.strokeStyle = `rgba(255, 255, 255, ${(Game.deathAnimationDuration - (this.deadForDuration ?? 0)) / Game.deathAnimationDuration})`;
         context.lineWidth = 2;
+        context.transform(1, 0, 0, 1, this.position.x, this.position.y);
 
-        context.setTransform({
-            e: this.position.x,
-            f: this.position.y
-        });
-
-        this.polygons.forEach(polygon => polygon.render(context));
+        this.polygons.forEach(polygon => polygon.render(context, this.deadForDuration));
 
         context.stroke();
 

@@ -36,6 +36,9 @@
             if (keyMap.hasOwnProperty(e.keyCode)) {
                 direction |= keyMap[e.keyCode];
             }
+            if (e.key === 'x') {
+                game.ship.deadForDuration = 0;
+            }
         });
         window.addEventListener('keyup', e => {
             if (keyMap.hasOwnProperty(e.keyCode)) {
