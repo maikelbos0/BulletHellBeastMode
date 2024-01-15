@@ -1,20 +1,19 @@
 import { Anchor } from './anchor.js';
+import { Color } from './color.js';
 import { Coordinates } from './coordinates.js';
 import { Direction } from './direction.js';
 import { Game } from './game.js';
 import { Polygon } from './polygon.js';
-import { Renderable } from './renderable.js';
+import { RenderableObject } from './renderable-object.js';
 import { Velocity } from './velocity.js';
 
-export class Ship implements Renderable, Anchor {
+export class Ship extends RenderableObject implements Anchor {
     static readonly maximumSpeed: number = 1000;
     static readonly maximumAcceleration: number = 2000;
     static readonly stoppingDistance: number = Ship.maximumAcceleration / 2 * Math.pow(Ship.maximumSpeed / Ship.maximumAcceleration, 2);
 
-    position: Coordinates;
-    velocity: Velocity;
-    deadForDuration: number | undefined;
-    polygons: Polygon[] = [
+    readonly color: Color = new Color(255, 255, 255);
+    readonly polygons: Polygon[] = [
         // Back left wing
         new Polygon(
             this,
@@ -92,9 +91,11 @@ export class Ship implements Renderable, Anchor {
             new Coordinates(10, 5)
         )
     ];
+    
+    velocity: Velocity;
 
     constructor(startingPosition: Coordinates) {
-        this.position = startingPosition;
+        super(startingPosition);
         this.velocity = new Velocity(0, 0);
     }
 
@@ -179,30 +180,8 @@ export class Ship implements Renderable, Anchor {
         this.velocity = this.adjustVelocityToBounds(this.velocity.accelerate(acceleration, duration).limitMagnitude(Ship.maximumSpeed));
     }
 
-    processFrame(duration: number): void {
+    processFrameTransform(duration: number): void {
         this.position = this.position.move(this.velocity, duration);
         this.position = new Coordinates(Math.max(0, Math.min(Game.width, this.position.x)), Math.max(0, Math.min(Game.height, this.position.y)));
-
-        if (this.deadForDuration !== undefined) {
-            this.deadForDuration += duration;
-        }
-    }
-
-    // Probably this can live inside renderable/anchor
-    render(context: CanvasRenderingContext2D): void {
-        if (this.deadForDuration !== undefined && this.deadForDuration > Game.deathAnimationDuration) {
-            return;
-        }
-
-        context.beginPath();
-        context.strokeStyle = `rgba(255, 255, 255, ${(Game.deathAnimationDuration - (this.deadForDuration ?? 0)) / Game.deathAnimationDuration})`;
-        context.lineWidth = 2;
-        context.transform(1, 0, 0, 1, this.position.x, this.position.y);
-
-        this.polygons.forEach(polygon => polygon.render(context, this.deadForDuration));
-
-        context.stroke();
-
-        context.resetTransform();
     }
 }

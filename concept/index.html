@@ -37,7 +37,7 @@
                 direction |= keyMap[e.keyCode];
             }
             if (e.key === 'x') {
-                game.ship.deadForDuration = 0;
+                game.ship.kill();
             }
         });
         window.addEventListener('keyup', e => {
