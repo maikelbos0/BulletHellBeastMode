@@ -5,6 +5,7 @@ import { LineSegment } from './line-segment.js';
 export class Polygon {
     readonly anchor: Anchor;
     readonly coordinates: Coordinates[];
+    readonly centerPoint: Coordinates;
 
     constructor(anchor: Anchor, ...coordinates: Coordinates[]) {
         const coordinateCount = coordinates.length;
@@ -37,6 +38,8 @@ export class Polygon {
 
         this.anchor = anchor;
         this.coordinates = coordinates;
+        this.centerPoint = coordinates.reduce((c, coordinates) => c.add(coordinates), new Coordinates(0, 0));
+        this.centerPoint = new Coordinates(this.centerPoint.x / coordinateCount, this.centerPoint.y / coordinateCount);
     }
 
     render(context: CanvasRenderingContext2D): void {
