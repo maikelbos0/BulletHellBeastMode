@@ -7,7 +7,7 @@ export class Polygon {
     readonly coordinates: Coordinates[];
     readonly centerPoint: Coordinates;
 
-    constructor(renderableObject: RenderableObject, ...coordinates: Coordinates[]) {
+    constructor(...coordinates: Coordinates[]) {
         const coordinateCount = coordinates.length;
 
         if (coordinateCount < 3) {
@@ -36,7 +36,6 @@ export class Polygon {
             }
         }
 
-        this.renderableObject = renderableObject;
         this.coordinates = coordinates;
         this.centerPoint = coordinates.reduce((c, coordinates) => c.add(coordinates), new Coordinates(0, 0));
         this.centerPoint = new Coordinates(this.centerPoint.x / coordinateCount, this.centerPoint.y / coordinateCount);

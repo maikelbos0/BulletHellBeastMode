@@ -16,14 +16,12 @@ export class Ship extends RenderableObject {
     readonly polygons: Polygon[] = [
         // Back left wing
         new Polygon(
-            this,
             new Coordinates(-30, 25),
             new Coordinates(-20, 20),
             new Coordinates(-20, -10)
         ),
         // Front left wing
         new Polygon(
-            this,
             new Coordinates(-20, -30),
             new Coordinates(-20, -10),
             new Coordinates(-30, 25),
@@ -31,7 +29,6 @@ export class Ship extends RenderableObject {
         ),
         // Left spar
         new Polygon(
-            this,
             new Coordinates(-20, 10),
             new Coordinates(-5, 25),
             new Coordinates(-10, 5),
@@ -39,14 +36,12 @@ export class Ship extends RenderableObject {
         ),
         // Front left fuselage
         new Polygon(
-            this,
             new Coordinates(-10, 5),
             new Coordinates(0, 10),
             new Coordinates(0, -20),
         ),
         // Back left fuselage
         new Polygon(
-            this,
             new Coordinates(-5, 25),
             new Coordinates(0, 30),
             new Coordinates(0, 10),
@@ -54,14 +49,12 @@ export class Ship extends RenderableObject {
         ),
         // Back right wing
         new Polygon(
-            this,
             new Coordinates(30, 25),
             new Coordinates(20, 20),
             new Coordinates(20, -10)
         ),
         // Front right wing
         new Polygon(
-            this,
             new Coordinates(20, -30),
             new Coordinates(20, -10),
             new Coordinates(30, 25),
@@ -69,7 +62,6 @@ export class Ship extends RenderableObject {
         ),
         // Right spar
         new Polygon(
-            this,
             new Coordinates(20, 10),
             new Coordinates(5, 25),
             new Coordinates(10, 5),
@@ -77,14 +69,12 @@ export class Ship extends RenderableObject {
         ),
         // Front right fuselage
         new Polygon(
-            this,
             new Coordinates(10, 5),
             new Coordinates(0, 10),
             new Coordinates(0, -20),
         ),
         // Back right fuselage
         new Polygon(
-            this,
             new Coordinates(5, 25),
             new Coordinates(0, 30),
             new Coordinates(0, 10),
