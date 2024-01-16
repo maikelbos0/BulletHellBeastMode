@@ -1,4 +1,3 @@
-import { Anchor } from './anchor.js';
 import { Color } from './color.js';
 import { Coordinates } from './coordinates.js';
 import { Direction } from './direction.js';
@@ -7,12 +6,13 @@ import { Polygon } from './polygon.js';
 import { RenderableObject } from './renderable-object.js';
 import { Velocity } from './velocity.js';
 
-export class Ship extends RenderableObject implements Anchor {
+export class Ship extends RenderableObject {
     static readonly maximumSpeed: number = 1000;
     static readonly maximumAcceleration: number = 2000;
     static readonly stoppingDistance: number = Ship.maximumAcceleration / 2 * Math.pow(Ship.maximumSpeed / Ship.maximumAcceleration, 2);
 
     readonly color: Color = new Color(255, 255, 255);
+
     readonly polygons: Polygon[] = [
         // Back left wing
         new Polygon(
@@ -91,12 +91,11 @@ export class Ship extends RenderableObject implements Anchor {
             new Coordinates(10, 5)
         )
     ];
-    
-    velocity: Velocity;
+
+    velocity: Velocity = new Velocity(0, 0);
 
     constructor(startingPosition: Coordinates) {
         super(startingPosition);
-        this.velocity = new Velocity(0, 0);
     }
 
     getDirectionalVelocity(direction: Direction): Velocity {

@@ -1,5 +1,6 @@
 import { Coordinates } from './coordinates';
 import { Polygon } from './polygon';
+import { RenderableTestObject } from '../test/renderable-test-object';
 
 describe('Polygon', () => {
     it.each([
@@ -7,32 +8,30 @@ describe('Polygon', () => {
         [[new Coordinates(-100, -100), new Coordinates(-100, 100), new Coordinates(100, 100), new Coordinates(100, -100)], new Coordinates(0, 0)],
         [[new Coordinates(100, 100), new Coordinates(200, 100), new Coordinates(200, 150), new Coordinates(100, 350)], new Coordinates(150, 175)]
     ])('constructor() coordinates: %j', (coordinates: Coordinates[], centerPoint: Coordinates) => {
-        const anchor = { position: new Coordinates(100, 100), polygons: new Array<Polygon>() };
-        const subject = new Polygon(anchor, ...coordinates);
+        const renderableObject = new RenderableTestObject();
+        const subject = new Polygon(renderableObject, ...coordinates);
 
-        expect(subject.anchor).toEqual(anchor);
+        expect(subject.renderableObject).toEqual(renderableObject);
         expect(subject.coordinates).toEqual(coordinates);
         expect(subject.centerPoint).toEqual(centerPoint);
     });
 
     test('constructor() requires 3 coordinates', () => {
-        const anchor = { position: new Coordinates(100, 100), polygons: new Array<Polygon>() };
-        const t = () => {
-            const subject = new Polygon(anchor);
+        const action = () => {
+            const subject = new Polygon(new RenderableTestObject());
           };
 
-          expect(t).toThrow();
+          expect(action).toThrow();
     });
 
     it.each([
         [[new Coordinates(-100, -100), new Coordinates(-100, 100), new Coordinates(-90, -90), new Coordinates(100, -100)]],
         [[new Coordinates(-100, -100), new Coordinates(100, -100), new Coordinates(-90, -90), new Coordinates(-100, 100)]]
     ])('constructor() requires a convex polygon; coordinates: %j', (coordinates: Coordinates[]) => {
-        const anchor = { position: new Coordinates(100, 100), polygons: new Array<Polygon>() };
-        const t = () => {
-            const subject = new Polygon(anchor);
+        const action = () => {
+            const subject = new Polygon(new RenderableTestObject());
         };
 
-        expect(t).toThrow();
+        expect(action).toThrow();
     });
 });

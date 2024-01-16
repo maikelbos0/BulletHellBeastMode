@@ -1,13 +1,13 @@
-import { Anchor } from './anchor.js';
+import { RenderableObject } from './renderable-object.js';
 import { Coordinates } from './coordinates.js';
 import { LineSegment } from './line-segment.js';
 
 export class Polygon {
-    readonly anchor: Anchor;
+    readonly renderableObject: RenderableObject;
     readonly coordinates: Coordinates[];
     readonly centerPoint: Coordinates;
 
-    constructor(anchor: Anchor, ...coordinates: Coordinates[]) {
+    constructor(renderableObject: RenderableObject, ...coordinates: Coordinates[]) {
         const coordinateCount = coordinates.length;
 
         if (coordinateCount < 3) {
@@ -36,7 +36,7 @@ export class Polygon {
             }
         }
 
-        this.anchor = anchor;
+        this.renderableObject = renderableObject;
         this.coordinates = coordinates;
         this.centerPoint = coordinates.reduce((c, coordinates) => c.add(coordinates), new Coordinates(0, 0));
         this.centerPoint = new Coordinates(this.centerPoint.x / coordinateCount, this.centerPoint.y / coordinateCount);

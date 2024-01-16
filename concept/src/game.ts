@@ -4,7 +4,6 @@ import { Renderable } from './renderable.js';
 import { Ship } from './ship.js';
 
 export class Game {
-    static readonly deathAnimationDuration: number = 2;
     static readonly width: number = 1000;
     static readonly height: number = 1000;
 
