@@ -1,4 +1,3 @@
-import { RenderableObject } from './renderable-object.js';
 import { Coordinates } from './coordinates.js';
 import { LineSegment } from './line-segment.js';
 
@@ -23,6 +22,13 @@ export class Polygon {
 
             midPoints.push(new Coordinates((a.x + b.x) / 2, (a.y + b.y) / 2));
             sides.push(new LineSegment(a, b));
+
+            for (let j = i + 1; j < coordinateCount; j++) {
+                // TODO add equals method?
+                if (a.x === coordinates[j].x && a.y === coordinates[j].y) {
+                    throw new Error("Polygon must be convex");
+                }
+            }
         }
 
         for (let i = 0; i < midPoints.length - 1; i++) {
@@ -30,7 +36,7 @@ export class Polygon {
                 let c = midPoints[i];
                 let d = midPoints[j];
 
-                if (sides.reduce((n, side) => side.intersectsLine(c, d) ? n + 1 : n, 0) > 2) {
+                if (sides.filter(side => side.intersectsLine(c, d)).length > 2) {
                     throw new Error("Polygon must be convex");
                 }
             }
@@ -38,6 +44,7 @@ export class Polygon {
 
         this.coordinates = coordinates;
         this.centerPoint = coordinates.reduce((c, coordinates) => c.add(coordinates), new Coordinates(0, 0));
+        // TODO add divide operator?
         this.centerPoint = new Coordinates(this.centerPoint.x / coordinateCount, this.centerPoint.y / coordinateCount);
     }
 

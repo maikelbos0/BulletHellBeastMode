@@ -16,9 +16,17 @@ describe('Polygon', () => {
     test('constructor() requires 3 coordinates', () => {
         const action = () => {
             const subject = new Polygon(new Coordinates(0, 0), new Coordinates(100, 100));
-          };
+        };
 
-          expect(action).toThrow();
+        expect(action).toThrow();
+    });
+
+    test('constructor() requires unique coordinates', () => {
+        const action = () => {
+            const subject = new Polygon(new Coordinates(0, 0), new Coordinates(100, 100), new Coordinates(200, 200), new Coordinates(100, 100));
+        };
+
+        expect(action).toThrow();
     });
 
     it.each([
