@@ -15,7 +15,7 @@ describe('Polygon', () => {
 
     test('constructor() requires 3 coordinates', () => {
         const action = () => {
-            const subject = new Polygon();
+            const subject = new Polygon(new Coordinates(0, 0), new Coordinates(100, 100));
           };
 
           expect(action).toThrow();
@@ -26,7 +26,7 @@ describe('Polygon', () => {
         [[new Coordinates(-100, -100), new Coordinates(100, -100), new Coordinates(-90, -90), new Coordinates(-100, 100)]]
     ])('constructor() requires a convex polygon; coordinates: %j', (coordinates: Coordinates[]) => {
         const action = () => {
-            const subject = new Polygon();
+            const subject = new Polygon(...coordinates);
         };
 
         expect(action).toThrow();
