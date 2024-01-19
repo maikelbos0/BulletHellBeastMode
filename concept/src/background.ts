@@ -1,7 +1,7 @@
 import { Renderable } from "./renderable.js";
 import { Game } from "./game.js";
 import { RenderingContext } from "./rendering-context.js";
-import { GradientStyle } from "./draw-style.js";
+import { Gradient } from "./gradient.js";
 import { Color } from "./color.js";
 
 export class Background implements Renderable {
@@ -26,7 +26,7 @@ export class Background implements Renderable {
 
     render(context: RenderingContext): void {
         for (var i = -1; i < Background.lineCount; i++) {
-            const gradient = new GradientStyle(0, this.offset + i * this.lineHeight, 0, this.offset + (i + 1) * this.lineHeight);
+            const gradient = new Gradient(0, this.offset + i * this.lineHeight, 0, this.offset + (i + 1) * this.lineHeight);
 
             gradient.addColorStop(0.5, new Color(0, 0, 0));
             gradient.addColorStop(1, new Color(0, 102, 204));
