@@ -2,6 +2,8 @@ import { Coordinates } from "./coordinates.js";
 import { Polygon } from "./polygon.js";
 import { Renderable } from "./renderable.js";
 import { Color } from "./color.js";
+import { RenderingContext } from "./rendering-context.js";
+import { Color2 } from "./draw-style.js";
 
 export abstract class RenderableObject implements Renderable {
     static readonly deathAnimationDuration: number = 2;
@@ -17,6 +19,8 @@ export abstract class RenderableObject implements Renderable {
         this.position = startingPosition;
     }
 
+    // TODO add tests
+
     processFrame(duration: number): void {
         if (this.deadForDuration !== undefined) {
             this.deadForDuration += duration;
@@ -27,22 +31,20 @@ export abstract class RenderableObject implements Renderable {
 
     abstract processFrameTransform(duration: number): void;
 
-    // TODO introduce mockable context
-    render(context: CanvasRenderingContext2D): void {
+    render(context: RenderingContext): void {
         if (this.deadForDuration !== undefined && this.deadForDuration > RenderableObject.deathAnimationDuration) {
             return;
         }
 
-        context.beginPath();
-        context.strokeStyle = this.color.toRgba((RenderableObject.deathAnimationDuration - (this.deadForDuration ?? 0)) / RenderableObject.deathAnimationDuration);
-        context.lineWidth = 2;
-        context.transform(1, 0, 0, 1, this.position.x, this.position.y);
+        context.translate(() => {
+            context.path(() => {
+                this.polygons.forEach(polygon => polygon.render(context, this.deadForDuration));
+            },
+            {
+                stroke: new Color2(this.color.r, this.color.g, this.color.b, (RenderableObject.deathAnimationDuration - (this.deadForDuration ?? 0)) / RenderableObject.deathAnimationDuration)
+            });
 
-        this.polygons.forEach(polygon => polygon.render(context, this.deadForDuration));
-
-        context.stroke();
-
-        context.resetTransform();
+        }, this.position.x, this.position.y);
     }
 
     kill(): void {

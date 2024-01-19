@@ -13,12 +13,13 @@
         import { Coordinates } from './dist/coordinates.js';
         import { Direction } from './dist/direction.js';
         import { Game } from './dist/game.js';
+        import { RenderingContext } from './dist/rendering-context.js';
 
         // TODO send telemetry every X time so that server can verify distance travelled, check current hitbox, etc
         const maximumFrameRate = 1000;
         const canvas = document.getElementById("game");
         const context = canvas.getContext("2d");
-        const game = new Game();
+        const game = new Game(new RenderingContext(context));
         const keyMap = {
             37: Direction.Left,
             38: Direction.Up,
@@ -26,11 +27,13 @@
             40: Direction.Down
         }
 
+        let previousTimestamp;
         let direction = Direction.None;
         let desiredPosition = null;
 
         canvas.width = Game.width;
         canvas.height = Game.height;
+        context.globalCompositeOperation = "destination-over";
 
         window.addEventListener('keydown', e => {
             if (keyMap.hasOwnProperty(e.keyCode)) {
@@ -59,16 +62,12 @@
             desiredPosition = null;
         });
 
-        let previousTimestamp;
-
-        context.globalCompositeOperation = "destination-over";
-
         function draw(timestamp) {
             let duration = (timestamp - previousTimestamp) / 1000;
 
             if (duration > 1 / maximumFrameRate) {
                 game.ship.processInput(direction, desiredPosition, duration);
-                game.renderFrame(context, duration);
+                game.renderFrame(duration);
 
                 previousTimestamp = timestamp;
             }

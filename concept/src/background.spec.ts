@@ -21,4 +21,6 @@ describe('Background', () => {
 
         expect(subject.offset).toEqual(expectedOffset);
     })
+
+    // TODO expand tests for rendering
 });

@@ -1,5 +1,7 @@
+import { RenderingContext } from "./rendering-context";
+
 export interface Renderable {
-    render(context: CanvasRenderingContext2D): void;
+    render(context: RenderingContext): void;
 
     processFrame(duration: number): void;
 }

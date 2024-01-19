@@ -1,8 +1,8 @@
 import { Coordinates } from './coordinates.js';
 import { LineSegment } from './line-segment.js';
+import { RenderingContext } from './rendering-context.js';
 
 export class Polygon {
-    readonly renderableObject: RenderableObject;
     readonly coordinates: Coordinates[];
     readonly centerPoint: Coordinates;
 
@@ -48,7 +48,7 @@ export class Polygon {
         this.centerPoint = new Coordinates(this.centerPoint.x / coordinateCount, this.centerPoint.y / coordinateCount);
     }
 
-    render(context: CanvasRenderingContext2D, deadForDuration: number | undefined): void {
+    render(context: RenderingContext, deadForDuration: number | undefined): void {
 
         const startingCoordinates = this.transformCoordinates(this.coordinates[this.coordinates.length - 1], deadForDuration);
         context.moveTo(startingCoordinates.x, startingCoordinates.y);
