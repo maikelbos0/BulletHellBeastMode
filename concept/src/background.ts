@@ -1,7 +1,8 @@
 import { Renderable } from "./renderable.js";
 import { Game } from "./game.js";
 import { RenderingContext } from "./rendering-context.js";
-import { Color, GradientStyle } from "./draw-style.js";
+import { GradientStyle } from "./draw-style.js";
+import { Color } from "./color.js";
 
 export class Background implements Renderable {
     static readonly speed: number = 200;

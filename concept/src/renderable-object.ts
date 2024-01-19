@@ -2,7 +2,7 @@ import { Coordinates } from "./coordinates.js";
 import { Polygon } from "./polygon.js";
 import { Renderable } from "./renderable.js";
 import { RenderingContext } from "./rendering-context.js";
-import { Color } from "./draw-style.js";
+import { Color } from "./color.js";
 
 export abstract class RenderableObject implements Renderable {
     static readonly deathAnimationDuration: number = 2;

@@ -1,4 +1,7 @@
 // TODO split files
+
+import { Color } from "./color.js";
+
 // TODO add tests
 export abstract class DrawStyle {
     abstract toCanvasStyle(context: CanvasRenderingContext2D): string | CanvasGradient | CanvasPattern;
@@ -21,19 +24,5 @@ export class GradientStyle extends DrawStyle {
         this.colorStops.forEach((color, offset) => gradient.addColorStop(offset, color.toCanvasStyle(context)));
 
         return gradient;
-    }
-}
-
-export class Color extends DrawStyle {
-    constructor(public readonly r: number, public readonly g: number, public readonly b: number, public readonly a: number = 1) {
-        super();
-    }
-
-    withAlpha(a: number) {
-        return new Color(this.r, this.g, this.b, a);
-    }
-
-    toCanvasStyle(context: CanvasRenderingContext2D): string {
-        return `rgba(${this.r}, ${this.g}, ${this.b}, ${this.a})`;
     }
 }
