@@ -1,6 +1,6 @@
-import { Color } from './color.js';
 import { Coordinates } from './coordinates.js';
 import { Direction } from './direction.js';
+import { Color } from './draw-style.js';
 import { Game } from './game.js';
 import { Polygon } from './polygon.js';
 import { RenderableObject } from './renderable-object.js';

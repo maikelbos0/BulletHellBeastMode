@@ -1,9 +1,8 @@
 import { Coordinates } from "./coordinates.js";
 import { Polygon } from "./polygon.js";
 import { Renderable } from "./renderable.js";
-import { Color } from "./color.js";
 import { RenderingContext } from "./rendering-context.js";
-import { Color2 } from "./draw-style.js";
+import { Color } from "./draw-style.js";
 
 export abstract class RenderableObject implements Renderable {
     static readonly deathAnimationDuration: number = 2;
@@ -41,7 +40,7 @@ export abstract class RenderableObject implements Renderable {
                 this.polygons.forEach(polygon => polygon.render(context, this.deadForDuration));
             },
             {
-                stroke: new Color2(this.color.r, this.color.g, this.color.b, (RenderableObject.deathAnimationDuration - (this.deadForDuration ?? 0)) / RenderableObject.deathAnimationDuration)
+                stroke: this.color.withAlpha((RenderableObject.deathAnimationDuration - (this.deadForDuration ?? 0)) / RenderableObject.deathAnimationDuration)
             });
 
         }, this.position.x, this.position.y);
