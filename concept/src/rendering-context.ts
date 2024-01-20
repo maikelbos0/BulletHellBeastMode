@@ -1,4 +1,4 @@
-import { DrawStyle } from "./draw-style.js";
+import { RenderingOptions } from "./rendering-options.js";
 
 export class RenderingContext {
     constructor(private context: CanvasRenderingContext2D) { }
@@ -12,7 +12,7 @@ export class RenderingContext {
         this.context.restore();
     }
 
-    path(func: () => void, options: Options): void {
+    path(func: () => void, options: RenderingOptions): void {
         this.context.save();
         this.context.beginPath();
 
@@ -40,7 +40,7 @@ export class RenderingContext {
         this.context.lineTo(x, y);
     }
 
-    rectangle(x: number, y: number, width: number, height: number, options: Options) {
+    rectangle(x: number, y: number, width: number, height: number, options: RenderingOptions) {
         this.context.save();
 
         if (options.stroke) {
@@ -60,10 +60,4 @@ export class RenderingContext {
     clearRectangle(x: number, y: number, width: number, height: number): void {
         this.context.clearRect(x, y, width, height);
     }
-}
-
-// TODO own file
-export interface Options {
-    fill?: DrawStyle;
-    stroke?: DrawStyle;
 }
