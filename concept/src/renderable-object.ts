@@ -7,18 +7,14 @@ import { Color } from "./color.js";
 export abstract class RenderableObject implements Renderable {
     static readonly deathAnimationDuration: number = 2;
 
-    private deadForDuration: number | undefined;
-
-    abstract readonly polygons: Polygon[];
-    abstract readonly color: Color;
-
+    deadForDuration: number | undefined;
     position: Coordinates;
+    abstract polygons: Polygon[];
+    abstract color: Color;
 
     constructor(startingPosition: Coordinates) {
         this.position = startingPosition;
     }
-
-    // TODO add tests
 
     processFrame(duration: number): void {
         if (this.deadForDuration !== undefined) {
