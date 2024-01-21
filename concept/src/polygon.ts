@@ -24,8 +24,7 @@ export class Polygon {
             sides.push(new LineSegment(a, b));
 
             for (let j = i + 1; j < coordinateCount; j++) {
-                // TODO add equals method?
-                if (a.x === coordinates[j].x && a.y === coordinates[j].y) {
+                if (a.equals(coordinates[j])) {
                     throw new Error("Polygon must be convex");
                 }
             }
@@ -43,9 +42,7 @@ export class Polygon {
         }
 
         this.coordinates = coordinates;
-        this.centerPoint = coordinates.reduce((c, coordinates) => c.add(coordinates), new Coordinates(0, 0));
-        // TODO add divide operator?
-        this.centerPoint = new Coordinates(this.centerPoint.x / coordinateCount, this.centerPoint.y / coordinateCount);
+        this.centerPoint = coordinates.reduce((c, coordinates) => c.add(coordinates), new Coordinates(0, 0)).divide(coordinateCount);
     }
 
     render(context: RenderingContext, deadForDuration: number | undefined): void {

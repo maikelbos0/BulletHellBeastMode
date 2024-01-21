@@ -14,6 +14,17 @@ describe('Vector', () => {
     });
 
     it.each([
+        [new Vector(100, 200), new Vector(100, 200), true],
+        [new Vector(100, 200), new Vector(100, 100), false],
+        [new Vector(100, 200), new Vector(200, 200), false],
+        [new Vector(100, 200), new Vector(200, 100), false]
+    ])('equals() subject %p, vector %p, expectedResult: %p', (subject: Vector, vector: Vector, expectedResult: boolean) => {
+        const result = subject.equals(vector);
+
+        expect(result).toBe(expectedResult);
+    });
+
+    it.each([
         [new Vector(0, 0), false],
         [new Vector(4, 0), true],
         [new Vector(0, 3), true],
@@ -69,6 +80,16 @@ describe('Vector', () => {
         [new Vector(10, 10), new Vector(-3, -4), new Vector(13, 14)]
     ])('subtract() subject: %p, vector: %p, expectedResult: %p', (subject: Vector, vector: Vector, expectedResult: Vector) => {
         const result = subject.subtract(vector);
+
+        expect(result).toEqual(expectedResult);
+    });
+
+    it.each([
+        [new Vector(10, 20), 2, new Vector(5, 10)],
+        [new Vector(10, 20), 0.5, new Vector(20, 40)],
+        [new Vector(10, 20), -2, new Vector(-5, -10)]
+    ])('divide() subject: %p, divisor: %p, expectedResult: %p', (subject: Vector, divisor: number, expectedResult: Vector) => {
+        const result = subject.divide(divisor);
 
         expect(result).toEqual(expectedResult);
     });

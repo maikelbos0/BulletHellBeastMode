@@ -13,6 +13,10 @@ export class Vector {
         return Math.round(value * Math.pow(10, Vector.precision)) / Math.pow(10, Vector.precision);
     }
 
+    equals(vector: this): boolean {
+        return this.x === vector.x && this.y === vector.y;
+    }
+
     hasMagnitude(): boolean {
         return this.x != 0 || this.y != 0;
     }
@@ -47,7 +51,9 @@ export class Vector {
         return new (this.constructor as any)(this.x - vector.x, this.y - vector.y);
     }
 
-    dotProduct(vector: Vector): number {
+    divide(divisor: number): this {
+        return new (this.constructor as any)(this.x / divisor, this.y / divisor);
+    }
         return this.x * vector.x + this.y * vector.y;
     }
 }
