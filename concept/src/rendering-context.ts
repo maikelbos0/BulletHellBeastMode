@@ -1,11 +1,23 @@
+import { Transformation } from "./transformation.js";
 import { RenderingOptions } from "./rendering-options.js";
 
 export class RenderingContext {
     constructor(private context: CanvasRenderingContext2D) { }
 
+    transform(func: () => void, ...transformations: Transformation[]) {
+        this.context.save();
+
+        transformations.forEach(transformation => transformation.transform(this.context));
+
+        func();
+
+        this.context.restore();
+    }
+
+    // TODO remove?
     translate(func: () => void, x: number, y: number): void {
         this.context.save();
-        this.context.transform(1, 0, 0, 1, x, y);
+        this.context.translate(x, y);
 
         func();
 
