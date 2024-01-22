@@ -8,7 +8,5 @@ describe('Game', () => {
 
         expect(subject.ship.position).toEqual(new Coordinates(500, 900));
         expect(subject.renderables).toContain(subject.ship);
-
-        // TODO expand tests for rendering, background?
     });
 });

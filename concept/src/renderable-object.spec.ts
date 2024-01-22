@@ -2,7 +2,6 @@ import { Color } from './color';
 import { Coordinates } from './coordinates';
 import { Polygon } from './polygon';
 import { RenderableObject } from './renderable-object'
-import { RenderingContext } from './rendering-context';
 import { Any } from '../test/any';
 import { Mock } from '../test/mock';
 
@@ -35,7 +34,7 @@ describe('RenderableObject', () => {
             lineTo: () => { }
         });
 
-        subject.render(renderingContextMock.object as RenderingContext);
+        subject.render(renderingContextMock.object);
 
         renderingContextMock.received('translate', Any.function, 100, 100);
         renderingContextMock.received('path', Any.function, Any.matching({ stroke: Any.matching({ r: 192, g: 255, b: 32, a: 1})}));

@@ -25,48 +25,43 @@ export class RenderingContext {
     }
 
     path(func: () => void, options: RenderingOptions): void {
-        this.context.save();
         this.context.beginPath();
 
         func();
-
-        if (options.stroke) {
-            this.context.strokeStyle = options.stroke.toCanvasStyle(this.context);
-            this.context.lineWidth = 2;
-            this.context.stroke();
-        }
 
         if (options.fill) {
             this.context.fillStyle = options.fill.toCanvasStyle(this.context);
             this.context.fill();
         }
 
-        this.context.restore();
+        if (options.stroke) {
+            this.context.strokeStyle = options.stroke.toCanvasStyle(this.context);
+            this.context.lineWidth = 2;
+            this.context.stroke();
+        }
     }
 
+    // TODO make it accept coordinates?
     moveTo(x: number, y: number): void {
         this.context.moveTo(x, y);
     }
 
+    // TODO make it accept coordinates?
     lineTo(x: number, y: number): void {
         this.context.lineTo(x, y);
     }
 
     rectangle(x: number, y: number, width: number, height: number, options: RenderingOptions) {
-        this.context.save();
+        if (options.fill) {
+            this.context.fillStyle = options.fill.toCanvasStyle(this.context);
+            this.context.fillRect(x, y, width, height);
+        }
 
         if (options.stroke) {
             this.context.strokeStyle = options.stroke.toCanvasStyle(this.context);
             this.context.lineWidth = 2;
             this.context.strokeRect(x, y, width, height);
         }
-
-        if (options.fill) {
-            this.context.fillStyle = options.fill.toCanvasStyle(this.context);
-            this.context.fillRect(x, y, width, height);
-        }
-
-        this.context.restore();
     }
 
     clearRectangle(x: number, y: number, width: number, height: number): void {

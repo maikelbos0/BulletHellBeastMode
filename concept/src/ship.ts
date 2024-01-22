@@ -11,9 +11,8 @@ export class Ship extends RenderableObject {
     static readonly maximumAcceleration: number = 2000;
     static readonly stoppingDistance: number = Ship.maximumAcceleration / 2 * Math.pow(Ship.maximumSpeed / Ship.maximumAcceleration, 2);
 
-    readonly color: Color = new Color(255, 255, 255);
-
-    readonly polygons: Polygon[] = [
+    color: Color = new Color(255, 255, 255);
+    polygons: Polygon[] = [
         // Back left wing
         new Polygon(
             new Coordinates(-30, 25),
@@ -81,12 +80,7 @@ export class Ship extends RenderableObject {
             new Coordinates(10, 5)
         )
     ];
-
     velocity: Velocity = new Velocity(0, 0);
-
-    constructor(startingPosition: Coordinates) {
-        super(startingPosition);
-    }
 
     getDirectionalVelocity(direction: Direction): Velocity {
         let velocity = new Velocity(0, 0);

@@ -43,17 +43,19 @@ export class Vector {
         return new (this.constructor as any)(this.x * factor, this.y * factor);
     }
 
-    add(vector: Vector): this {
+    add(vector: this): this {
         return new (this.constructor as any)(this.x + vector.x, this.y + vector.y);
     }
 
-    subtract(vector: Vector): this {
+    subtract(vector: this): this {
         return new (this.constructor as any)(this.x - vector.x, this.y - vector.y);
     }
 
     divide(divisor: number): this {
         return new (this.constructor as any)(this.x / divisor, this.y / divisor);
     }
+
+    dotProduct(vector: this): number {
         return this.x * vector.x + this.y * vector.y;
     }
 }
