@@ -47,7 +47,10 @@ export class Mock {
         });
 
         if (!pass) {
+            // TODO serialize
             throw new Error(`No matching calls found: ${methodName}(${args.join(', ')});`);
         }
     }
+
+    //didNotReceive()
 }

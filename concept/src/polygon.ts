@@ -51,7 +51,6 @@ export class Polygon {
     }
 
     // TODO perhaps refactor - map coordinates around center point and only add transformations in if, it saves a bunch of math in the render loop
-    // TODO bring under test
     render(context: RenderingContext, deadForDuration: number | undefined): void {
         if (deadForDuration === undefined) {
             context.moveTo(this.coordinates[this.coordinates.length - 1].x, this.coordinates[this.coordinates.length - 1].y);

@@ -1,3 +1,5 @@
+import { Any } from '../test/any';
+import { Mock } from '../test/mock';
 import { Coordinates } from './coordinates';
 import { Polygon } from './polygon';
 
@@ -38,5 +40,56 @@ describe('Polygon', () => {
         };
 
         expect(action).toThrow();
+    });
+
+    test('render() when alive', () => {
+        const subject = new Polygon(
+            new Coordinates(100, 100),
+            new Coordinates(150, 220),
+            new Coordinates(200, 100)
+        );
+
+        const renderingContextMock = new Mock({
+            transform: (func: () => {}) => func(),
+            moveTo: () => { },
+            lineTo: () => { }
+        });
+
+        subject.render(renderingContextMock.object, undefined);
+
+        renderingContextMock.received('moveTo', 200, 100);
+        renderingContextMock.received('lineTo', 100, 100);
+        renderingContextMock.received('lineTo', 150, 220);
+        renderingContextMock.received('lineTo', 200, 100);
+
+        // TODO test did not receive
+    });
+
+    test('render() when dead', () => {
+        const subject = new Polygon(
+            new Coordinates(100, 100),
+            new Coordinates(150, 220),
+            new Coordinates(200, 100)
+        );
+
+        const renderingContextMock = new Mock({
+            transform: (func: () => {}) => func(),
+            moveTo: () => { },
+            lineTo: () => { }
+        });
+
+        subject.render(renderingContextMock.object, 1.5);
+        
+        renderingContextMock.received(
+            'transform',
+            Any.function,
+            Any.matching({ x: (1 + Math.sqrt(1.5) * 5) * 150, y: (1 + Math.sqrt(1.5) * 5) * 140 }),
+            Any.matching({ angle: 1.5 * subject.rotationWhenDead }),
+            Any.matching({ factor: 0.4 })
+        );
+        renderingContextMock.received('moveTo', 50, -40);
+        renderingContextMock.received('lineTo', -50, -40);
+        renderingContextMock.received('lineTo', 0, 80);
+        renderingContextMock.received('lineTo', 50, -40);
     });
 });
