@@ -1,16 +1,46 @@
-export class Transformation {
+export abstract class Transformation {
     // TODO take coordinates?
     public static translate(x: number, y: number): Transformation {
-        return new Transformation(context => context.translate(x, y));
+        return new Translation(x, y);
     }
-
+    
     public static rotate(angle: number): Transformation {
-        return new Transformation(context => context.rotate(angle));
+        return new Rotation(angle);
     }
-
+    
     public static scale(factor: number): Transformation {
-        return new Transformation(context => context.scale(factor, factor));
+        return new Scaling(factor);
     }
 
-    private constructor(public readonly transform: (context: CanvasRenderingContext2D) => void) { }
+    abstract transform(context: CanvasRenderingContext2D): void;
+}
+
+class Translation extends Transformation {
+    constructor(public readonly x: number, public readonly y: number) {
+        super();
+    }
+
+    transform(context: CanvasRenderingContext2D): void {
+        context.translate(this.x, this.y);
+    }
+}
+
+class Rotation extends Transformation {
+    constructor(public readonly angle: number) {
+        super();
+    }
+
+    transform(context: CanvasRenderingContext2D): void {
+        context.rotate(this.angle);
+    }
+}
+
+class Scaling extends Transformation {
+    constructor(public readonly factor: number) {
+        super();
+    }
+
+    transform(context: CanvasRenderingContext2D): void {
+        context.scale(this.factor, this.factor);
+    }
 }

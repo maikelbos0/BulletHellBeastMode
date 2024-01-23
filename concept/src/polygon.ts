@@ -55,7 +55,7 @@ export class Polygon {
     render(context: RenderingContext, deadForDuration: number | undefined): void {
         if (deadForDuration === undefined) {
             context.moveTo(this.coordinates[this.coordinates.length - 1].x, this.coordinates[this.coordinates.length - 1].y);
-    
+
             this.coordinates.forEach(coordinates => {
                 context.lineTo(coordinates.x, coordinates.y);
             });
@@ -64,14 +64,15 @@ export class Polygon {
             // TODO make drift variable
             const drift = 1 + Math.sqrt(deadForDuration) * 5;
 
-            context.transform(() => {
-                const startingCoordinates = this.transformCoordinates(this.coordinates[this.coordinates.length - 1]);
-                context.moveTo(startingCoordinates.x, startingCoordinates.y);
-        
-                this.coordinates.forEach(coordinates => {
-                    const transformedCoordinates = this.transformCoordinates(coordinates);
-                    context.lineTo(transformedCoordinates.x, transformedCoordinates.y);
-                });
+            context.transform
+                (() => {
+                    const startingCoordinates = this.transformCoordinates(this.coordinates[this.coordinates.length - 1]);
+                    context.moveTo(startingCoordinates.x, startingCoordinates.y);
+
+                    this.coordinates.forEach(coordinates => {
+                        const transformedCoordinates = this.transformCoordinates(coordinates);
+                        context.lineTo(transformedCoordinates.x, transformedCoordinates.y);
+                    });
                 },
                 Transformation.translate(drift * this.centerPoint.x, drift * this.centerPoint.y),
                 Transformation.rotate(deadForDuration * this.rotationWhenDead),

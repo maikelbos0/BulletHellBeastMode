@@ -26,9 +26,9 @@ describe('RenderableObject', () => {
     });
 
     test('render()', () => {
-        const subject = new TestRenderableObject(new Coordinates(100, 100));
+        const subject = new TestRenderableObject(new Coordinates(100, 200));
         const renderingContextMock = new Mock({
-            translate: (func: () => {}) => func(),
+            transform: (func: () => {}) => func(),
             path: (func: () => {}) => func(),
             moveTo: () => { },
             lineTo: () => { }
@@ -36,7 +36,7 @@ describe('RenderableObject', () => {
 
         subject.render(renderingContextMock.object);
 
-        renderingContextMock.received('translate', Any.function, 100, 100);
+        renderingContextMock.received('transform', Any.function, Any.matching({x: 100, y: 200}));
         renderingContextMock.received('path', Any.function, Any.matching({ stroke: Any.matching({ r: 192, g: 255, b: 32, a: 1})}));
 
         renderingContextMock.received('moveTo', -30, -30);

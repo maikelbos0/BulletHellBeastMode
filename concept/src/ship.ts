@@ -150,6 +150,7 @@ export class Ship extends RenderableObject {
         return new Velocity(velocity.x * horizontalVelocityAdjustment, velocity.y * verticalVelocityAdjustment);
     }
 
+    // TODO don't process input when dead
     processInput(direction: Direction, desiredPosition: Coordinates | null, duration: number) {
         let desiredVelocity = this.getDirectionalVelocity(direction);
 

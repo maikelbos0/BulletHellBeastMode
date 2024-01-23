@@ -14,16 +14,6 @@ export class RenderingContext {
         this.context.restore();
     }
 
-    // TODO remove?
-    translate(func: () => void, x: number, y: number): void {
-        this.context.save();
-        this.context.translate(x, y);
-
-        func();
-
-        this.context.restore();
-    }
-
     path(func: () => void, options: RenderingOptions): void {
         this.context.beginPath();
 
