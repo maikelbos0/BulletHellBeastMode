@@ -29,8 +29,22 @@ export class Mock {
     }
 
     received(methodName: string, ...args: any[]) {
+        if (this.getMethodCallCount(methodName, args) !== 1) {
+            // TODO serialize
+            throw new Error(`No matching calls found: ${methodName}(${args.join(', ')});`);
+        }
+    }
+
+    didNotReceive(methodName: string, ...args: any[]) {
+        if (this.getMethodCallCount(methodName, args) !== 0) {
+            // TODO serialize
+            throw new Error(`Matching calls found: ${methodName}(${args.join(', ')});`);
+        }
+    }
+
+    getMethodCallCount(methodName: string, args: any[]): number {
         const allReceivedArgs = this.methodCalls.get(methodName);
-        let pass = false;
+        let count = 0;
 
         allReceivedArgs?.forEach((receivedArgs) => {
             if (receivedArgs.length !== args.length) {
@@ -43,14 +57,9 @@ export class Mock {
                 }
             }
 
-            pass = true;
+            count++;
         });
 
-        if (!pass) {
-            // TODO serialize
-            throw new Error(`No matching calls found: ${methodName}(${args.join(', ')});`);
-        }
+        return count;
     }
-
-    //didNotReceive()
 }

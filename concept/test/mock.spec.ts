@@ -48,10 +48,44 @@ describe('Mock', () => {
             }
         });
 
-        subject.object.multiply(2, 3);
+        subject.object.multiply(3, 4);
         
         const action = () => {
             subject.received('multiply', x, y);
+        };
+
+        expect(action).toThrow();
+    });
+
+    it.each([
+        [Any.value, 5],
+        [3, 5],
+    ])('didNotReceive() x: %p, y: %p', (x: any, y: any) => {
+        const subject = new Mock({
+            multiply(x: number, y: number): number {
+                return x * y;
+            }
+        });
+
+        subject.object.multiply(3, 4);
+
+        subject.didNotReceive('multiply', x, y);
+    });
+
+    it.each([
+        [Any.value, Any.value],
+        [3, 4],
+    ])('didNotReceive() requires method not to have been called x: %p, y: %p', (x: any, y: any) => {
+        const subject = new Mock({
+            multiply(x: number, y: number): number {
+                return x * y;
+            }
+        });
+
+        subject.object.multiply(3, 4);
+        
+        const action = () => {
+            subject.didNotReceive('multiply', x, y);
         };
 
         expect(action).toThrow();
