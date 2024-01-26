@@ -28,17 +28,22 @@ export class Mock {
         }
     }
 
+    // TODO rename
     received(methodName: string, ...args: any[]) {
-        if (this.getMethodCallCount(methodName, args) !== 1) {
+        const methodCallCount = this.getMethodCallCount(methodName, args);
+
+        if (methodCallCount !== 1) {
             // TODO serialize
-            throw new Error(`No matching calls found: ${methodName}(${args.join(', ')});`);
+            throw new Error(`Expected exactly 1 call matching ${methodName}(${args.join(', ')}) but found ${methodCallCount}`);
         }
     }
 
     didNotReceive(methodName: string, ...args: any[]) {
-        if (this.getMethodCallCount(methodName, args) !== 0) {
+        const methodCallCount = this.getMethodCallCount(methodName, args);
+
+        if (methodCallCount !== 0) {
             // TODO serialize
-            throw new Error(`Matching calls found: ${methodName}(${args.join(', ')});`);
+            throw new Error(`Expected no calls matching ${methodName}(${args.join(', ')}) but found ${methodCallCount}`);
         }
     }
 
@@ -52,7 +57,7 @@ export class Mock {
             }
 
             for (let i = 0; i < args.length; i++) {
-                if (receivedArgs[i] !== args[i] && !(typeof args[i]['matches'] === 'function' && (args[i] as Any).matches(receivedArgs[i]))) {
+                if (!Any.equals(receivedArgs[i], args[i])) {
                     return;
                 }
             }

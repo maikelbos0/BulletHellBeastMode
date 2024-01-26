@@ -54,7 +54,7 @@ describe('Mock', () => {
             subject.received('multiply', x, y);
         };
 
-        expect(action).toThrow();
+        expect(action).toThrow(`Expected exactly 1 call matching multiply(${x}, ${y}) but found 0`);
     });
 
     it.each([
@@ -88,6 +88,6 @@ describe('Mock', () => {
             subject.didNotReceive('multiply', x, y);
         };
 
-        expect(action).toThrow();
+        expect(action).toThrow(`Expected no calls matching multiply(${x}, ${y}) but found 1`);
     });
 });
