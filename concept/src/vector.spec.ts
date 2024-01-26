@@ -95,6 +95,16 @@ describe('Vector', () => {
     });
 
     it.each([
+        [new Vector(10, 20), 2, new Vector(20, 40)],
+        [new Vector(10, 20), 0.5, new Vector(5, 10)],
+        [new Vector(10, 20), -2, new Vector(-20, -40)]
+    ])('multiply() subject: %p, factor: %p, expectedResult: %p', (subject: Vector, factor: number, expectedResult: Vector) => {
+        const result = subject.multiply(factor);
+
+        expect(result).toEqual(expectedResult);
+    });
+
+    it.each([
         [new Vector(3, 4), new Vector(5, 6), 39],
         [new Vector(6, 5), new Vector(4, 3), 39],
         [new Vector(1, -2), new Vector(-2, 1), -4],

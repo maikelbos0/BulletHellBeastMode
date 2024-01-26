@@ -55,6 +55,10 @@ export class Vector {
         return new (this.constructor as any)(this.x / divisor, this.y / divisor);
     }
 
+    multiply(factor: number): this {
+        return new (this.constructor as any)(this.x * factor, this.y * factor);
+    }
+
     dotProduct(vector: this): number {
         return this.x * vector.x + this.y * vector.y;
     }

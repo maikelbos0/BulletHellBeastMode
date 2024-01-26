@@ -60,9 +60,6 @@ export class Polygon {
             });
         }
         else {
-            // TODO make drift variable
-            const drift = 1 + Math.sqrt(deadForDuration) * 5;
-
             context.transform
                 (() => {
                     const startingCoordinates = this.transformCoordinates(this.coordinates[this.coordinates.length - 1]);
@@ -73,7 +70,7 @@ export class Polygon {
                         context.lineTo(transformedCoordinates.x, transformedCoordinates.y);
                     });
                 },
-                Transformation.translate(new Coordinates(drift * this.centerPoint.x, drift * this.centerPoint.y)),
+                Transformation.translate(this.centerPoint.multiply(1 + Math.sqrt(deadForDuration) * 5)), // TODO make drift variable
                 Transformation.rotate(deadForDuration * this.rotationWhenDead),
                 Transformation.scale(1 / (1 + deadForDuration))
             );
