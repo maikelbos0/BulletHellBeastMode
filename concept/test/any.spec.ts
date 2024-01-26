@@ -19,14 +19,16 @@ describe('Any', () => {
     ])('function value: %p, expectedResult: %p', (value: any, expectedResult: boolean) => {
         expect(Any.function.matches(value)).toBe(expectedResult);
     });
-
+    
     it.each([
         [{ foo: 1 }, { foo: 1 }, true],
         [{ foo: 1 }, { foo: 2 }, false],
         [{ foo: 1 }, { bar: 1 }, false],
         [{ foo: 1, bar: 'yes' }, { foo: 1 }, true],
         [{ foo: 1 }, { foo: Any.value }, true],
-    ])('matching() argument: %p, value %p, expectedResult: %p', (value: any, argument: any, expectedResult: boolean) => {
+        [null, { foo: Any.value }, false],
+        [undefined, { foo: Any.value }, false]
+    ])('matching() value %p, argument: %p, expectedResult: %p', (value: any, argument: any, expectedResult: boolean) => {
         expect(Any.matching(argument).matches(value)).toBe(expectedResult);
     });
 });

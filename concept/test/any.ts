@@ -5,6 +5,10 @@ export class Any {
 
     static matching(argument: any) {
         return new Any((value: any) => {
+            if (!value) {
+                return false;
+            }
+
             for (let key in argument) {
                 if (value[key] !== argument[key] && !(typeof argument[key]['matches'] === 'function' && (argument[key] as Any).matches(value[key]))) {
                     return false;
