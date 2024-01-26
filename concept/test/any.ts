@@ -1,3 +1,5 @@
+import { Helper } from "./helper";
+
 export class Any {
     static readonly value: Any = new Any((_expectedValue: any) => true, 'Any.value');
 
@@ -18,7 +20,7 @@ export class Any {
 
                 return true;
             },
-            `Any.matching()`
+            `Any.matching(${Helper.stringify(expectedValue)})`
         );
     }
 

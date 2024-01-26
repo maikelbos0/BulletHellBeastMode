@@ -31,4 +31,12 @@ describe('Any', () => {
     ])('matching() value %p, argument: %p, expectedResult: %p', (value: any, argument: any, expectedResult: boolean) => {
         expect(Any.matching(argument).matches(value)).toBe(expectedResult);
     });
+
+    it.each([
+        [Any.value, 'Any.value'],
+        [Any.function, 'Any.function'],
+        [Any.matching({x: 100, y: 200}), 'Any.matching({ x: 100, y: 200 })'],
+    ])('toString() value: %p, expectedResult: %p', (value: any, expectedResult: string) => {
+        expect(value.toString()).toEqual(expectedResult);
+    });
 });

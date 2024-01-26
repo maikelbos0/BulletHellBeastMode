@@ -1,4 +1,5 @@
 import { Any } from "./any";
+import { Helper } from "./helper";
 
 export class Mock {
     methodCalls = new Map<string, any[][]>();
@@ -33,8 +34,7 @@ export class Mock {
         const methodCallCount = this.getMethodCallCount(methodName, args);
 
         if (methodCallCount !== 1) {
-            // TODO serialize
-            throw new Error(`Expected exactly 1 call matching ${methodName}(${args.join(', ')}) but found ${methodCallCount}`);
+            throw new Error(`Expected exactly 1 call matching ${methodName}(${args.map(arg => Helper.stringify(arg)).join(', ')}) but found ${methodCallCount}`);
         }
     }
 
@@ -42,8 +42,7 @@ export class Mock {
         const methodCallCount = this.getMethodCallCount(methodName, args);
 
         if (methodCallCount !== 0) {
-            // TODO serialize
-            throw new Error(`Expected no calls matching ${methodName}(${args.join(', ')}) but found ${methodCallCount}`);
+            throw new Error(`Expected no calls matching ${methodName}(${args.map(arg => Helper.stringify(arg)).join(', ')}) but found ${methodCallCount}`);
         }
     }
 

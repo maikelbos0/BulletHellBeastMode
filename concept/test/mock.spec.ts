@@ -40,6 +40,7 @@ describe('Mock', () => {
 
     it.each([
         [Any.value, 5],
+        [Any.matching({x: 3}), 4],
         [3, 5],
     ])('received() requires method to have been called x: %p, y: %p', (x: any, y: any) => {
         const subject = new Mock({
