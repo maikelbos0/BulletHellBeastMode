@@ -1,13 +1,14 @@
+import { Coordinates } from "./coordinates";
+
 export abstract class Transformation {
-    // TODO take coordinates?
-    public static translate(x: number, y: number): Transformation {
-        return new Translation(x, y);
+    public static translate(coordinates: Coordinates): Transformation {
+        return new Translation(coordinates);
     }
     
     public static rotate(angle: number): Transformation {
         return new Rotation(angle);
     }
-    
+
     public static scale(factor: number): Transformation {
         return new Scaling(factor);
     }
@@ -16,12 +17,12 @@ export abstract class Transformation {
 }
 
 class Translation extends Transformation {
-    constructor(public readonly x: number, public readonly y: number) {
+    constructor(public readonly coordinates: Coordinates) {
         super();
     }
 
     transform(context: CanvasRenderingContext2D): void {
-        context.translate(this.x, this.y);
+        context.translate(this.coordinates.x, this.coordinates.y);
     }
 }
 

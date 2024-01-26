@@ -41,7 +41,7 @@ export abstract class RenderableObject implements Renderable {
                     stroke: this.color.withAlpha((RenderableObject.deathAnimationDuration - (this.deadForDuration ?? 0)) / RenderableObject.deathAnimationDuration)
                 });
             },
-            Transformation.translate(this.position.x, this.position.y)
+            Transformation.translate(this.position)
         );
     }
 

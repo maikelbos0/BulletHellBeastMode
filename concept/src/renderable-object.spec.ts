@@ -36,8 +36,8 @@ describe('RenderableObject', () => {
 
         subject.render(renderingContextMock.object);
 
-        renderingContextMock.received('transform', Any.function, Any.matching({x: 100, y: 200}));
-        renderingContextMock.received('path', Any.function, Any.matching({ stroke: Any.matching({ r: 192, g: 255, b: 32, a: 1})}));
+        renderingContextMock.received('transform', Any.function, Any.matching({ coordinates: Any.matching({ x: 100, y: 200 }) }));
+        renderingContextMock.received('path', Any.function, Any.matching({ stroke: Any.matching({ r: 192, g: 255, b: 32, a: 1 }) }));
 
         renderingContextMock.received('moveTo', -30, -30);
         renderingContextMock.received('lineTo', -50, -20);

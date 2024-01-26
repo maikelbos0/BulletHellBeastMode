@@ -73,7 +73,7 @@ export class Polygon {
                         context.lineTo(transformedCoordinates.x, transformedCoordinates.y);
                     });
                 },
-                Transformation.translate(drift * this.centerPoint.x, drift * this.centerPoint.y),
+                Transformation.translate(new Coordinates(drift * this.centerPoint.x, drift * this.centerPoint.y)),
                 Transformation.rotate(deadForDuration * this.rotationWhenDead),
                 Transformation.scale(1 / (1 + deadForDuration))
             );
