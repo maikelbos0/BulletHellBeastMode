@@ -57,12 +57,18 @@ describe('Polygon', () => {
 
         subject.render(renderingContextMock.object, undefined);
 
+        renderingContextMock.didNotReceive(
+            'transform',
+            Any.function,
+            Any.value,
+            Any.value,
+            Any.value
+        );
+
         renderingContextMock.received('moveTo', 200, 100);
         renderingContextMock.received('lineTo', 100, 100);
         renderingContextMock.received('lineTo', 150, 220);
         renderingContextMock.received('lineTo', 200, 100);
-
-        // TODO test did not receive
     });
 
     test('render() when dead', () => {
