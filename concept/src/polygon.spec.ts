@@ -11,8 +11,8 @@ describe('Polygon', () => {
     ])('constructor() coordinates: %j', (coordinates: Coordinates[], centerPoint: Coordinates) => {
         const subject = new Polygon(...coordinates);
 
-        expect(subject.coordinates).toEqual(coordinates);
         expect(subject.centerPoint).toEqual(centerPoint);
+        expect(subject.coordinates).toEqual(coordinates.map(coordinate => coordinate.subtract(centerPoint)));
     });
 
     test('constructor() requires 3 coordinates', () => {
@@ -57,18 +57,16 @@ describe('Polygon', () => {
 
         subject.render(renderingContextMock.object, undefined);
 
-        renderingContextMock.didNotReceive(
+        renderingContextMock.received(
             'transform',
             Any.function,
-            Any.value,
-            Any.value,
-            Any.value
+            Any.matching({ coordinates: Any.matching(subject.centerPoint) })
         );
-
-        renderingContextMock.received('moveTo', Any.matching({ x: 200, y: 100 }));
-        renderingContextMock.received('lineTo', Any.matching({ x: 100, y: 100 }));
-        renderingContextMock.received('lineTo', Any.matching({ x: 150, y: 220 }));
-        renderingContextMock.received('lineTo', Any.matching({ x: 200, y: 100 }));
+        
+        renderingContextMock.received('moveTo', Any.matching({ x: 50, y: -40 }));
+        renderingContextMock.received('lineTo', Any.matching({ x: -50, y: -40 }));
+        renderingContextMock.received('lineTo', Any.matching({ x: 0, y: 80 }));
+        renderingContextMock.received('lineTo', Any.matching({ x: 50, y: -40 }));
     });
 
     test('render() when dead', () => {

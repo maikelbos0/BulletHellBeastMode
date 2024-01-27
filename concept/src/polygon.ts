@@ -48,41 +48,37 @@ export class Polygon {
             }
         }
 
-        this.coordinates = coordinates;
         this.centerPoint = coordinates.reduce((c, coordinates) => c.add(coordinates), new Coordinates(0, 0)).divide(coordinateCount);
+        this.coordinates = coordinates.map(coordinate => coordinate.subtract(this.centerPoint));
         this.rotationWhenDead = Math.random() * Polygon.maximumRotationWhenDead * 2 - Polygon.maximumRotationWhenDead;
         this.driftWhenDead = (Math.random() * (Polygon.maximumDriftWhenDead - Polygon.minimumDriftWhenDead) + Polygon.minimumDriftWhenDead) / Math.pow(this.centerPoint.getMagnitude(), 0.75);
     }
 
-    // TODO perhaps refactor - map coordinates around center point and only add transformations in if, it saves a bunch of math in the render loop when dead
     render(context: RenderingContext, deadForDuration: number | undefined): void {
-        if (deadForDuration === undefined) {
-            context.moveTo(this.coordinates[this.coordinates.length - 1]);
+        let transformations: Transformation[];
 
-            this.coordinates.forEach(coordinates => {
-                context.lineTo(coordinates);
-            });
+        if (deadForDuration === undefined) {
+            transformations = [
+                Transformation.translate(this.centerPoint)
+            ];
         }
         else {
-            context.transform
-                (() => {
-                    context.moveTo(this.transformCoordinates(this.coordinates[this.coordinates.length - 1]));
-
-                    this.coordinates.forEach(coordinates => {
-                        context.lineTo(this.transformCoordinates(coordinates));
-                    });
-                },
+            transformations = [
                 Transformation.translate(this.centerPoint.multiply(1 + Math.sqrt(deadForDuration) * this.driftWhenDead)),
                 Transformation.rotate(deadForDuration * this.rotationWhenDead),
                 Transformation.scale(1 / (1 + deadForDuration))
-            );
+            ];
         }
-    }
+        
+        context.transform
+            (() => {
+                context.moveTo(this.coordinates[this.coordinates.length - 1]);
 
-    transformCoordinates(coordinates: Coordinates): Coordinates {
-        return new Coordinates(
-            coordinates.x - this.centerPoint.x,
-            coordinates.y - this.centerPoint.y
+                this.coordinates.forEach(coordinates => {
+                    context.lineTo(coordinates);
+                });
+            },
+            ...transformations
         );
     }
 }
