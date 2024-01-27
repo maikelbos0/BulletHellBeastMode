@@ -39,15 +39,15 @@ describe('RenderableObject', () => {
         renderingContextMock.received('transform', Any.function, Any.matching({ coordinates: Any.matching({ x: 100, y: 200 }) }));
         renderingContextMock.received('path', Any.function, Any.matching({ stroke: Any.matching({ r: 192, g: 255, b: 32, a: 1 }) }));
 
-        renderingContextMock.received('moveTo', -30, -30);
-        renderingContextMock.received('lineTo', -50, -20);
-        renderingContextMock.received('lineTo', -50, 30);
-        renderingContextMock.received('lineTo', -30, -30);
+        renderingContextMock.received('moveTo', Any.matching({ x: -30, y: -30 }));
+        renderingContextMock.received('lineTo', Any.matching({ x: -50, y: -20 }));
+        renderingContextMock.received('lineTo', Any.matching({ x: -50, y: 30 }));
+        renderingContextMock.received('lineTo', Any.matching({ x: -30, y: -30 }));
 
-        renderingContextMock.received('moveTo', 30, -30);
-        renderingContextMock.received('lineTo', 50, -20);
-        renderingContextMock.received('lineTo', 50, 30);
-        renderingContextMock.received('lineTo', 30, -30);
+        renderingContextMock.received('moveTo', Any.matching({ x: 30, y: -30 }));
+        renderingContextMock.received('lineTo', Any.matching({ x: 50, y: -20 }));
+        renderingContextMock.received('lineTo', Any.matching({ x: 50, y: 30 }));
+        renderingContextMock.received('lineTo', Any.matching({ x: 30, y: -30 }));
     });
 
     test('kill() when alive', () => {

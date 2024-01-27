@@ -50,24 +50,22 @@ export class Polygon {
         this.rotationWhenDead = Math.random() * Polygon.maximumRotationWhenDead * 2 - Polygon.maximumRotationWhenDead;
     }
 
-    // TODO perhaps refactor - map coordinates around center point and only add transformations in if, it saves a bunch of math in the render loop
+    // TODO perhaps refactor - map coordinates around center point and only add transformations in if, it saves a bunch of math in the render loop when dead
     render(context: RenderingContext, deadForDuration: number | undefined): void {
         if (deadForDuration === undefined) {
-            context.moveTo(this.coordinates[this.coordinates.length - 1].x, this.coordinates[this.coordinates.length - 1].y);
+            context.moveTo(this.coordinates[this.coordinates.length - 1]);
 
             this.coordinates.forEach(coordinates => {
-                context.lineTo(coordinates.x, coordinates.y);
+                context.lineTo(coordinates);
             });
         }
         else {
             context.transform
                 (() => {
-                    const startingCoordinates = this.transformCoordinates(this.coordinates[this.coordinates.length - 1]);
-                    context.moveTo(startingCoordinates.x, startingCoordinates.y);
+                    context.moveTo(this.transformCoordinates(this.coordinates[this.coordinates.length - 1]));
 
                     this.coordinates.forEach(coordinates => {
-                        const transformedCoordinates = this.transformCoordinates(coordinates);
-                        context.lineTo(transformedCoordinates.x, transformedCoordinates.y);
+                        context.lineTo(this.transformCoordinates(coordinates));
                     });
                 },
                 Transformation.translate(this.centerPoint.multiply(1 + Math.sqrt(deadForDuration) * 5)), // TODO make drift variable

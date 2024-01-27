@@ -65,10 +65,10 @@ describe('Polygon', () => {
             Any.value
         );
 
-        renderingContextMock.received('moveTo', 200, 100);
-        renderingContextMock.received('lineTo', 100, 100);
-        renderingContextMock.received('lineTo', 150, 220);
-        renderingContextMock.received('lineTo', 200, 100);
+        renderingContextMock.received('moveTo', Any.matching({ x: 200, y: 100 }));
+        renderingContextMock.received('lineTo', Any.matching({ x: 100, y: 100 }));
+        renderingContextMock.received('lineTo', Any.matching({ x: 150, y: 220 }));
+        renderingContextMock.received('lineTo', Any.matching({ x: 200, y: 100 }));
     });
 
     test('render() when dead', () => {
@@ -93,9 +93,9 @@ describe('Polygon', () => {
             Any.matching({ angle: 1.5 * subject.rotationWhenDead }),
             Any.matching({ factor: 0.4 })
         );
-        renderingContextMock.received('moveTo', 50, -40);
-        renderingContextMock.received('lineTo', -50, -40);
-        renderingContextMock.received('lineTo', 0, 80);
-        renderingContextMock.received('lineTo', 50, -40);
+        renderingContextMock.received('moveTo', Any.matching({ x: 50, y: -40 }));
+        renderingContextMock.received('lineTo', Any.matching({ x: -50, y: -40 }));
+        renderingContextMock.received('lineTo', Any.matching({ x: 0, y: 80 }));
+        renderingContextMock.received('lineTo', Any.matching({ x: 50, y: -40 }));
     });
 });

@@ -1,5 +1,6 @@
 import { Transformation } from "./transformation.js";
 import { RenderingOptions } from "./rendering-options.js";
+import { Coordinates } from "./coordinates.js";
 
 export class RenderingContext {
     constructor(private context: CanvasRenderingContext2D) { }
@@ -31,14 +32,12 @@ export class RenderingContext {
         }
     }
 
-    // TODO make it accept coordinates?
-    moveTo(x: number, y: number): void {
-        this.context.moveTo(x, y);
+    moveTo(coordinates: Coordinates): void {
+        this.context.moveTo(coordinates.x, coordinates.y);
     }
 
-    // TODO make it accept coordinates?
-    lineTo(x: number, y: number): void {
-        this.context.lineTo(x, y);
+    lineTo(coordinates: Coordinates): void {
+        this.context.lineTo(coordinates.x, coordinates.y);
     }
 
     rectangle(x: number, y: number, width: number, height: number, options: RenderingOptions) {
