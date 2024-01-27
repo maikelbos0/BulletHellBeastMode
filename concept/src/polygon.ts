@@ -5,10 +5,13 @@ import { Transformation } from "./transformation.js";
 
 export class Polygon {
     static readonly maximumRotationWhenDead: number = Math.PI * 2;
+    static readonly minimumDriftWhenDead: number = 20;
+    static readonly maximumDriftWhenDead: number = 40;
 
     readonly coordinates: Coordinates[];
     readonly centerPoint: Coordinates;
     readonly rotationWhenDead: number;
+    readonly driftWhenDead: number;
 
     constructor(...coordinates: Coordinates[]) {
         const coordinateCount = coordinates.length;
@@ -48,6 +51,7 @@ export class Polygon {
         this.coordinates = coordinates;
         this.centerPoint = coordinates.reduce((c, coordinates) => c.add(coordinates), new Coordinates(0, 0)).divide(coordinateCount);
         this.rotationWhenDead = Math.random() * Polygon.maximumRotationWhenDead * 2 - Polygon.maximumRotationWhenDead;
+        this.driftWhenDead = (Math.random() * (Polygon.maximumDriftWhenDead - Polygon.minimumDriftWhenDead) + Polygon.minimumDriftWhenDead) / Math.pow(this.centerPoint.getMagnitude(), 0.75);
     }
 
     // TODO perhaps refactor - map coordinates around center point and only add transformations in if, it saves a bunch of math in the render loop when dead
@@ -68,7 +72,7 @@ export class Polygon {
                         context.lineTo(this.transformCoordinates(coordinates));
                     });
                 },
-                Transformation.translate(this.centerPoint.multiply(1 + Math.sqrt(deadForDuration) * 5)), // TODO make drift variable
+                Transformation.translate(this.centerPoint.multiply(1 + Math.sqrt(deadForDuration) * this.driftWhenDead)),
                 Transformation.rotate(deadForDuration * this.rotationWhenDead),
                 Transformation.scale(1 / (1 + deadForDuration))
             );

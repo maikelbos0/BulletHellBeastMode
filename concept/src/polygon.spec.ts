@@ -89,7 +89,7 @@ describe('Polygon', () => {
         renderingContextMock.received(
             'transform',
             Any.function,
-            Any.matching({ coordinates: Any.matching({ x: 1068.5587, y: 997.3214 }) }),
+            Any.matching({ coordinates: Any.matching(subject.centerPoint.multiply(1 + Math.sqrt(1.5) * subject.driftWhenDead)) }),
             Any.matching({ angle: 1.5 * subject.rotationWhenDead }),
             Any.matching({ factor: 0.4 })
         );
